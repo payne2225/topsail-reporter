@@ -2,10 +2,15 @@ Topsail Reporter, Wed Oct 14
 
 Flat calm sound at first light with the tide coming in until late morning: throw topwater for reds and trout along the grass lines and creek mouths, then switch to a live finger mullet once the sun is up. Surf is small and the rip risk is low. Oysters open at sunrise Thursday, with Topsail Sound open and Stump Sound still closed. The wind takes the morning off, so the pinfish will have to do the stealing themselves.
 
-Sound tides: L 5:11a, H 11:28a, L 5:58p, H 11:44p
-Beach: surf 1-2 ft, rip risk Low, water 77F
-Weather: Sunny, high 83, wind SW 9 mph
-On the water: SW winds 10 kt. Seas 2 ft.
-Sun: up 7:15a, down 6:37p, waxing crescent moon
+🌊 Sound tides
+Low 5:11a · High 11:28a
+Low 5:58p · High 11:44p
+☀️ Sunny, high 83°
+💨 Wind SW 9 mph
+🏖️ Surf 1-2 ft, rip risk low
+🌡️ Water 77°
+⛵ SW winds 10 kt. Seas 2 ft.
+🌅 Sun up 7:15a, down 6:37p
+🌒 Waxing crescent moon
 
 Full report: https://payne2225.github.io/topsail-reporter/2026-10-14/

@@ -97,15 +97,6 @@ def tides_for(data: dict, key: str, date_iso: str) -> list[dict]:
     return []
 
 
-def tide_line(events: list[dict], short: bool) -> str:
-    parts = []
-    for e in events:
-        t = config.short_clock(e["time"]) if short else e["time"]
-        tag = f" {e['day']}" if e.get("day") else ""
-        parts.append(f"{e['type'][0].upper()} {t}{tag}")
-    return ", ".join(parts)
-
-
 def surf_period(data: dict, date_iso: str) -> dict | None:
     surf = data.get("surf_zone")
     if not surf:
@@ -142,52 +133,86 @@ def numbers_date(data: dict) -> str:
     return config.ARRIVAL_DATE if data.get("kind") == "preview" else data["date"]
 
 
+MOON_EMOJI = {"new": "🌑", "waxing crescent": "🌒", "first quarter": "🌓",
+              "waxing gibbous": "🌔", "full": "🌕", "waning gibbous": "🌖",
+              "last quarter": "🌗", "third quarter": "🌗", "waning crescent": "🌘"}
+
+
+def sky_emoji(short: str) -> str:
+    """An emoji for the NWS short forecast; the worst weather named wins."""
+    s = short.lower()
+    for words, emoji in ((("thunder",), "⛈️"), (("snow",), "🌨️"),
+                         (("rain", "shower", "drizzle"), "🌧️"), (("fog",), "🌫️"),
+                         (("mostly cloudy", "overcast"), "☁️"),
+                         (("partly",), "⛅"), (("mostly sunny", "mostly clear"), "🌤️"),
+                         (("sunny", "clear"), "☀️")):
+        if any(w in s for w in words):
+            return emoji
+    return "🌤️"
+
+
+def tide_rows(events: list[dict]) -> list[str]:
+    """Two tides a row, in order, so each row fits a phone screen."""
+    cells = []
+    for e in events:
+        tag = f" {e['day']}" if e.get("day") else ""
+        cells.append(f"{e['type'].capitalize()} {config.short_clock(e['time'])}{tag}")
+    return [" · ".join(cells[i:i + 2]) for i in range(0, len(cells), 2)]
+
+
 def numbers_block(data: dict) -> list[str]:
-    """The text's numbers, every one straight from data/<date>.json."""
+    """The text's numbers, every one straight from data/<date>.json.
+
+    One short line per thing, an emoji up front, so each reads at a glance
+    on a phone without wrapping.
+    """
     day = numbers_date(data)
     ahead = day != data["date"]
 
-    def lab(label: str) -> str:
-        # A preview's lines say whose day they are: "Sat sound tides: ...".
-        if ahead:
-            return f"{dt.date.fromisoformat(day).strftime('%a')} {label}"
-        return label[0].upper() + label[1:]
-
     lines = []
+    if ahead:
+        # A preview shows the first island day, and says so once.
+        lines.append(f"📅 {config.weekday_label(day)} outlook")
     for a in data.get("alerts") or []:
-        lines.append(f"ALERT: {a['event']}")
+        lines.append(f"⚠️ {a['event']}")
     sound = tides_for(data, "sound", day)
     if sound:
-        lines.append(f"{lab('sound tides')}: {tide_line(sound, short=True)}")
+        lines.append("🌊 Sound tides")
+        lines.extend(tide_rows(sound))
+    fc = day_forecast(data, day)
+    if fc:
+        lines.append(f"{sky_emoji(fc['short'])} {fc['short']}, high {fc['temp_f']}°")
+        lines.append(f"💨 Wind {fc['wind']}")
     beach = []
     sp = surf_period(data, day)
     if sp and sp["fields"].get("surf_height"):
-        beach.append(f"surf {feet(sp['fields']['surf_height'])}")
+        beach.append(f"Surf {feet(sp['fields']['surf_height'])}")
     else:
         w = wave_for(data, day)
         if w and w.get("max_ft") is not None:
-            beach.append(f"waves to {w['max_ft']:g} ft (model)")
+            beach.append(f"Waves to {w['max_ft']:g} ft (model)")
     if sp and sp["fields"].get("rip_current_risk"):
-        beach.append(f"rip risk {sp['fields']['rip_current_risk']}")
+        beach.append(f"rip risk {sp['fields']['rip_current_risk'].lower()}")
+    if beach:
+        lines.append("🏖️ " + ", ".join(beach))
     buoy = data.get("buoy") or {}
     if not ahead and buoy.get("water_temp_f") is not None:
-        beach.append(f"water {buoy['water_temp_f']}F")
+        lines.append(f"🌡️ Water {buoy['water_temp_f']}°")
     elif sp and sp["fields"].get("water_temp"):
-        beach.append(f"water {sp['fields']['water_temp'].lower()}")
-    if beach:
-        lines.append(f"{lab('beach')}: " + ", ".join(beach))
-    fc = day_forecast(data, day)
-    if fc:
-        lines.append(f"{lab('weather')}: {fc['short']}, high {fc['temp_f']}, wind {fc['wind']}")
+        lines.append(f"🌡️ Water {sp['fields']['water_temp'].lower()}")
     marine = data.get("marine") or {}
     if not ahead and marine.get("periods"):
-        lines.append(f"On the water: {marine['periods'][0]['headline']}")
+        lines.append(f"⛵ {marine['periods'][0]['headline']}")
     sun = sun_for(data, day)
     if sun:
-        moon = (data.get("moon") or {}).get("phase")
-        tail = f", {moon}" + ("" if moon.endswith("moon") else " moon") if moon else ""
-        lines.append(f"{lab('sun')}: up {config.short_clock(sun['sunrise'])}, down "
-                     f"{config.short_clock(sun['sunset'])}{tail}")
+        lines.append(f"🌅 Sun up {config.short_clock(sun['sunrise'])}, down "
+                     f"{config.short_clock(sun['sunset'])}")
+    # The moon in the data is today's, so a preview leaves it out.
+    moon = None if ahead else (data.get("moon") or {}).get("phase")
+    if moon:
+        name = moon if moon.endswith("moon") else f"{moon} moon"
+        emoji = MOON_EMOJI.get(moon.removesuffix(" moon").lower(), "🌙")
+        lines.append(f"{emoji} {name[0].upper()}{name[1:]}")
     return lines
 
 
