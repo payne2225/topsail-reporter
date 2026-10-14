@@ -55,6 +55,12 @@ rehearsal edition outside the run (kind `sample`). Samples drop out of the
 archive and the index on their own once the first real edition exists;
 their pages stay reachable by direct link.
 
+**Rehearsal record.** 2026-10-14, 19:00 UTC, session
+`cse_01KwGYAL9D7oSbqt1oqo3DUe`: GO sample, 8/8 feeds, numbers edition
+pushed 19:01, full report validated first try, PUSHED and LIVE 19:06:57.
+About seven minutes from fire to live, so a 4:30 AM fire has two hours of
+slack before 6:30 even with the scheduler running late.
+
 ## 4. Data sources (all keyless, checked 2026-10-14)
 
 | Feed | Where | Note |
