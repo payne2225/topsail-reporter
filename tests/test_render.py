@@ -94,6 +94,19 @@ def test_render_all_writes_each_edition_the_index_and_the_texts(tmp_path, data):
     assert "href='../2026-10-15/'" in page14
 
 
+def test_samples_leave_the_archive_once_the_run_starts(tmp_path, data):
+    (tmp_path / "data").mkdir()
+    for date in ("2026-10-14", "2026-10-29"):
+        (tmp_path / "data" / f"{date}.json").write_text(json.dumps(dict(data, date=date)),
+                                                        encoding="utf-8")
+    render.render_all(str(tmp_path))
+    index = (tmp_path / "site" / "index.html").read_text(encoding="utf-8")
+    assert "Thu Oct 29, 2026" in index and "Oct 14" not in index
+    # The sample's own page and text are still there for anyone holding the link.
+    assert (tmp_path / "site" / "2026-10-14" / "index.html").exists()
+    assert render.listed(["2026-10-14"]) == ["2026-10-14"]
+
+
 def test_the_page_names_no_one(data):
     html = render.page(data, render.parse_report(GOOD_REPORT), ["2026-10-14"], "2026-10-14")
     for word in ("Nate", "payne", "Kirsten"):

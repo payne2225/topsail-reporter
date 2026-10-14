@@ -26,7 +26,12 @@ a family group at 6:30 AM Eastern from the sender's own number.
 
 ## 3. How a morning runs
 
-Cloud routine, Fable 5.1, cron `30 8,9 1-7,29-31 10,11 *` (UTC): 4:30 and
+Cloud routine **Topsail Reporter**, `trig_0191168AXrPkqA7rHyQ446eP`
+(environment `env_01HRBGRSDmfX7Vur76oE8Lkh`, source this repo only, no
+secrets: it only pushes here). Disable it after Nov 7 with
+`{"enabled": false}` (the API has no delete).
+
+Fable 5.1, cron `30 8,9 1-7,29-31 10,11 *` (UTC): 4:30 and
 5:30 AM EDT through Oct 31, 3:30 and 4:30 AM EST from Nov 1. The day list
 in the cron keeps it silent outside the run, except Oct 1-7 and Nov 29-30,
 which the gate turns away (`OFF`).
@@ -44,6 +49,11 @@ which the gate turns away (`OFF`).
 The second fire stands down (BUSY) while the first fire's numbers edition
 is under 75 minutes old, and (DONE) once the full report is on origin.
 If the first fire never ran, the second writes the edition.
+
+**Samples.** `config.SAMPLE_DATES` lets a manual run of the routine write a
+rehearsal edition outside the run (kind `sample`). Samples drop out of the
+archive and the index on their own once the first real edition exists;
+their pages stay reachable by direct link.
 
 ## 4. Data sources (all keyless, checked 2026-10-14)
 

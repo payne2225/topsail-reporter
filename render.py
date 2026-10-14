@@ -449,17 +449,29 @@ def _write(path: str, text: str) -> None:
         f.write(text)
 
 
+def listed(dates: list[str]) -> list[str]:
+    """The archive: rehearsal (sample) editions drop out once a real one exists.
+
+    Their pages stay where they are; they are just no longer linked or the
+    index, so the run starts with a clean archive and nobody has to delete
+    anything.
+    """
+    real = [d for d in dates if config.kind_for(d) != "sample"]
+    return real or dates
+
+
 def render_all(root: str = HERE) -> list[str]:
     dates = edition_dates(root)
+    shown = listed(dates)
     site = os.path.join(root, "site")
     for d in dates:
         data = load_data(d, root)
         report = load_report(d, root)
-        _write(os.path.join(site, d, "index.html"), page(data, report, dates, d))
+        _write(os.path.join(site, d, "index.html"), page(data, report, shown, d))
         _write(os.path.join(site, "text", f"{d}.txt"), build_text(data, report))
     if dates:
-        latest = dates[-1]
-        html_latest = page(load_data(latest, root), load_report(latest, root), dates, latest)
+        latest = shown[-1]
+        html_latest = page(load_data(latest, root), load_report(latest, root), shown, latest)
         # The index sits one level up from the edition folders.
         _write(os.path.join(site, "index.html"), html_latest.replace("href='../", "href='./"))
     else:
