@@ -1,0 +1,67 @@
+# The morning routine commits the rendered edition into site/ and pushes;
+# this publishes whatever landed there. Nothing is BUILT here on purpose:
+# the pages are plain self-contained HTML and text, so a build step could
+# only add ways for the morning push to fail.
+#
+# The test suite gates the deploy. The tests are fully offline (their data
+# lives in tests/fixtures/), so they fail only on a real regression, never
+# on a flaky source.
+
+name: Publish the Reporter
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it: a cancelled deploy
+# can leave the site serving half an edition.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: python -m pip install pytest
+
+      - name: Test
+        run: pytest -q
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if site/ is empty
+        run: |
+          test -f site/index.html || {
+            echo "site/index.html missing - refusing to publish an empty site"
+            exit 1
+          }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

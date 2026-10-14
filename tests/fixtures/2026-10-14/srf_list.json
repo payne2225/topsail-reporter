@@ -1,0 +1,26 @@
+{
+ "@context": {
+  "@version": "1.1",
+  "@vocab": "https://api.weather.gov/ontology#"
+ },
+ "@graph": [
+  {
+   "@id": "https://api.weather.gov/products/37a62c75-dedd-4ab9-8758-e616dd309f11",
+   "id": "37a62c75-dedd-4ab9-8758-e616dd309f11",
+   "wmoCollectiveId": "FZUS52",
+   "issuingOffice": "KILM",
+   "issuanceTime": "2026-10-14T13:55:00+00:00",
+   "productCode": "SRF",
+   "productName": "Surf Forecast"
+  },
+  {
+   "@id": "https://api.weather.gov/products/b8056897-58ea-425b-a4ed-31788f963f43",
+   "id": "b8056897-58ea-425b-a4ed-31788f963f43",
+   "wmoCollectiveId": "FZUS52",
+   "issuingOffice": "KILM",
+   "issuanceTime": "2026-10-14T06:20:00+00:00",
+   "productCode": "SRF",
+   "productName": "Surf Forecast"
+  }
+ ]
+}
