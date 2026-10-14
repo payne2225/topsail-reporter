@@ -75,15 +75,26 @@ fall bite, the calendar). Then gather what is new today. Use WebSearch and
 WebFetch; keep notes of every URL you actually read.
 
 **Fishing, the heart of it.** In this order:
-- The pier and tackle-shop reports listed in `reference/sources.md` as
-  working. Note each report's date.
+- Fisherman's Post, Topsail/Sneads Ferry category (`reference/sources.md`).
+  It is the one written report that covers the piers, the shop and the
+  local guides. It posts monthly, around the 1st: say which month's report
+  you are quoting. The piers post daily catches only on Facebook, which
+  cannot be read; do not pretend otherwise.
 - Searches such as `Topsail fishing report`, `Surf City pier fishing
   report`, `Topsail Island red drum <month> 2026`, `Wrightsville Beach
   fishing report` (the nearest busy reporting area; label it as such), and
-  `false albacore Topsail` in late October.
-- NCDMF proclamations issued in the last two weeks (the proclamations page
-  in `reference/sources.md`). Any new closure, opening or limit change is
-  the top of The Bite and goes in Regs Corner.
+  `false albacore Topsail` in late October. Use only results with a date.
+- NCDMF, every morning: the current proclamations page (page 0, newest) for
+  anything issued since `reference/regs.md` was checked, and the
+  polluted-area proclamations list for Topsail Sound and Stump Sound
+  shellfish closures (rain closes them). Any new closure, opening or limit
+  change is the top of The Bite and goes in Regs Corner.
+- Standing facts for this run, from `reference/regs.md`: flounder harvest is
+  CLOSED (release every one); keeping red drum, speckled trout, flounder,
+  striped bass or gray trout must be reported at deq.nc.gov/report-my-fish;
+  striped bass from the sound is illegal to keep; oysters are in season in
+  open waters. Mention whichever matters for the day's fishing; do not
+  print the whole table every morning.
 - Then read `data/<date>.json` like a fisherman: which way the tide is
   moving at dawn and at dusk in the sound (Hampstead, the `sound` station),
   the size of the swing (moon: spring or neap), the wind direction and speed

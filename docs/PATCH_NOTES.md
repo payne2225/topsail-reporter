@@ -8,3 +8,9 @@
   waves), the gate (OFF/DONE/BUSY/GO), renderer (page, index, text),
   validator, publisher, live check, the morning playbook, and offline tests.
 - Pages deploy via Actions, gated on the tests.
+- reference/: sources (what is fetchable, what is blocked, an almanac for
+  the run), regs (flounder closed for the window, trout open, limits with
+  proclamation numbers), spots (piers, fees, blanket licences, the south
+  end), fall-bite and calendar, all with source URLs and a 2026-10-14 check.
+- Playbook: Fisherman's Post is the fishing report of record; NCDMF
+  proclamations and the shellfish closure list are checked every morning.
