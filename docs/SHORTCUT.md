@@ -8,8 +8,12 @@ Nothing else holds anyone's number.
 
 1. **Automation** tab, **+**, **Time of Day**. Set **6:30 AM**, **Daily**,
    and choose **Run Immediately**. Tap **Next**, then **New Blank Automation**.
-2. Add **Format Date**. Tap its Date and pick **Current Date**. Set Date
-   Format to **Custom** and type `yyyy-MM-dd`. Set Time Format to **None**.
+2. Add **Format Date**. Tap its faded **Date** and pick **Current Date**: it
+   must turn solid and read "Format Current Date". Left faded, it formats
+   nothing, the link ends in `/text/.txt`, and every run says "No Topsail
+   Reporter today". Then tap the **>** on the action: Date Format
+   **Custom**, Format String `yyyy-MM-dd` (lowercase y and d, capital M),
+   Time Format **None**.
 3. Add **Text**. Type
    `https://payne2225.github.io/topsail-reporter/text/`
    then insert the **Formatted Date** variable, then type `.txt`
