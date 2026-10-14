@@ -1,0 +1,595 @@
+{
+ "date": "2026-10-14",
+ "kind": "sample",
+ "generated_utc": "2026-10-14T19:00:47Z",
+ "generated_et": "3:00 PM ET",
+ "tides": {
+  "sound": {
+   "station": "Hampstead",
+   "id": "8657813",
+   "label": "Sound (Hampstead)",
+   "note": "inside Topsail Sound and the ICWW; runs over an hour behind the beach",
+   "days": [
+    {
+     "date": "2026-10-14",
+     "events": [
+      {
+       "type": "low",
+       "time": "5:11 AM",
+       "height_ft": 0.7
+      },
+      {
+       "type": "high",
+       "time": "11:28 AM",
+       "height_ft": 4.2
+      },
+      {
+       "type": "low",
+       "time": "5:58 PM",
+       "height_ft": 1.1
+      },
+      {
+       "type": "high",
+       "time": "11:44 PM",
+       "height_ft": 3.3
+      }
+     ]
+    },
+    {
+     "date": "2026-10-15",
+     "events": [
+      {
+       "type": "high",
+       "time": "11:44 PM",
+       "height_ft": 3.3,
+       "day": "Wed"
+      },
+      {
+       "type": "low",
+       "time": "5:49 AM",
+       "height_ft": 0.8
+      },
+      {
+       "type": "high",
+       "time": "12:16 PM",
+       "height_ft": 4.1
+      },
+      {
+       "type": "low",
+       "time": "6:41 PM",
+       "height_ft": 1.2
+      }
+     ]
+    },
+    {
+     "date": "2026-10-16",
+     "events": [
+      {
+       "type": "high",
+       "time": "12:32 AM",
+       "height_ft": 3.2
+      },
+      {
+       "type": "low",
+       "time": "6:30 AM",
+       "height_ft": 0.9
+      },
+      {
+       "type": "high",
+       "time": "1:05 PM",
+       "height_ft": 4.0
+      },
+      {
+       "type": "low",
+       "time": "7:29 PM",
+       "height_ft": 1.3
+      }
+     ]
+    },
+    {
+     "date": "2026-10-17",
+     "events": [
+      {
+       "type": "high",
+       "time": "1:21 AM",
+       "height_ft": 3.1
+      },
+      {
+       "type": "low",
+       "time": "7:19 AM",
+       "height_ft": 1.0
+      },
+      {
+       "type": "high",
+       "time": "1:55 PM",
+       "height_ft": 3.9
+      },
+      {
+       "type": "low",
+       "time": "8:20 PM",
+       "height_ft": 1.4
+      }
+     ]
+    }
+   ]
+  },
+  "ocean": {
+   "station": "Ocean City Beach pier",
+   "id": "8657419",
+   "label": "Ocean (Ocean City pier)",
+   "note": "oceanfront, the surf and inlet-mouth read",
+   "days": [
+    {
+     "date": "2026-10-14",
+     "events": [
+      {
+       "type": "low",
+       "time": "3:45 AM",
+       "height_ft": 0.6
+      },
+      {
+       "type": "high",
+       "time": "10:22 AM",
+       "height_ft": 5.2
+      },
+      {
+       "type": "low",
+       "time": "4:51 PM",
+       "height_ft": 0.8
+      },
+      {
+       "type": "high",
+       "time": "10:39 PM",
+       "height_ft": 3.8
+      }
+     ]
+    },
+    {
+     "date": "2026-10-15",
+     "events": [
+      {
+       "type": "low",
+       "time": "4:24 AM",
+       "height_ft": 0.9
+      },
+      {
+       "type": "high",
+       "time": "11:05 AM",
+       "height_ft": 5.0
+      },
+      {
+       "type": "low",
+       "time": "5:38 PM",
+       "height_ft": 1.1
+      },
+      {
+       "type": "high",
+       "time": "11:23 PM",
+       "height_ft": 3.5
+      }
+     ]
+    },
+    {
+     "date": "2026-10-16",
+     "events": [
+      {
+       "type": "low",
+       "time": "5:07 AM",
+       "height_ft": 1.1
+      },
+      {
+       "type": "high",
+       "time": "11:53 AM",
+       "height_ft": 4.7
+      },
+      {
+       "type": "low",
+       "time": "6:30 PM",
+       "height_ft": 1.3
+      },
+      {
+       "type": "high",
+       "time": "12:13 AM",
+       "height_ft": 3.4,
+       "day": "Sat"
+      }
+     ]
+    },
+    {
+     "date": "2026-10-17",
+     "events": [
+      {
+       "type": "high",
+       "time": "12:13 AM",
+       "height_ft": 3.4
+      },
+      {
+       "type": "low",
+       "time": "5:57 AM",
+       "height_ft": 1.2
+      },
+      {
+       "type": "high",
+       "time": "12:48 PM",
+       "height_ft": 4.5
+      },
+      {
+       "type": "low",
+       "time": "7:28 PM",
+       "height_ft": 1.4
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "moon": {
+  "phase": "waxing crescent",
+  "illumination_pct": 12,
+  "age_days": 3.3,
+  "tides": "mid-range tides"
+ },
+ "weather_model": {
+  "sun": [
+   {
+    "date": "2026-10-14",
+    "sunrise": "7:15 AM",
+    "sunset": "6:37 PM"
+   },
+   {
+    "date": "2026-10-15",
+    "sunrise": "7:15 AM",
+    "sunset": "6:36 PM"
+   },
+   {
+    "date": "2026-10-16",
+    "sunrise": "7:16 AM",
+    "sunset": "6:34 PM"
+   },
+   {
+    "date": "2026-10-17",
+    "sunrise": "7:17 AM",
+    "sunset": "6:33 PM"
+   }
+  ],
+  "wind": [
+   {
+    "time": "6:00 AM",
+    "speed_mph": 4,
+    "gust_mph": 7,
+    "from": "W",
+    "temp_f": 66
+   },
+   {
+    "time": "9:00 AM",
+    "speed_mph": 4,
+    "gust_mph": 10,
+    "from": "W",
+    "temp_f": 70
+   },
+   {
+    "time": "12:00 PM",
+    "speed_mph": 6,
+    "gust_mph": 9,
+    "from": "SSW",
+    "temp_f": 79
+   },
+   {
+    "time": "3:00 PM",
+    "speed_mph": 10,
+    "gust_mph": 12,
+    "from": "SSW",
+    "temp_f": 80
+   },
+   {
+    "time": "6:00 PM",
+    "speed_mph": 6,
+    "gust_mph": 14,
+    "from": "SW",
+    "temp_f": 76
+   },
+   {
+    "time": "9:00 PM",
+    "speed_mph": 10,
+    "gust_mph": 18,
+    "from": "SW",
+    "temp_f": 70
+   }
+  ]
+ },
+ "forecast": [
+  {
+   "name": "This Afternoon",
+   "start": "2026-10-14",
+   "is_day": true,
+   "temp_f": 83,
+   "pop_pct": 0,
+   "wind": "SW 9 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 83. Southwest wind around 9 mph, with gusts as high as 16 mph."
+  },
+  {
+   "name": "Tonight",
+   "start": "2026-10-14",
+   "is_day": false,
+   "temp_f": 66,
+   "pop_pct": 1,
+   "wind": "SW 6 to 9 mph",
+   "short": "Clear",
+   "detailed": "Clear, with a low around 66. Southwest wind 6 to 9 mph."
+  },
+  {
+   "name": "Thursday",
+   "start": "2026-10-15",
+   "is_day": true,
+   "temp_f": 84,
+   "pop_pct": 1,
+   "wind": "SW 5 to 8 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 84. Southwest wind 5 to 8 mph."
+  },
+  {
+   "name": "Thursday Night",
+   "start": "2026-10-15",
+   "is_day": false,
+   "temp_f": 67,
+   "pop_pct": 1,
+   "wind": "SW 8 mph",
+   "short": "Mostly Clear",
+   "detailed": "Mostly clear, with a low around 67. Southwest wind around 8 mph."
+  },
+  {
+   "name": "Friday",
+   "start": "2026-10-16",
+   "is_day": true,
+   "temp_f": 83,
+   "pop_pct": 0,
+   "wind": "SW 6 to 17 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 83. Southwest wind 6 to 17 mph, with gusts as high as 25 mph."
+  },
+  {
+   "name": "Friday Night",
+   "start": "2026-10-16",
+   "is_day": false,
+   "temp_f": 61,
+   "pop_pct": 3,
+   "wind": "SW 12 to 17 mph",
+   "short": "Mostly Clear",
+   "detailed": "Mostly clear, with a low around 61."
+  },
+  {
+   "name": "Saturday",
+   "start": "2026-10-17",
+   "is_day": true,
+   "temp_f": 69,
+   "pop_pct": 35,
+   "wind": "N 18 to 22 mph",
+   "short": "Chance Rain Showers",
+   "detailed": "A chance of rain showers after 8am. Mostly sunny, with a high near 69. Chance of precipitation is 40%."
+  },
+  {
+   "name": "Saturday Night",
+   "start": "2026-10-17",
+   "is_day": false,
+   "temp_f": 49,
+   "pop_pct": 35,
+   "wind": "N 18 to 22 mph",
+   "short": "Chance Rain Showers",
+   "detailed": "A chance of rain showers. Partly cloudy, with a low around 49. Chance of precipitation is 40%."
+  },
+  {
+   "name": "Sunday",
+   "start": "2026-10-18",
+   "is_day": true,
+   "temp_f": 66,
+   "pop_pct": 15,
+   "wind": "NE 21 mph",
+   "short": "Slight Chance Rain Showers",
+   "detailed": "A slight chance of rain showers. Mostly sunny, with a high near 66."
+  },
+  {
+   "name": "Sunday Night",
+   "start": "2026-10-18",
+   "is_day": false,
+   "temp_f": 53,
+   "pop_pct": 15,
+   "wind": "NE 14 to 20 mph",
+   "short": "Slight Chance Rain Showers then Partly Cloudy",
+   "detailed": "A slight chance of rain showers before 8pm. Partly cloudy, with a low around 53."
+  },
+  {
+   "name": "Monday",
+   "start": "2026-10-19",
+   "is_day": true,
+   "temp_f": 72,
+   "pop_pct": 8,
+   "wind": "NE 18 mph",
+   "short": "Mostly Sunny",
+   "detailed": "Mostly sunny, with a high near 72."
+  },
+  {
+   "name": "Monday Night",
+   "start": "2026-10-19",
+   "is_day": false,
+   "temp_f": 56,
+   "pop_pct": 8,
+   "wind": "NE 12 to 17 mph",
+   "short": "Partly Cloudy",
+   "detailed": "Partly cloudy, with a low around 56."
+  },
+  {
+   "name": "Tuesday",
+   "start": "2026-10-20",
+   "is_day": true,
+   "temp_f": 74,
+   "pop_pct": 9,
+   "wind": "NE 15 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 74."
+  },
+  {
+   "name": "Tuesday Night",
+   "start": "2026-10-20",
+   "is_day": false,
+   "temp_f": 57,
+   "pop_pct": 9,
+   "wind": "NE 10 to 15 mph",
+   "short": "Partly Cloudy",
+   "detailed": "Partly cloudy, with a low around 57."
+  }
+ ],
+ "marine": {
+  "zone": "AMZ250",
+  "zone_name": "Surf City to Cape Fear, out 20 nm",
+  "updated": "2026-10-14T14:26:00-04:00",
+  "periods": [
+   {
+    "name": "This Afternoon",
+    "text": "SW winds 10 kt. Seas 2 ft. Wave Detail: E 2 ft at 7 seconds and SW 1 ft at 2 seconds.",
+    "headline": "SW winds 10 kt. Seas 2 ft."
+   },
+   {
+    "name": "Tonight",
+    "text": "SW winds 10 kt. Seas 2 ft. Wave Detail: SW 2 ft at 3 seconds and E 1 ft at 7 seconds.",
+    "headline": "SW winds 10 kt. Seas 2 ft."
+   },
+   {
+    "name": "Thu",
+    "text": "SW winds 5 to 10 kt. Seas 2 ft. Wave Detail: SW 2 ft at 3 seconds and E 1 ft at 7 seconds.",
+    "headline": "SW winds 5 to 10 kt. Seas 2 ft."
+   },
+   {
+    "name": "Thu Night",
+    "text": "SW winds 10 kt. Seas 2 ft. Wave Detail: SW 2 ft at 3 seconds and E 1 ft at 7 seconds.",
+    "headline": "SW winds 10 kt. Seas 2 ft."
+   },
+   {
+    "name": "Fri",
+    "text": "SW winds 10 kt, increasing to 15 to 20 kt with gusts up to 25 kt in the afternoon. Seas 2 to 3 ft. Wave Detail: SW 3 ft at 4 seconds and E 1 ft at 7 seconds.",
+    "headline": "SW winds 10 kt, increasing to 15 to 20 kt with gusts up to 25 kt in the afternoon. Seas 2 to 3 ft."
+   },
+   {
+    "name": "Fri Night",
+    "text": "SW winds 15 to 20 kt, becoming W 20 to 25 kt after midnight. Gusts up to 30 kt. Seas 3 to 5 ft. Wave Detail: W 5 ft at 5 seconds and E 1 ft at 9 seconds.",
+    "headline": "SW winds 15 to 20 kt, becoming W 20 to 25 kt after midnight. Gusts up to 30 kt. Seas 3 to 5 ft."
+   }
+  ]
+ },
+ "surf_zone": {
+  "zone": "NCZ106",
+  "issued": "955 AM EDT Wed Oct 14 2026",
+  "issued_date": "2026-10-14",
+  "periods": [
+   {
+    "name": "Rest Of Today",
+    "date": "2026-10-14",
+    "is_day": true,
+    "fields": {
+     "rip_current_risk": "Low",
+     "surf_height": "1 to 2 feet",
+     "thunderstorms": "None",
+     "waterspouts": "None",
+     "uv_index": "High",
+     "water_temp": "In the mid 70s",
+     "weather": "Sunny",
+     "high": "In the mid 80s",
+     "winds": "Southwest winds 5 to 10 mph",
+     "tides": "Topsail Inlet: High at 10:22 AM EDT. Low at 04:51 PM EDT"
+    }
+   },
+   {
+    "name": "Thursday",
+    "date": "2026-10-15",
+    "is_day": true,
+    "fields": {
+     "rip_current_risk": "Low",
+     "surf_height": "1 foot",
+     "thunderstorms": "None",
+     "waterspouts": "Low",
+     "weather": "Sunny",
+     "high": "In the mid 80s",
+     "winds": "Southwest winds around 5 mph",
+     "tides": "Topsail Inlet: High at 11:05 AM EDT. Low at 05:38 PM EDT"
+    }
+   },
+   {
+    "name": "Friday",
+    "date": "2026-10-16",
+    "is_day": true,
+    "fields": {
+     "summary": "Low rip current risk*. Surf height 1 to 3 feet. Sunny. Highs in the lower 80s. Southwest winds around 10 mph",
+     "rip_current_risk": "Low",
+     "surf_height": "1 to 3 feet"
+    }
+   },
+   {
+    "name": "Saturday",
+    "date": "2026-10-17",
+    "is_day": true,
+    "fields": {
+     "summary": "Low rip current risk*. Surf height around 1 foot. Sunny, cooler. Highs in the mid 60s. North winds around 20 mph",
+     "rip_current_risk": "Low",
+     "surf_height": "around 1 foot"
+    }
+   },
+   {
+    "name": "Sunday",
+    "date": "2026-10-18",
+    "is_day": true,
+    "fields": {
+     "summary": "Moderate rip current risk*. Surf height 2 to 3 feet. Sunny. Highs in the upper 60s. Northeast winds around 15 mph",
+     "rip_current_risk": "Moderate",
+     "surf_height": "2 to 3 feet"
+    }
+   }
+  ]
+ },
+ "buoy": {
+  "observed_utc": "2026-10-14T18:30Z",
+  "observed_et": "2:30 PM",
+  "wave_ft": 1.6,
+  "period_s": 8.0,
+  "wave_from": "SE",
+  "water_temp_f": 77,
+  "station": "Masonboro Inlet buoy",
+  "id": "41110",
+  "miles": 16,
+  "bearing": "down the coast"
+ },
+ "sound_temp": {
+  "water_temp_f": 76.6,
+  "observed": "2026-10-14 14:54",
+  "station": "Beaufort",
+  "miles": 60,
+  "bearing": "up the coast"
+ },
+ "waves": [
+  {
+   "date": "2026-10-14",
+   "max_ft": 1.6,
+   "period_s": 7,
+   "from": "SE"
+  },
+  {
+   "date": "2026-10-15",
+   "max_ft": 1.4,
+   "period_s": 7,
+   "from": "SE"
+  },
+  {
+   "date": "2026-10-16",
+   "max_ft": 2.3,
+   "period_s": 6,
+   "from": "SSE"
+  },
+  {
+   "date": "2026-10-17",
+   "max_ft": 4.3,
+   "period_s": 5,
+   "from": "ENE"
+  }
+ ],
+ "alerts": [],
+ "errors": []
+}
