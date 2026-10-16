@@ -1,0 +1,11 @@
+Topsail Reporter, Island Edition, Fri Oct 16
+
+⚠️ Gale Warning
+☀️ Sunny, high 82°
+🌙 Tonight partly cloudy, low 62°
+💨 Wind SW 16 mph
+🏖️ Surf 1-2 ft, rip risk low
+🌡️ Water 77°
+🐚 Beach low tide 5:07a, 6:30p
+
+Full report: https://payne2225.github.io/topsail-reporter/2026-10-16/island/
