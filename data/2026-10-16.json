@@ -1,8 +1,8 @@
 {
  "date": "2026-10-16",
  "kind": "sample",
- "generated_utc": "2026-10-16T18:09:28Z",
- "generated_et": "2:09 PM ET",
+ "generated_utc": "2026-10-16T18:11:43Z",
+ "generated_et": "2:11 PM ET",
  "tides": {
   "sound": {
    "station": "Hampstead",
@@ -491,7 +491,7 @@
  },
  "sound_temp": {
   "water_temp_f": 77.0,
-  "observed": "2026-10-16 14:00",
+  "observed": "2026-10-16 14:06",
   "station": "Beaufort",
   "miles": 60,
   "bearing": "up the coast"
