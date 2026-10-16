@@ -151,3 +151,69 @@ def test_eastern_time_follows_the_us_rule(utc, offset):
 ])
 def test_every_day_of_the_run_has_its_kind(date, kind):
     assert config.kind_for(date) == kind
+
+
+# ---- a busy Open-Meteo (the 2026-10-16 rehearsal got 429 twice) ----------
+
+import shutil
+import urllib.error
+
+from conftest import FIXTURE_NOW, FIXTURES
+
+
+def test_the_sun_math_matches_the_almanac_for_the_run():
+    # USNO for Topsail Beach, reference/sources.md: every morning of the run.
+    almanac = {"2026-10-29": ("7:28 AM", "6:20 PM"), "2026-10-30": ("7:29 AM", "6:19 PM"),
+               "2026-10-31": ("7:30 AM", "6:18 PM"), "2026-11-01": ("6:31 AM", "5:17 PM"),
+               "2026-11-02": ("6:32 AM", "5:16 PM"), "2026-11-03": ("6:33 AM", "5:15 PM"),
+               "2026-11-04": ("6:33 AM", "5:14 PM"), "2026-11-05": ("6:34 AM", "5:13 PM"),
+               "2026-11-06": ("6:35 AM", "5:13 PM"), "2026-11-07": ("6:36 AM", "5:12 PM")}
+    def minutes(clock: str) -> int:
+        t = dt.datetime.strptime(clock, "%I:%M %p")
+        return t.hour * 60 + t.minute
+    for day, (rise, sset) in almanac.items():
+        got = fetch.sun_times(dt.date.fromisoformat(day))
+        # Within a minute: USNO and NOAA's equations round a few seconds apart.
+        assert abs(minutes(got["sunrise"]) - minutes(rise)) <= 1, day
+        assert abs(minutes(got["sunset"]) - minutes(sset)) <= 1, day
+
+
+def test_a_dead_open_meteo_still_leaves_the_sun(tmp_path):
+    replay = tmp_path / "replay"
+    shutil.copytree(FIXTURES, replay)
+    (replay / "openmeteo.json").unlink()
+    data = fetch.build("2026-10-14", now_utc=FIXTURE_NOW, replay_dir=str(replay))
+    model = data["weather_model"]
+    assert model["sun"][0] == {"date": "2026-10-14", "sunrise": "7:15 AM", "sunset": "6:38 PM"}
+    assert model["wind"] == [] and model["sun_source"].startswith("computed")
+    assert any(e.startswith("open-meteo:") for e in data["errors"])
+
+
+def _busy(code, headers=None):
+    return urllib.error.HTTPError("https://x.example", code, "busy", headers or {}, None)
+
+
+def test_a_429_is_retried_then_answered(monkeypatch):
+    calls, waits = [], []
+
+    def fake_get(url, params=None, accept=None):
+        calls.append(url)
+        if len(calls) < 3:
+            raise _busy(429, {"Retry-After": "7"} if len(calls) == 1 else {})
+        return "ok"
+    monkeypatch.setattr(fetch, "_get", fake_get)
+    assert fetch._get_patiently("https://x.example", sleep=waits.append) == "ok"
+    assert waits == [7, 45]
+
+
+def test_retries_give_up_and_other_errors_do_not_wait(monkeypatch):
+    waits = []
+    monkeypatch.setattr(fetch, "_get", lambda *a, **k: (_ for _ in ()).throw(_busy(503)))
+    with pytest.raises(urllib.error.HTTPError):
+        fetch._get_patiently("https://x.example", sleep=waits.append)
+    assert waits == [15, 45]
+    waits.clear()
+    monkeypatch.setattr(fetch, "_get", lambda *a, **k: (_ for _ in ()).throw(_busy(404)))
+    with pytest.raises(urllib.error.HTTPError):
+        fetch._get_patiently("https://x.example", sleep=waits.append)
+    assert waits == []

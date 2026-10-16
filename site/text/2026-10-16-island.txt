@@ -2,12 +2,12 @@ Topsail Reporter, Island Edition, Fri Oct 16
 
 Sunny and warm with a southwest breeze: a beach afternoon, then the Autumn With Topsail Festival opens at 6 PM in Topsail Beach, $7 and kids under 12 free, with a free shuttle from the paid lots. Shell hunters get a 6:30 PM low tide on the beach. Saturday turns cold and wet with a north wind, so do the outdoor things today and save Wilmington's museums for tomorrow.
 
-⚠️ Gale Warning
 ☀️ Sunny, high 82°
 🌙 Tonight partly cloudy, low 62°
 💨 Wind SW 16 mph
 🏖️ Surf 1-2 ft, rip risk low
 🌡️ Water 77°
 🐚 Beach low tide 5:07a, 6:30p
+🌅 Sun up 7:17a, down 6:35p
 
 Full report: https://payne2225.github.io/topsail-reporter/2026-10-16/island/

@@ -176,13 +176,38 @@ def tide_rows(events: list[dict]) -> list[str]:
     return [" · ".join(cells[i:i + 2]) for i in range(0, len(cells), 2)]
 
 
-def _opening_lines(data: dict, day: str) -> list[str]:
+def alerts_for(data: dict, edition: str = "fishing") -> list[dict]:
+    """Every alert for the fishing edition; the Island Edition leaves out
+    the marine-zone ones (a Gale Warning for the water on a sunny beach
+    day only confuses someone who is not going out in a boat)."""
+    alerts = data.get("alerts") or []
+    return [a for a in alerts if a.get("where") != "water"] if edition == "island" else alerts
+
+
+def alert_when(a: dict, data: dict) -> str:
+    """' from Sat 2:00p' when it has not started, else ' until Mon 6:00a'."""
+    def stamp(iso: str) -> str:
+        t = dt.datetime.fromisoformat(iso)
+        day = "" if t.date().isoformat() == data["date"] else f"{t.strftime('%a')} "
+        return f"{day}{config.short_clock(config.clock(t))}"
+    try:
+        made = dt.datetime.fromisoformat(data["generated_utc"].replace("Z", "+00:00"))
+        if a.get("onset") and dt.datetime.fromisoformat(a["onset"]) > made:
+            return f" from {stamp(a['onset'])}"
+        if a.get("ends"):
+            return f" until {stamp(a['ends'])}"
+    except (KeyError, ValueError):
+        pass
+    return ""
+
+
+def _opening_lines(data: dict, day: str, edition: str = "fishing") -> list[str]:
     lines = []
     if day != data["date"]:
         # A preview shows the first island day, and says so once.
         lines.append(f"📅 {config.weekday_label(day)} outlook")
-    for a in data.get("alerts") or []:
-        lines.append(f"⚠️ {a['event']}")
+    for a in alerts_for(data, edition):
+        lines.append(f"⚠️ {a['event']}{alert_when(a, data)}")
     return lines
 
 
@@ -260,7 +285,7 @@ def island_numbers_block(data: dict) -> list[str]:
     shark teeth), and the sun. No sound tides, marine forecast or moon."""
     day = numbers_date(data)
     ahead = day != data["date"]
-    lines = _opening_lines(data, day) + _sky_line(data, day)
+    lines = _opening_lines(data, day, "island") + _sky_line(data, day)
     night = night_forecast(data, day)
     if night:
         when = f"{dt.date.fromisoformat(day).strftime('%a')} night" if ahead else "Tonight"
@@ -370,6 +395,16 @@ def tide_table(data: dict, day: str, keys: tuple[str, ...] = ("sound", "ocean"))
     return "<table class=tides>" + "".join(rows) + "</table>"
 
 
+def sun_card(data: dict, day: str) -> str:
+    sun = sun_for(data, day)
+    source = (data.get("weather_model") or {}).get("sun_source")
+    note = f"<p class=muted>Sun times {esc(source)}: Open-Meteo did not answer.</p>" if source and sun else ""
+    return ("<div class=card><h3>Sun</h3><ul>"
+            + (f"<li><b>Sunrise</b> {esc(sun['sunrise'])}</li><li><b>Sunset</b> "
+               f"{esc(sun['sunset'])}</li>" if sun else "<li class=muted>no reading</li>")
+            + "</ul>" + note + "</div>")
+
+
 def numbers_panel(data: dict) -> str:
     day = numbers_date(data)
     ahead = day != data["date"]
@@ -441,11 +476,7 @@ def numbers_panel(data: dict) -> str:
                  + f"</ul><p class=muted>Marine zone {esc(config.MARINE_ZONE)} "
                    f"({esc(config.MARINE_ZONE_NAME)}). Wind row in mph, g = gusts.</p></div>")
 
-    sun = sun_for(data, day)
-    cards.append("<div class=card><h3>Sun</h3><ul>"
-                 + (f"<li><b>Sunrise</b> {esc(sun['sunrise'])}</li><li><b>Sunset</b> "
-                    f"{esc(sun['sunset'])}</li>" if sun else "<li class=muted>no reading</li>")
-                 + "</ul></div>")
+    cards.append(sun_card(data, day))
     return "<section class=numbers>" + "".join(cards) + "</section>"
 
 
@@ -482,11 +513,7 @@ def island_numbers_panel(data: dict) -> str:
     cards.append("<div class=card><h3>The beach</h3><ul>"
                  + ("".join(beach) or "<li class=muted>no reading</li>") + "</ul></div>")
 
-    sun = sun_for(data, day)
-    cards.append("<div class=card><h3>Sun</h3><ul>"
-                 + (f"<li><b>Sunrise</b> {esc(sun['sunrise'])}</li><li><b>Sunset</b> "
-                    f"{esc(sun['sunset'])}</li>" if sun else "<li class=muted>no reading</li>")
-                 + "</ul></div>")
+    cards.append(sun_card(data, day))
 
     cards.append(f"<div class='card wide'><h3>Beach tides, {esc(when)}</h3>"
                  f"{tide_table(data, day, ('ocean',))}<p class=muted>Low tide uncovers the "
@@ -568,7 +595,7 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
     parts = [f"<header class=mast><h1>Topsail Reporter</h1><div class=sub>{sub}"
              f"Topsail Island, NC &middot; {esc(config.weekday_label(date_iso))}, "
              f"{date_iso[:4]} &middot; {esc(KIND_LABEL.get(kind, kind))}</div></header>"]
-    for a in data.get("alerts") or []:
+    for a in alerts_for(data, edition):
         parts.append(f"<div class=alert>{esc(a['event'])}: {esc(a.get('headline') or '')}</div>")
     parts.append(f"<h2 class=headline>{inline_md(headline)}</h2>")
     if lead:

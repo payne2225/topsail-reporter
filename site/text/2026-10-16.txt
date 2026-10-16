@@ -2,7 +2,7 @@ Topsail Reporter, Fri Oct 16
 
 Fish the sound today: the Hampstead tide floods until 1:05 PM and drops until 7:29 PM, and red drum are the fish, a live finger mullet on a Carolina rig at the creek mouths and grass lines. Stump Sound shellfish waters reopened at sunrise, so both sounds are open for oysters. Surf is 1 to 2 feet with low rip risk, but a gale warning starts Saturday afternoon, so today is the day. Southwest wind gusting to 25 gives the pinfish their only excuse.
 
-⚠️ Gale Warning
+⚠️ Gale Warning until Mon 6:00a
 🌊 Sound tides
 High 12:32a · Low 6:30a
 High 1:05p · Low 7:29p
@@ -11,6 +11,7 @@ High 1:05p · Low 7:29p
 🏖️ Surf 1-2 ft, rip risk low
 🌡️ Water 77°
 ⛵ SW winds 10 to 15 kt with gusts up to 20 kt. Seas 2 to 3 ft.
+🌅 Sun up 7:17a, down 6:35p
 🌒 Waxing crescent moon
 
 Full report: https://payne2225.github.io/topsail-reporter/2026-10-16/

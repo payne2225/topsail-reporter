@@ -12,7 +12,8 @@ Sources, all free and keyless:
     beach and the marine zone.
   - NDBC 41110, the Masonboro Inlet buoy: measured waves and water temp.
   - Open-Meteo: sunrise/sunset and hourly wind, and its marine model's wave
-    outlook (modelled, and labelled that way on the page).
+    outlook (modelled, and labelled that way on the page). When it refuses,
+    sunrise and sunset are computed from NOAA's solar equations instead.
 
 Every source is guarded on its own: one dead feed nulls that one reading and
 records why in `errors`. Nothing here ever substitutes a plausible number
@@ -28,6 +29,8 @@ import math
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -55,6 +58,28 @@ def _get(url: str, params: dict | None = None, accept: str = "application/json")
         return resp.read().decode("utf-8", "replace")
 
 
+# A busy feed says so with 429 or a 5xx. The cloud sandbox shares its
+# address with other users, and on 2026-10-16 Open-Meteo answered the
+# rehearsal with 429 for both of its calls. Two waits, then give up: the
+# numbers edition has to stay fast.
+RETRY_CODES = (429, 502, 503, 504)
+RETRY_WAITS = (15, 45)
+RETRY_AFTER_MAX = 60
+
+
+def _get_patiently(url: str, params: dict | None = None, accept: str = "application/json",
+                   sleep=time.sleep) -> str:
+    for wait in (*RETRY_WAITS, None):
+        try:
+            return _get(url, params, accept)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in RETRY_CODES or wait is None:
+                raise
+            after = (exc.headers or {}).get("Retry-After", "")
+            sleep(min(int(after), RETRY_AFTER_MAX) if after.isdigit() else wait)
+    raise RuntimeError("unreachable")
+
+
 class Fetcher:
     """Network calls, optionally saving each raw payload for test fixtures.
 
@@ -75,7 +100,7 @@ class Fetcher:
         if self.replay_dir:
             with open(os.path.join(self.replay_dir, name), encoding="utf-8") as f:
                 return f.read()
-        body = _get(url, params, accept)
+        body = _get_patiently(url, params, accept)
         if self.raw_dir:
             os.makedirs(self.raw_dir, exist_ok=True)
             with open(os.path.join(self.raw_dir, name), "w", encoding="utf-8",
@@ -391,6 +416,7 @@ def fetch_surf_zone(f: Fetcher) -> dict | None:
 def parse_alerts(payload: dict, where: str) -> list[dict]:
     return [{"event": a["properties"]["event"],
              "headline": a["properties"].get("headline"),
+             "onset": a["properties"].get("onset"),
              "ends": a["properties"].get("ends") or a["properties"].get("expires"),
              "where": where}
             for a in payload.get("features", [])]
@@ -475,6 +501,44 @@ def parse_weather_model(payload: dict, date_iso: str) -> dict:
     return {"sun": sun, "wind": wind}
 
 
+def sun_times(day: dt.date, lat: float = config.LAT, lon: float = config.LON) -> dict:
+    """Sunrise and sunset on the Eastern clock, from NOAA's solar equations.
+
+    The fallback when Open-Meteo is down: the sun needs no network. NOAA
+    puts these equations within a minute or so at this latitude; the tests
+    hold them to the published almanac for the run.
+    """
+    noon_utc = dt.datetime.combine(day, dt.time(17, 0), dt.timezone.utc)
+    offset = config.et_offset_hours(noon_utc)
+    jd = day.toordinal() + 1721424.5 + 0.5 - offset / 24   # local noon
+    t = (jd - 2451545.0) / 36525.0
+    l0 = (280.46646 + t * (36000.76983 + t * 0.0003032)) % 360
+    m = 357.52911 + t * (35999.05029 - 0.0001537 * t)
+    e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t)
+    mr = math.radians(m)
+    c = (math.sin(mr) * (1.914602 - t * (0.004817 + 0.000014 * t))
+         + math.sin(2 * mr) * (0.019993 - 0.000101 * t) + math.sin(3 * mr) * 0.000289)
+    omega = math.radians(125.04 - 1934.136 * t)
+    lam = math.radians(l0 + c - 0.00569 - 0.00478 * math.sin(omega))
+    eps0 = 23 + (26 + (21.448 - t * (46.815 + t * (0.00059 - t * 0.001813))) / 60) / 60
+    eps = math.radians(eps0 + 0.00256 * math.cos(omega))
+    decl = math.asin(math.sin(eps) * math.sin(lam))
+    y = math.tan(eps / 2) ** 2
+    l0r = math.radians(l0)
+    eqtime = 4 * math.degrees(y * math.sin(2 * l0r) - 2 * e * math.sin(mr)
+                              + 4 * e * y * math.sin(mr) * math.cos(2 * l0r)
+                              - 0.5 * y * y * math.sin(4 * l0r) - 1.25 * e * e * math.sin(2 * mr))
+    latr = math.radians(lat)
+    ha = math.degrees(math.acos(math.cos(math.radians(90.833)) / (math.cos(latr) * math.cos(decl))
+                                - math.tan(latr) * math.tan(decl)))
+    noon = 720 - 4 * lon - eqtime + offset * 60            # minutes after local midnight
+
+    def at(minutes: float) -> str:
+        whole = round(minutes)
+        return config.clock(dt.time(whole // 60, whole % 60))
+    return {"date": day.isoformat(), "sunrise": at(noon - 4 * ha), "sunset": at(noon + 4 * ha)}
+
+
 def fetch_weather_model(f: Fetcher, date: dt.date) -> dict | None:
     def one():
         payload = f.json("openmeteo.json", "https://api.open-meteo.com/v1/forecast", {
@@ -486,7 +550,13 @@ def fetch_weather_model(f: Fetcher, date: dt.date) -> dict | None:
             "start_date": date.isoformat(),
             "end_date": (date + dt.timedelta(days=config.TIDE_DAYS - 1)).isoformat()})
         return parse_weather_model(payload, date.isoformat())
-    return f.safe("open-meteo", one)
+    model = f.safe("open-meteo", one)
+    if model is None:
+        # The hourly wind is lost, but the sun is arithmetic: the texts keep
+        # their sunrise and sunset, and the page says where they came from.
+        model = {"sun": [sun_times(date + dt.timedelta(days=i)) for i in range(config.TIDE_DAYS)],
+                 "wind": [], "sun_source": "computed (NOAA solar equations)"}
+    return model
 
 
 def parse_wave_model(payload: dict) -> list[dict]:

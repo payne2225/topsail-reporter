@@ -94,7 +94,12 @@ slack before 6:30 even with the scheduler running late.
 - No text at 6:30: the Shortcut shows "No Topsail Reporter today" and sends
   nothing. Check the routine's session log and the Actions tab.
 - A feed is down: its line drops out of the text and the page says
-  "no reading". Nothing to fix unless it lasts.
+  "no reading". Nothing to fix unless it lasts. Every fetch retries twice
+  on 429 / 5xx (15 s, then 45 s, or the server's Retry-After up to 60 s).
+- Open-Meteo refused (429, as in the 2026-10-16 rehearsal): sunrise and
+  sunset are computed locally from NOAA's solar equations (within a minute
+  of the USNO almanac for the run) and the page credits them; the hourly
+  wind row and the model waves are lost for that morning.
 - The NWS stops issuing the surf zone forecast for the season: the beach
   line falls back to model waves; rip risk drops out.
 - Deploy failed (red Actions run): the fix is a code fix; run the tests

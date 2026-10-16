@@ -203,7 +203,9 @@ a place to eat or get coffee that is open today, and an indoor fallback
 when rain is in the forecast. Each pick says where it is, when it is open
 (as its own page says, with the day you checked), and why it suits today.
 A family with kids may be reading: say when a pick suits kids. Event times
-from Around the Island can be repeated here.
+from Around the Island can be repeated here. A wind is named for where it
+comes FROM: a southwest wind is at your back walking northeast up the beach
+and in your face walking southwest. Get that right or leave it out.
 
 **The Bite** leads with the best bet. Organise it by water: the sound and
 marsh (the default play, north of the inlet up Banks Channel and the creeks),

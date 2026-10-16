@@ -228,7 +228,32 @@
   "age_days": 5.3,
   "tides": "neap tides (smaller swings, gentler current)"
  },
- "weather_model": null,
+ "weather_model": {
+  "sun": [
+   {
+    "date": "2026-10-16",
+    "sunrise": "7:17 AM",
+    "sunset": "6:35 PM"
+   },
+   {
+    "date": "2026-10-17",
+    "sunrise": "7:18 AM",
+    "sunset": "6:34 PM"
+   },
+   {
+    "date": "2026-10-18",
+    "sunrise": "7:19 AM",
+    "sunset": "6:33 PM"
+   },
+   {
+    "date": "2026-10-19",
+    "sunrise": "7:19 AM",
+    "sunset": "6:31 PM"
+   }
+  ],
+  "wind": [],
+  "sun_source": "computed (NOAA solar equations)"
+ },
  "forecast": [
   {
    "name": "This Afternoon",

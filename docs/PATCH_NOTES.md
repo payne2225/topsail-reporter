@@ -18,6 +18,21 @@
   November hours, beach rules, day trips, rainy days, what's-on sources).
 - The fishing page links to the Island Edition and back.
 - SHORTCUT.md: a second automation for the island group.
+- Rehearsal (2026-10-16, session cse_016AFRHJ9FMYnMDgUoNCnj3A): fired
+  2:09:12 PM, both texts LIVE 2:15:50 PM, the report validated on the
+  second try (an event time in The Bite). Open-Meteo answered the cloud
+  sandbox with 429 for both calls, and again on the session's own retry two
+  minutes later, so the texts lost their sun line. Fixes: every fetch retries
+  twice on 429 / 5xx; when Open-Meteo still refuses, sunrise and sunset are
+  computed from NOAA's solar equations (within a minute of the USNO almanac
+  on all ten mornings of the run) and the page credits them. The sample's
+  data was backfilled the same way.
+- Alerts say when: "Gale Warning from Sat 2:00p" before an alert starts,
+  "until Mon 6:00a" once it has (fetch.py now keeps `onset`). The Island
+  Edition leaves marine-zone alerts out; the rehearsal's island text led
+  with a Gale Warning for the water on a sunny beach day.
+- Playbook: a wind is named for where it comes from (the sample said a
+  southwest wind was at your back walking south).
 
 ## 2026-10-14
 

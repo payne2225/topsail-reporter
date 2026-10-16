@@ -225,3 +225,37 @@ def test_render_all_writes_the_island_edition_too(tmp_path, data):
     assert "href='../2026-10-14/island/'" in island_index and "href='../2026-10-15/'" in island_index
     index = (site / "index.html").read_text(encoding="utf-8")
     assert "href='./2026-10-14/'" in index and "href='./2026-10-15/island/'" in index
+
+
+# ---- alerts: when, and which edition --------------------------------------
+
+GALE = {"event": "Gale Warning", "headline": "x", "where": "water",
+        "onset": "2026-10-17T14:00:00-04:00", "ends": "2026-10-19T06:00:00-04:00"}
+RIP = {"event": "Rip Current Statement", "headline": "y", "where": "beach",
+       "onset": "2026-10-14T08:00:00-04:00", "ends": "2026-10-14T20:00:00-04:00"}
+
+
+def test_an_alert_says_when(data):
+    data["alerts"] = [GALE, RIP]
+    lines = render.numbers_block(data)
+    assert lines[:2] == ["\u26a0\ufe0f Gale Warning from Sat 2:00p",
+                         "\u26a0\ufe0f Rip Current Statement until 8:00p"]
+
+
+def test_the_island_edition_leaves_marine_alerts_out(data):
+    data["alerts"] = [GALE, RIP]
+    lines = render.island_numbers_block(data)
+    assert lines[0] == "\u26a0\ufe0f Rip Current Statement until 8:00p"
+    assert not any("Gale" in line for line in lines)
+    html = render.page(data, None, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "Gale Warning" not in html and "Rip Current Statement" in html
+    assert "Gale Warning" in render.page(data, None, ["2026-10-14"], "2026-10-14")
+
+
+def test_computed_sun_times_are_credited_on_the_page(data):
+    data["weather_model"] = {"sun": [{"date": "2026-10-14", "sunrise": "7:15 AM",
+                                      "sunset": "6:38 PM"}], "wind": [],
+                             "sun_source": "computed (NOAA solar equations)"}
+    assert "\U0001f305 Sun up 7:15a, down 6:38p" in render.numbers_block(data)
+    html = render.page(data, None, ["2026-10-14"], "2026-10-14")
+    assert "Sun times computed (NOAA solar equations)" in html
