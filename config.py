@@ -14,6 +14,23 @@ SITE_BASE = "https://payne2225.github.io/topsail-reporter"
 # BEGINS with this, so a GitHub 404 page can never go out as a message.
 TEXT_MARKER = "Topsail Reporter"
 
+# Two editions a morning from one report (Nate, 2026-10-16: "the current
+# one stays as is for us who fish, but we could have a non-fishing one for
+# everyone else"). The Island Edition is the same day off the water: its
+# own text, page and numbers, and its own Shortcut and group.
+ISLAND_NAME = "Island Edition"
+EDITIONS = ("fishing", "island")
+
+
+def text_file(date_iso: str, edition: str = "fishing") -> str:
+    """The text's file name under site/text/: '2026-10-29.txt' or '2026-10-29-island.txt'."""
+    return f"{date_iso}.txt" if edition == "fishing" else f"{date_iso}-{edition}.txt"
+
+
+def page_path(date_iso: str, edition: str = "fishing") -> str:
+    """The page's folder under the site: '2026-10-29/' or '2026-10-29/island/'."""
+    return f"{date_iso}/" if edition == "fishing" else f"{date_iso}/{edition}/"
+
 PLACE = "Topsail Beach, NC"
 LAT, LON = 34.3669, -77.6300
 
@@ -64,7 +81,8 @@ DEPARTURE_DATE = "2026-11-07"
 
 # Rehearsal editions outside the run, built end to end like a real one so
 # the whole chain is proven before the first preview. Kind "sample".
-SAMPLE_DATES = ("2026-10-14", "2026-10-15")
+# 2026-10-16 rehearses the Island Edition.
+SAMPLE_DATES = ("2026-10-14", "2026-10-15", "2026-10-16")
 
 # The text. The writer's part is short on purpose: the numbers block and
 # the link are added by render.py, and a group MMS that scrolls forever is

@@ -32,6 +32,7 @@ GOOD_REPORT = """---
 date: 2026-10-14
 kind: sample
 headline: Flat water, falling tide, and the drum know it
+island_headline: Warm sun, small surf, and a museum worth the walk
 ---
 
 ## Text
@@ -48,6 +49,15 @@ Sunny and warm. Low rip risk.
 
 ## Around the Island
 Trunk or treat at 5:30 PM at the town hall, per the town's events page.
+
+## Island Text
+Sunny and warm with a light breeze, an easy beach day. The museum opens at 11:00 AM, and the 4:51 PM low tide uncovers the most sand for a shell walk.
+
+## Island Lead
+An easy, warm day on the island with a light southwest breeze.
+
+## Things To Do
+- The Missiles and More Museum opens at 11:00 AM, per its site.
 
 ## Sources
 - [NCDMF limits](https://www.deq.nc.gov/about/divisions/marine-fisheries)

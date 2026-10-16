@@ -1,11 +1,19 @@
 # The Topsail Reporter: the morning playbook
 
-You write the Topsail Reporter, a daily fishing-first report on Topsail
-Island, NC. It goes out as a group text at 6:30 AM Eastern from one
-reader's iPhone. The text links to a web page with the full report. The
-readers are a family group, adults and a younger fisherman, some on the
-island and some following from home. They fish the surf, the piers, the
-inlet and especially the sound behind the island. Write for them.
+You write the Topsail Reporter, a daily report on Topsail Island, NC, in
+two editions from one report file:
+
+- **The fishing edition**, fishing first. Its readers are a family group,
+  adults and a younger fisherman, some on the island and some following
+  from home. They fish the surf, the piers, the inlet and especially the
+  sound behind the island.
+- **The Island Edition**, the same day off the water, for the readers who
+  do not fish: adults and possibly kids. Weather, the beach, what is open,
+  what to do today, events, a good place to eat. No fishing talk beyond a
+  passing nod.
+
+Each edition goes out as its own group text from one reader's iPhone, and
+each text links to its own web page. Write each for its readers.
 
 This file is the whole job. Follow it top to bottom. Every command starts
 with `cd /home/user/topsail-reporter &&` because a turn can leave the shell
@@ -18,10 +26,12 @@ anywhere.
    in `reference/` (which carries its own checked date). If you cannot
    source it, leave it out. A short report is fine; a wrong one is not.
 2. **Numbers come from the data.** Tide times, temperatures, surf, wind and
-   sun come from `data/<date>.json`. The text's numbers block is added by
+   sun come from `data/<date>.json`. Each text's numbers block is added by
    `render.py`; do not retype it. Any clock time you write in the Text, the
-   Lead, The Bite or Beach & Weather must be one that the data holds, and
-   `validate.py` checks this.
+   Lead, The Bite or Beach & Weather must be one that the data holds. A time
+   in the Island Text or Island Lead must be a data time or one that Around
+   the Island or Things To Do already gives with its source. `validate.py`
+   checks all of this.
 3. **Say how old a fishing report is.** "Jolly Roger reported drum on
    Monday" beats "drum are biting". Separate *reported this week* from
    *typical for late October*, and say which is which.
@@ -111,16 +121,30 @@ Surf City, North Topsail Beach), local news worth knowing (WECT, WWAY, Port
 City Daily, the Pender-Topsail Post & Voice), road or bridge work. Only
 dated, sourced items.
 
+**Off the water, for the Island Edition.** Start from `reference/island.md`
+(places to eat, attractions and their off-season hours, beach rules, day
+trips, rainy-day options, and which what's-on pages can be read). Then check
+today: the weather decides the day (a rainy morning means indoor picks), and
+hours shrink in November, so check that a place is open TODAY on its own
+page before you send anyone there. If you cannot confirm it is open, say
+"call ahead" or leave it out. Low tide on the beach side (the `ocean`
+station) is the time for shells and shark teeth.
+
 ## 4. Write `reports/<date>.md`
 
 Exactly this shape. Section names must match; Regs Corner and Parting Shot
-are optional, the rest are required.
+are optional, the rest are required. The fishing page shows the Lead, The
+Bite, Beach & Weather, Around the Island, Regs Corner and the Parting Shot;
+the Island Edition's page shows the Island Lead, Things To Do, Beach &
+Weather, Around the Island and the Parting Shot. So write Beach & Weather,
+Around the Island and the Parting Shot for both readers.
 
 ```
 ---
 date: <date>
 kind: <kind from the gate>
 headline: <one line, under 90 characters, the day's fishing call with some life in it>
+island_headline: <one line, under 90 characters, the day on the island, no fishing>
 ---
 
 ## Text
@@ -144,6 +168,15 @@ headline: <one line, under 90 characters, the day's fishing call with some life 
 ## Parting Shot
 <optional: one light closing line or a fun fact about the island or a fish>
 
+## Island Text
+<the Island Edition's text message: 60 to 520 characters, plain sentences>
+
+## Island Lead
+<two to four sentences: the day on the island, for someone who will not fish>
+
+## Things To Do
+<three to six picks for today, each with where, when it is open, and why>
+
 ## Sources
 - [What it is, with its date](https://the-url-you-read)
 ```
@@ -154,6 +187,23 @@ one light touch. The header line, the numbers block (tides, beach, weather,
 water, sun) and the link are added below it automatically, so do not repeat
 tide times or temperatures unless one carries the point. No links, no
 markdown, no em dashes, no emoji beyond one at most.
+
+**The Island Text** lands on the other group's phones. Two to four short
+sentences: the day's weather call, the one thing most worth doing today,
+and room for one light touch. Same rules as the Text: no links, no
+markdown, no em dashes, at most one emoji, and no fishing. Its own header,
+numbers (weather day and night, beach, water, beach low tide, sun) and link
+are added automatically.
+
+**Things To Do** is the Island Edition's heart: three to six picks for this
+day, as a short list. Mix them: something outside when the weather allows
+(a beach walk at low tide, a sunset spot, a pier walk, a bike ride),
+something to see (the museum, the turtle center if it is open to visitors),
+a place to eat or get coffee that is open today, and an indoor fallback
+when rain is in the forecast. Each pick says where it is, when it is open
+(as its own page says, with the day you checked), and why it suits today.
+A family with kids may be reading: say when a pick suits kids. Event times
+from Around the Island can be repeated here.
 
 **The Bite** leads with the best bet. Organise it by water: the sound and
 marsh (the default play, north of the inlet up Banks Channel and the creeks),
@@ -168,12 +218,17 @@ for Saturday and the days after, what has been
 reported lately, what bait and tackle to bring or buy, the licence note
 (`reference/regs.md`), the first island day's tides and forecast, and the
 weekend's events. The numbers block already shows the first island day.
+The Island Edition's preview: the weekend's weather, what to pack for it,
+the weekend's events, and what is open on Saturday evening.
 
 **Arrival day**: the afternoon and evening bite, settling-in information
-(bait shops and their hours, pier hours), and the evening's events.
+(bait shops and their hours, pier hours), and the evening's events. Island
+Edition: groceries and their hours, dinner places open that night, and the
+evening's events.
 
-**Departure day**: a short edition: the morning bite and the weather. Do not
-mention anyone leaving.
+**Departure day**: a short edition: the morning bite and the weather. Island
+Edition: a breakfast spot open that morning and the weather. Do not mention
+anyone leaving.
 
 **Sample** editions are rehearsals: write them exactly like a daily one.
 
@@ -190,9 +245,10 @@ render and read the text that will go out, in full:
 cd /home/user/topsail-reporter && python render.py --print <date>
 ```
 
-Read it as the person receiving it at 6:30. Is the first sentence worth
-waking up to? Is every fact sourced? Is it short enough to read in one
-glance? Fix and re-render if not.
+It prints both texts. Read each as the person receiving it. Is the first
+sentence worth waking up to? Is every fact sourced? Is it short enough to
+read in one glance? Does the Island text stay off the fishing? Fix and
+re-render if not.
 
 ## 6. Publish and confirm it is live
 
@@ -201,13 +257,13 @@ cd /home/user/topsail-reporter && python publish.py --date <date> --what full
 cd /home/user/topsail-reporter && python check_live.py --date <date>
 ```
 
-`PUSHED` then `LIVE` means the phone will send exactly this text. If
+`PUSHED` then `LIVE` means both phones will send exactly these texts. If
 `check_live.py` says `NOT YET`, run it again (each call waits up to nine
 minutes). Two NOT YETs in a row mean the site's deploy failed: say so in
 your final message.
 
 ## 7. Your final message
 
-Short and factual: the gate line, the feeds that failed (if any), the
-headline, the text exactly as rendered, `PUSHED` and `LIVE` results, and
+Short and factual: the gate line, the feeds that failed (if any), both
+headlines, both texts exactly as rendered, `PUSHED` and `LIVE` results, and
 anything you could not source or check.

@@ -4,15 +4,18 @@
     python render.py --print 2026-10-29   # also print that day's text
 
 Outputs, all under site/ (what GitHub Pages serves):
-    site/<date>/index.html   the full report for that morning
-    site/index.html          the newest edition, with the archive
-    site/text/<date>.txt     the text message the iPhone Shortcut sends
+    site/<date>/index.html          the fishing edition's full report
+    site/<date>/island/index.html   the Island Edition (the day off the water)
+    site/index.html                 the newest fishing edition, with the archive
+    site/island/index.html          the newest Island Edition
+    site/text/<date>.txt            the fishing text the iPhone Shortcut sends
+    site/text/<date>-island.txt     the Island Edition's text, its own Shortcut
 
-The text is three parts: a header line render.py writes, the writer's short
-prose from the report's "## Text" section, and a numbers block render.py
-builds from the fetched data. No tide time, temperature or forecast in the
-numbers block is ever typed by hand. With no report yet (the quick edition)
-the text is the header, the numbers and the link.
+Each text is three parts: a header line render.py writes, the writer's short
+prose from the report ("## Text" or "## Island Text"), and a numbers block
+render.py builds from the fetched data. No tide time, temperature or
+forecast in a numbers block is ever typed by hand. With no report yet (the
+quick edition) a text is the header, the numbers and the link.
 """
 
 from __future__ import annotations
@@ -30,11 +33,17 @@ import config
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather", "Around the Island",
-            "Regs Corner", "Parting Shot", "Sources"]
+            "Regs Corner", "Parting Shot", "Island Text", "Island Lead",
+            "Things To Do", "Sources"]
 REQUIRED_SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather",
-                     "Around the Island", "Sources"]
+                     "Around the Island", "Island Text", "Island Lead",
+                     "Things To Do", "Sources"]
 PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Around the Island",
                  "Regs Corner", "Parting Shot"]
+# The Island Edition shares Beach & Weather, Around the Island and the
+# Parting Shot with the fishing page, and has its own lead and picks.
+ISLAND_PAGE_SECTIONS = ["Things To Do", "Beach & Weather", "Around the Island",
+                        "Parting Shot"]
 KIND_LABEL = {"preview": "Preview", "arrival": "Arrival day", "daily": "Daily",
               "departure": "Last morning", "sample": "Sample"}
 
@@ -114,6 +123,13 @@ def day_forecast(data: dict, date_iso: str) -> dict | None:
     return None
 
 
+def night_forecast(data: dict, date_iso: str) -> dict | None:
+    for p in data.get("forecast") or []:
+        if p.get("start") == date_iso and not p.get("is_day"):
+            return p
+    return None
+
+
 def sun_for(data: dict, date_iso: str) -> dict | None:
     for s in ((data.get("weather_model") or {}).get("sun") or []):
         if s["date"] == date_iso:
@@ -160,30 +176,30 @@ def tide_rows(events: list[dict]) -> list[str]:
     return [" · ".join(cells[i:i + 2]) for i in range(0, len(cells), 2)]
 
 
-def numbers_block(data: dict) -> list[str]:
-    """The text's numbers, every one straight from data/<date>.json.
-
-    One short line per thing, an emoji up front, so each reads at a glance
-    on a phone without wrapping.
-    """
-    day = numbers_date(data)
-    ahead = day != data["date"]
-
+def _opening_lines(data: dict, day: str) -> list[str]:
     lines = []
-    if ahead:
+    if day != data["date"]:
         # A preview shows the first island day, and says so once.
         lines.append(f"📅 {config.weekday_label(day)} outlook")
     for a in data.get("alerts") or []:
         lines.append(f"⚠️ {a['event']}")
-    sound = tides_for(data, "sound", day)
-    if sound:
-        lines.append("🌊 Sound tides")
-        lines.extend(tide_rows(sound))
+    return lines
+
+
+def _sky_line(data: dict, day: str) -> list[str]:
     fc = day_forecast(data, day)
-    if fc:
-        lines.append(f"{sky_emoji(fc['short'])} {fc['short']}, high {fc['temp_f']}°")
-        lines.append(f"💨 Wind {fc['wind']}")
-    beach = []
+    return [f"{sky_emoji(fc['short'])} {fc['short']}, high {fc['temp_f']}°"] if fc else []
+
+
+def _wind_line(data: dict, day: str) -> list[str]:
+    fc = day_forecast(data, day)
+    return [f"💨 Wind {fc['wind']}"] if fc else []
+
+
+def _beach_lines(data: dict, day: str) -> list[str]:
+    """Surf and rip risk, then the water temperature."""
+    ahead = day != data["date"]
+    lines, beach = [], []
     sp = surf_period(data, day)
     if sp and sp["fields"].get("surf_height"):
         beach.append(f"Surf {feet(sp['fields']['surf_height'])}")
@@ -200,13 +216,35 @@ def numbers_block(data: dict) -> list[str]:
         lines.append(f"🌡️ Water {buoy['water_temp_f']}°")
     elif sp and sp["fields"].get("water_temp"):
         lines.append(f"🌡️ Water {sp['fields']['water_temp'].lower()}")
+    return lines
+
+
+def _sun_line(data: dict, day: str) -> list[str]:
+    sun = sun_for(data, day)
+    if not sun:
+        return []
+    return [f"🌅 Sun up {config.short_clock(sun['sunrise'])}, down "
+            f"{config.short_clock(sun['sunset'])}"]
+
+
+def numbers_block(data: dict) -> list[str]:
+    """The fishing text's numbers, every one straight from data/<date>.json.
+
+    One short line per thing, an emoji up front, so each reads at a glance
+    on a phone without wrapping.
+    """
+    day = numbers_date(data)
+    ahead = day != data["date"]
+    lines = _opening_lines(data, day)
+    sound = tides_for(data, "sound", day)
+    if sound:
+        lines.append("🌊 Sound tides")
+        lines.extend(tide_rows(sound))
+    lines += _sky_line(data, day) + _wind_line(data, day) + _beach_lines(data, day)
     marine = data.get("marine") or {}
     if not ahead and marine.get("periods"):
         lines.append(f"⛵ {marine['periods'][0]['headline']}")
-    sun = sun_for(data, day)
-    if sun:
-        lines.append(f"🌅 Sun up {config.short_clock(sun['sunrise'])}, down "
-                     f"{config.short_clock(sun['sunset'])}")
+    lines += _sun_line(data, day)
     # The moon in the data is today's, so a preview leaves it out.
     moon = None if ahead else (data.get("moon") or {}).get("phase")
     if moon:
@@ -216,21 +254,57 @@ def numbers_block(data: dict) -> list[str]:
     return lines
 
 
-def edition_url(date_iso: str) -> str:
-    return f"{config.SITE_BASE}/{date_iso}/"
+def island_numbers_block(data: dict) -> list[str]:
+    """The Island Edition's numbers: the day and night ashore, the beach,
+    the beach-side low tides (for walking the flats and hunting shells and
+    shark teeth), and the sun. No sound tides, marine forecast or moon."""
+    day = numbers_date(data)
+    ahead = day != data["date"]
+    lines = _opening_lines(data, day) + _sky_line(data, day)
+    night = night_forecast(data, day)
+    if night:
+        when = f"{dt.date.fromisoformat(day).strftime('%a')} night" if ahead else "Tonight"
+        lines.append(f"🌙 {when} {night['short'].lower()}, low {night['temp_f']}°")
+    lines += _wind_line(data, day) + _beach_lines(data, day)
+    # The ocean station's lows on this date; a spillover tide tagged with
+    # another weekday belongs to that day, not this one.
+    lows = [e for e in tides_for(data, "ocean", day) if e["type"] == "low" and not e.get("day")]
+    if lows:
+        lines.append("🐚 Beach low tide " + ", ".join(config.short_clock(e["time"]) for e in lows))
+    return lines + _sun_line(data, day)
+
+
+def edition_url(date_iso: str, edition: str = "fishing") -> str:
+    return f"{config.SITE_BASE}/{config.page_path(date_iso, edition)}"
+
+
+def _text(head: str, prose: str, numbers: list[str], url: str) -> str:
+    parts = [head]
+    if prose:
+        parts.append(prose)
+    if numbers:
+        parts.append("\n".join(numbers))
+    parts.append(f"Full report: {url}")
+    return "\n\n".join(parts) + "\n"
+
+
+def _prose(report: dict | None, section: str) -> str:
+    return (report or {}).get("sections", {}).get(section, "").strip()
 
 
 def build_text(data: dict, report: dict | None) -> str:
-    head = f"{config.TEXT_MARKER}, {config.weekday_label(data['date'])}"
-    parts = [head]
-    prose = (report or {}).get("sections", {}).get("Text", "").strip() if report else ""
-    if prose:
-        parts.append(prose)
-    numbers = numbers_block(data)
-    if numbers:
-        parts.append("\n".join(numbers))
-    parts.append(f"Full report: {edition_url(data['date'])}")
-    return "\n\n".join(parts) + "\n"
+    """The fishing edition's text."""
+    return _text(f"{config.TEXT_MARKER}, {config.weekday_label(data['date'])}",
+                 _prose(report, "Text"), numbers_block(data), edition_url(data["date"]))
+
+
+def build_island_text(data: dict, report: dict | None) -> str:
+    """The Island Edition's text. It opens with the same marker, so the same
+    Shortcut check guards it."""
+    return _text(f"{config.TEXT_MARKER}, {config.ISLAND_NAME}, "
+                 f"{config.weekday_label(data['date'])}",
+                 _prose(report, "Island Text"), island_numbers_block(data),
+                 edition_url(data["date"], "island"))
 
 
 # ------------------------------------------------------------------ HTML
@@ -281,9 +355,9 @@ def esc(v) -> str:
     return html.escape("" if v is None else str(v), quote=True)
 
 
-def tide_table(data: dict, day: str) -> str:
+def tide_table(data: dict, day: str, keys: tuple[str, ...] = ("sound", "ocean")) -> str:
     rows = []
-    for st in config.TIDE_STATIONS:
+    for st in (s for s in config.TIDE_STATIONS if s["key"] in keys):
         events = tides_for(data, st["key"], day)
         if not events:
             rows.append(f"<tr><th>{esc(st['label'])}</th><td colspan=4 class=muted>no reading</td></tr>")
@@ -375,6 +449,51 @@ def numbers_panel(data: dict) -> str:
     return "<section class=numbers>" + "".join(cards) + "</section>"
 
 
+def island_numbers_panel(data: dict) -> str:
+    """The Island Edition's cards: weather day and night, the beach, the
+    sun, and the beach-side tides."""
+    day = numbers_date(data)
+    ahead = day != data["date"]
+    when = config.weekday_label(day)
+    cards = []
+
+    weather = []
+    for label, p in (("Day", day_forecast(data, day)), ("Night", night_forecast(data, day))):
+        if p:
+            weather.append(f"<li><b>{esc(p['name'] if not ahead else label)}:</b> "
+                           f"{esc(p['detailed'])}</li>")
+    cards.append(f"<div class='card wide'><h3>Weather, {esc(when)}</h3><ul>"
+                 + ("".join(weather) or "<li class=muted>no reading</li>") + "</ul></div>")
+
+    beach = []
+    sp = surf_period(data, day)
+    if sp:
+        f = sp["fields"]
+        for key, label in (("surf_height", "Surf"), ("rip_current_risk", "Rip current risk"),
+                           ("uv_index", "UV")):
+            if f.get(key):
+                beach.append(f"<li><b>{label}:</b> {esc(f[key])}</li>")
+    buoy = data.get("buoy")
+    if buoy and buoy.get("water_temp_f") is not None and not ahead:
+        beach.append(f"<li><b>Ocean {buoy['water_temp_f']}&deg;F</b>, measured "
+                     f"{esc(buoy['observed_et'])} ET</li>")
+    elif sp and sp["fields"].get("water_temp"):
+        beach.append(f"<li><b>Ocean:</b> {esc(sp['fields']['water_temp'].lower())}</li>")
+    cards.append("<div class=card><h3>The beach</h3><ul>"
+                 + ("".join(beach) or "<li class=muted>no reading</li>") + "</ul></div>")
+
+    sun = sun_for(data, day)
+    cards.append("<div class=card><h3>Sun</h3><ul>"
+                 + (f"<li><b>Sunrise</b> {esc(sun['sunrise'])}</li><li><b>Sunset</b> "
+                    f"{esc(sun['sunset'])}</li>" if sun else "<li class=muted>no reading</li>")
+                 + "</ul></div>")
+
+    cards.append(f"<div class='card wide'><h3>Beach tides, {esc(when)}</h3>"
+                 f"{tide_table(data, day, ('ocean',))}<p class=muted>Low tide uncovers the "
+                 "most beach.</p></div>")
+    return "<section class=numbers>" + "".join(cards) + "</section>"
+
+
 def outlook_table(data: dict) -> str:
     rows = []
     for p in (data.get("forecast") or [])[:10]:
@@ -419,39 +538,63 @@ footer a{margin-right:10px;white-space:nowrap}
 """
 
 
-def page(data: dict, report: dict | None, editions: list[str], date_iso: str) -> str:
+def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
+         edition: str = "fishing", root: str | None = None) -> str:
+    """One edition's page. `root` is the relative way back to the site root
+    from where the page is served ('../' for site/<date>/, '../../' for
+    site/<date>/island/, './' for site/index.html); every link is built on it."""
+    island = edition == "island"
+    if root is None:
+        root = "../../" if island else "../"
     kind = data.get("kind") or "daily"
     meta = (report or {}).get("meta", {})
     sec = (report or {}).get("sections", {})
-    headline = meta.get("headline") or "The numbers"
-    title = f"Topsail Reporter, {config.weekday_label(date_iso)}"
-    parts = [f"<header class=mast><h1>Topsail Reporter</h1><div class=sub>"
+    if island:
+        headline = meta.get("island_headline") or "The day on the island"
+        lead = sec.get("Island Lead")
+        panel, sections = island_numbers_panel(data), ISLAND_PAGE_SECTIONS
+        name = f"Topsail Reporter, {config.ISLAND_NAME}"
+        other = (f"<p class=muted><a href='{root}{config.page_path(date_iso)}'>"
+                 "Fishing? Today's fishing edition is here.</a></p>")
+    else:
+        headline = meta.get("headline") or "The numbers"
+        lead = sec.get("Lead")
+        panel, sections = numbers_panel(data), PAGE_SECTIONS
+        name = "Topsail Reporter"
+        other = (f"<p class=muted><a href='{root}{config.page_path(date_iso, 'island')}'>"
+                 f"Not fishing? Today's {config.ISLAND_NAME} is here.</a></p>")
+    title = f"{name}, {config.weekday_label(date_iso)}"
+    sub = f"{config.ISLAND_NAME} &middot; " if island else ""
+    parts = [f"<header class=mast><h1>Topsail Reporter</h1><div class=sub>{sub}"
              f"Topsail Island, NC &middot; {esc(config.weekday_label(date_iso))}, "
              f"{date_iso[:4]} &middot; {esc(KIND_LABEL.get(kind, kind))}</div></header>"]
     for a in data.get("alerts") or []:
         parts.append(f"<div class=alert>{esc(a['event'])}: {esc(a.get('headline') or '')}</div>")
     parts.append(f"<h2 class=headline>{inline_md(headline)}</h2>")
-    if sec.get("Lead"):
-        parts.append(f"<div class=lead>{block_md(sec['Lead'])}</div>")
+    if lead:
+        parts.append(f"<div class=lead>{block_md(lead)}</div>")
     elif not report:
         parts.append("<p class=lead>Numbers only so far. The write-up lands here when it is done.</p>")
-    parts.append(numbers_panel(data))
-    for name in PAGE_SECTIONS:
-        if sec.get(name):
-            parts.append(f"<section><h2>{esc(name)}</h2>{block_md(sec[name])}</section>")
+    parts.append(other)
+    parts.append(panel)
+    for section in sections:
+        if sec.get(section):
+            parts.append(f"<section><h2>{esc(section)}</h2>{block_md(sec[section])}</section>")
     parts.append(outlook_table(data))
     if sec.get("Sources"):
         parts.append(f"<section class=sources><h2>Sources</h2>{block_md(sec['Sources'])}</section>")
     archive = " ".join(
-        f"<a href='../{d}/'>{esc(config.weekday_label(d))}</a>" if d != date_iso
-        else f"<b>{esc(config.weekday_label(d))}</b>" for d in editions)
+        f"<a href='{root}{config.page_path(d, edition)}'>{esc(config.weekday_label(d))}</a>"
+        if d != date_iso else f"<b>{esc(config.weekday_label(d))}</b>" for d in editions)
+    care = ("Hours change in the off-season: call ahead before you drive anywhere."
+            if island else
+            "Size and bag limits change by proclamation: check NC Division of Marine "
+            "Fisheries before you keep a fish.")
     parts.append(
         "<footer><p>Tides: NOAA CO-OPS. Forecasts, surf and alerts: NWS Wilmington. "
         "Buoy: NDBC. Sun and model waves: Open-Meteo. Numbers fetched "
         f"{esc(data.get('generated_et'))}. All times Eastern.</p>"
-        "<p>Size and bag limits change by proclamation: check NC Division of Marine "
-        "Fisheries before you keep a fish. Swim near a lifeguard or not at all when the "
-        "rip risk is up.</p>"
+        f"<p>{care} Swim near a lifeguard or not at all when the rip risk is up.</p>"
         f"<p>Editions: {archive}</p></footer>")
     body = "\n".join(p for p in parts if p)
     return (f"<!doctype html><html lang=en><head><meta charset=utf-8>"
@@ -493,14 +636,20 @@ def render_all(root: str = HERE) -> list[str]:
         data = load_data(d, root)
         report = load_report(d, root)
         _write(os.path.join(site, d, "index.html"), page(data, report, shown, d))
-        _write(os.path.join(site, "text", f"{d}.txt"), build_text(data, report))
+        _write(os.path.join(site, d, "island", "index.html"),
+               page(data, report, shown, d, edition="island"))
+        _write(os.path.join(site, "text", config.text_file(d)), build_text(data, report))
+        _write(os.path.join(site, "text", config.text_file(d, "island")),
+               build_island_text(data, report))
     if dates:
         latest = shown[-1]
-        html_latest = page(load_data(latest, root), load_report(latest, root), shown, latest)
-        # The index sits one level up from the edition folders.
-        _write(os.path.join(site, "index.html"), html_latest.replace("href='../", "href='./"))
+        data, report = load_data(latest, root), load_report(latest, root)
+        _write(os.path.join(site, "index.html"), page(data, report, shown, latest, root="./"))
+        _write(os.path.join(site, "island", "index.html"),
+               page(data, report, shown, latest, edition="island", root="../"))
     else:
         _write(os.path.join(site, "index.html"), EMPTY_INDEX)
+        _write(os.path.join(site, "island", "index.html"), EMPTY_INDEX)
     return dates
 
 
@@ -521,16 +670,18 @@ def main(argv: list[str] | None = None) -> int:
             pass
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--print", dest="show", metavar="DATE",
-                        help="print that edition's text after rendering")
+                        help="print that day's two texts after rendering")
     args = parser.parse_args(argv)
     dates = render_all()
     print(f"OK: rendered {len(dates)} edition(s): {', '.join(dates) or 'none'}")
     if args.show:
-        with open(os.path.join(HERE, "site", "text", f"{args.show}.txt"), encoding="utf-8") as f:
-            text = f.read()
-        print("----- text -----")
-        print(text, end="")
-        print(f"----- {len(text)} characters -----")
+        for edition in config.EDITIONS:
+            name = config.text_file(args.show, edition)
+            with open(os.path.join(HERE, "site", "text", name), encoding="utf-8") as f:
+                text = f.read()
+            print(f"----- {edition} text ({name}) -----")
+            print(text, end="")
+            print(f"----- {len(text)} characters -----")
     return 0
 
 

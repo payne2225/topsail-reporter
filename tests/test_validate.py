@@ -59,3 +59,39 @@ def test_structure_rules(data):
 
 def test_no_report_is_a_problem(data):
     assert validate.check("2026-10-14", data, None) == ["reports/2026-10-14.md does not exist"]
+
+
+# ---- the Island Edition ----------------------------------------------------
+
+def test_the_island_sections_and_headline_are_required(data):
+    out = problems(data, GOOD_REPORT.replace(
+        "island_headline: Warm sun, small surf, and a museum worth the walk\n", ""))
+    assert out == ["front matter has no island_headline"]
+    no_things = GOOD_REPORT.replace("## Things To Do\n", "## Things to see\n")
+    out = problems(data, no_things)
+    assert any("'## Things To Do' is missing" in p for p in out)
+
+
+def test_the_island_text_follows_the_text_rules(data):
+    dash = GOOD_REPORT.replace("an easy beach day.", "an easy \u2014 beach day.")
+    assert any("Island Text has an em dash" in p for p in problems(data, dash))
+    long = GOOD_REPORT.replace("an easy beach day.", "an easy beach day " + "really " * 80 + ".")
+    assert any("Island Text is" in p for p in problems(data, long))
+
+
+def test_an_island_time_may_come_from_things_to_do(data):
+    # 11:00 AM is no tide or sun time; it is fine because Things To Do sources it.
+    assert problems(data, GOOD_REPORT) == []
+    unsourced = GOOD_REPORT.replace("opens at 11:00 AM, per its site.", "opens late morning.")
+    out = problems(data, unsourced)
+    assert len(out) == 1 and "'11:00 AM' in '## Island Text'" in out[0]
+
+
+def test_an_invented_beach_tide_in_the_island_text_is_caught(data):
+    out = problems(data, GOOD_REPORT.replace("the 4:51 PM low tide", "the 4:15 PM low tide"))
+    assert len(out) == 1 and "'4:15 PM' in '## Island Text'" in out[0]
+
+
+def test_a_things_to_do_time_does_not_excuse_the_fishing_text(data):
+    out = problems(data, GOOD_REPORT.replace("around the 11:28 AM high", "around the 11:00 AM high"))
+    assert len(out) == 1 and "'11:00 AM' in '## Text'" in out[0]

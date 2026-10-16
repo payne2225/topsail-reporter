@@ -36,7 +36,24 @@ Put only your own number in Send Message and tap the play button. On a day
 with a sample edition, your phone texts you that sample. When it reads
 right, swap in the group's recipients.
 
+## The Island Edition: a second automation
+
+The non-fishing edition has its own text, so it gets its own automation and
+its own group. Build a second one exactly like the first, with three
+changes:
+
+- Step 1: pick the time you want the island group to get it. The text is
+  ready by 6:30 AM, so any time after that works (8:00 AM lets people sleep).
+- Step 3: the link ends in `-island.txt` instead of `.txt`:
+  `https://payne2225.github.io/topsail-reporter/text/`, then **Formatted
+  Date**, then `-island.txt` (no spaces).
+- Step 7: recipients = the island group.
+
+The If check stays "begins with `Topsail Reporter`": the Island Edition's
+text opens "Topsail Reporter, Island Edition, ...". Test it the same way,
+with only your own number first.
+
 ## When the run ends
 
-Turn the automation off after the last edition. Otherwise it fires every
-morning and shows "No Topsail Reporter today".
+Turn both automations off after the last edition. Otherwise they fire every
+morning and show "No Topsail Reporter today".

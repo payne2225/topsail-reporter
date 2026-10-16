@@ -7,13 +7,16 @@ file: each rule is here because a text that breaks it should not reach a
 phone.
 
 What it holds the writer to:
-  - the front matter (date, kind, a headline that fits),
+  - the front matter (date, kind, a headline and an island_headline that fit),
   - the sections, all of them, in plain prose,
-  - the text's prose: short, plain, no link (render adds it), no em dash,
+  - both texts' prose (Text, Island Text): short, plain, no link (render
+    adds it), no em dash,
   - every clock time in the text, the lead, The Bite and Beach & Weather
     matches a time in data/<date>.json (a tide, the surf forecast's inlet
-    tide, sunrise or sunset). Event times belong in Around the Island,
-    which is exempt,
+    tide, sunrise or sunset). Event times belong in Around the Island and
+    Things To Do, which are exempt. A time in the Island Text or the Island
+    Lead may be a data time or one those two sections already carry (an
+    event or an opening hour, sourced there),
   - at least two real source links,
   - no placeholder left behind.
 """
@@ -30,6 +33,11 @@ import render
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TIME_CHECKED_SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather"]
+# The Island Edition's own words may also repeat a time the sourced
+# sections give (the museum opens at 11:00 AM).
+ISLAND_TIME_SECTIONS = ["Island Text", "Island Lead"]
+EVENT_SECTIONS = ["Around the Island", "Things To Do"]
+TEXT_SECTIONS = ["Text", "Island Text"]
 CLOCK = re.compile(r"\b(\d{1,2}):(\d{2})\s*([AaPp])?\.?\s*(?:[Mm]\.?)?(?![\w:])")
 PLACEHOLDERS = re.compile(r"\b(TODO|TBD|TK|XX+|lorem ipsum)\b|\{\{|\}\}|<insert", re.I)
 
@@ -70,11 +78,13 @@ def check(date_iso: str, data: dict, report: dict | None) -> list[str]:
     kind = config.kind_for(date_iso)
     if meta.get("kind") != kind:
         problems.append(f"front matter kind is {meta.get('kind')!r}; today's kind is {kind!r}")
-    headline = meta.get("headline", "")
-    if not headline:
-        problems.append("front matter has no headline")
-    elif len(headline) > config.HEADLINE_MAX:
-        problems.append(f"headline is {len(headline)} characters (max {config.HEADLINE_MAX})")
+    for key in ("headline", "island_headline"):
+        value = meta.get(key, "")
+        if not value:
+            problems.append(f"front matter has no {key}")
+        elif len(value) > config.HEADLINE_MAX:
+            problems.append(f"{key} is {len(value)} characters (max {config.HEADLINE_MAX})")
+    headline = meta.get("headline", "") + "\n" + meta.get("island_headline", "")
 
     for name in render.REQUIRED_SECTIONS:
         if not sec.get(name, "").strip():
@@ -83,31 +93,40 @@ def check(date_iso: str, data: dict, report: dict | None) -> list[str]:
         if name not in render.SECTIONS:
             problems.append(f"unknown section '## {name}' (allowed: {', '.join(render.SECTIONS)})")
 
-    text = sec.get("Text", "").strip()
-    if text:
+    for name in TEXT_SECTIONS:
+        text = sec.get(name, "").strip()
+        if not text:
+            continue
         n = len(text)
         if n < config.TEXT_PROSE_MIN or n > config.TEXT_PROSE_MAX:
-            problems.append(f"Text is {n} characters; keep it between "
+            problems.append(f"{name} is {n} characters; keep it between "
                             f"{config.TEXT_PROSE_MIN} and {config.TEXT_PROSE_MAX}")
         if re.search(r"https?://|www\.", text):
-            problems.append("Text carries a link; render.py adds the report link itself")
+            problems.append(f"{name} carries a link; render.py adds the report link itself")
         if re.search(r"\*\*|\[|\]|^#|^- ", text, re.M):
-            problems.append("Text has markdown in it; a text message is plain words")
+            problems.append(f"{name} has markdown in it; a text message is plain words")
         if "—" in text:
-            problems.append("Text has an em dash; use a comma or a full stop")
+            problems.append(f"{name} has an em dash; use a comma or a full stop")
         if text.lower().startswith(config.TEXT_MARKER.lower()):
-            problems.append(f"Text starts with '{config.TEXT_MARKER}'; render.py writes that line")
+            problems.append(f"{name} starts with '{config.TEXT_MARKER}'; render.py writes that line")
 
     known = data_times(data)
-    known_bare = {hm for hm, _ in known}
-    for name in TIME_CHECKED_SECTIONS:
+    sourced = set()
+    for name in EVENT_SECTIONS:
         for mm in CLOCK.finditer(sec.get(name, "")):
-            hm, ap = _norm(*mm.groups())
-            ok = (hm, ap) in known if ap else hm in known_bare
-            if not ok:
-                problems.append(f"'{mm.group(0).strip()}' in '## {name}' matches no tide, "
-                                "sun or surf-forecast time in today's data (event times "
-                                "go in Around the Island)")
+            sourced.add(_norm(*mm.groups()))
+    for names, pool, where in (
+            (TIME_CHECKED_SECTIONS, known, "(event times go in Around the Island)"),
+            (ISLAND_TIME_SECTIONS, known | sourced,
+             "or in Around the Island or Things To Do (put the event there first)")):
+        pool_bare = {hm for hm, _ in pool}
+        for name in names:
+            for mm in CLOCK.finditer(sec.get(name, "")):
+                hm, ap = _norm(*mm.groups())
+                ok = (hm, ap) in pool or (hm, None) in pool if ap else hm in pool_bare
+                if not ok:
+                    problems.append(f"'{mm.group(0).strip()}' in '## {name}' matches no tide, "
+                                    f"sun or surf-forecast time in today's data {where}")
 
     links = re.findall(r"\]\((https?://[^)\s]+)\)", sec.get("Sources", ""))
     if len(links) < 2:

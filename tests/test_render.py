@@ -137,3 +137,91 @@ def test_the_sky_emoji_follows_the_worst_weather_named():
 def test_feet_shortens_the_surf_forecast():
     assert render.feet("1 to 2 feet") == "1-2 ft"
     assert render.feet("around 1 foot") == "around 1 ft"
+
+
+# ---- the Island Edition (Nate, 2026-10-16) ---------------------------------
+
+def test_the_island_text_is_header_numbers_and_its_own_link(data):
+    assert render.build_island_text(data, None) == (
+        "Topsail Reporter, Island Edition, Wed Oct 14\n\n"
+        "\u2600\ufe0f Sunny, high 83\u00b0\n"
+        "\U0001f319 Tonight clear, low 66\u00b0\n"
+        "\U0001f4a8 Wind SW 9 mph\n"
+        "\U0001f3d6\ufe0f Surf 1-2 ft, rip risk low\n"
+        "\U0001f321\ufe0f Water 77\u00b0\n"
+        "\U0001f41a Beach low tide 3:45a, 4:51p\n"
+        "\U0001f305 Sun up 7:15a, down 6:37p\n\n"
+        "Full report: https://payne2225.github.io/topsail-reporter/2026-10-14/island/\n")
+
+
+def test_the_island_text_carries_its_own_prose_and_the_marker(data):
+    report = render.parse_report(GOOD_REPORT)
+    text = render.build_island_text(data, report)
+    head, prose, numbers, link = text.strip().split("\n\n")
+    assert head.startswith(config.TEXT_MARKER)
+    assert prose.startswith("Sunny and warm with a light breeze")
+    assert "Sound is the play" not in text
+    assert link.endswith("/2026-10-14/island/")
+
+
+def test_the_island_numbers_leave_the_fishing_out(data):
+    lines = render.island_numbers_block(data)
+    for fishing in ("Sound tides", "\u26f5", "moon", "Low 5:11a"):
+        assert not any(fishing in line for line in lines), fishing
+
+
+def test_the_beach_low_tide_skips_another_days_spillover(data):
+    for day in data["tides"]["ocean"]["days"]:
+        if day["date"] == "2026-10-14":
+            day["events"].insert(0, {"type": "low", "time": "11:59 PM", "height_ft": 0.5,
+                                     "day": "Tue"})
+    assert "\U0001f41a Beach low tide 3:45a, 4:51p" in render.island_numbers_block(data)
+
+
+def test_an_island_preview_names_the_night_it_means(data, monkeypatch):
+    monkeypatch.setattr(config, "ARRIVAL_DATE", "2026-10-16")
+    data["kind"] = "preview"
+    lines = render.island_numbers_block(data)
+    assert lines[0] == "\U0001f4c5 Fri Oct 16 outlook"
+    assert any(line.startswith("\U0001f319 Fri night ") for line in lines)
+    assert not any("Tonight" in line or "77" in line for line in lines)
+
+
+def test_every_island_line_fits_a_phone_screen(data):
+    for line in render.island_numbers_block(data):
+        assert len(line) <= 32, line
+
+
+def test_the_island_page_has_its_own_sections_and_links_back(data):
+    report = render.parse_report(GOOD_REPORT)
+    html = render.page(data, report, ["2026-10-14", "2026-10-15"], "2026-10-14",
+                       edition="island")
+    assert "Warm sun, small surf" in html and "Island Edition" in html
+    assert "<h2>Things To Do</h2>" in html and "<h2>The Bite</h2>" not in html
+    assert "Regs Corner" not in html and "Sound (Hampstead)" not in html
+    assert "href='../../2026-10-14/'" in html                # the fishing edition
+    assert "href='../../2026-10-15/island/'" in html         # the island archive
+    fishing = render.page(data, report, ["2026-10-14"], "2026-10-14")
+    assert "href='../2026-10-14/island/'" in fishing
+    for word in ("Nate", "payne", "Kirsten"):
+        assert word not in html
+
+
+def test_render_all_writes_the_island_edition_too(tmp_path, data):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "reports").mkdir()
+    for date in ("2026-10-14", "2026-10-15"):
+        (tmp_path / "data" / f"{date}.json").write_text(json.dumps(dict(data, date=date)),
+                                                        encoding="utf-8")
+    (tmp_path / "reports" / "2026-10-14.md").write_text(GOOD_REPORT, encoding="utf-8")
+    render.render_all(str(tmp_path))
+    site = tmp_path / "site"
+    assert (site / "2026-10-14" / "island" / "index.html").exists()
+    text = (site / "text" / "2026-10-14-island.txt").read_text(encoding="utf-8")
+    assert text.startswith("Topsail Reporter, Island Edition, Wed Oct 14")
+    assert "Sunny and warm with a light breeze" in text
+    island_index = (site / "island" / "index.html").read_text(encoding="utf-8")
+    assert "Thu Oct 15, 2026" in island_index
+    assert "href='../2026-10-14/island/'" in island_index and "href='../2026-10-15/'" in island_index
+    index = (site / "index.html").read_text(encoding="utf-8")
+    assert "href='./2026-10-14/'" in index and "href='./2026-10-15/island/'" in index

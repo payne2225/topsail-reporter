@@ -1,0 +1,11 @@
+Topsail Reporter, Island Edition, Wed Oct 14
+
+☀️ Sunny, high 83°
+🌙 Tonight clear, low 66°
+💨 Wind SW 9 mph
+🏖️ Surf 1-2 ft, rip risk low
+🌡️ Water 77°
+🐚 Beach low tide 3:45a, 4:51p
+🌅 Sun up 7:15a, down 6:37p
+
+Full report: https://payne2225.github.io/topsail-reporter/2026-10-14/island/

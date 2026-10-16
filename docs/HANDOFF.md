@@ -5,11 +5,22 @@ that changes how the Reporter works.
 
 ## 1. What it is
 
-A fishing-first morning report on Topsail Island, NC. Ten editions:
-previews Thu Oct 29 and Fri Oct 30, arrival day Sat Oct 31, daily Nov 1-6,
-last morning Sat Nov 7 (2026). Clean voice, light humor. Each edition is a
-public web page plus a short text message that an iPhone Shortcut sends to
-a family group at 6:30 AM Eastern from the sender's own number.
+A morning report on Topsail Island, NC. Ten mornings: previews Thu Oct 29
+and Fri Oct 30, arrival day Sat Oct 31, daily Nov 1-6, last morning Sat
+Nov 7 (2026). Clean voice, light humor.
+
+Two editions a morning from one report file (since 2026-10-16, Nate: "the
+current one stays as is for us who fish, but we could have a non-fishing
+one for everyone else"):
+
+| Edition | Page | Text | Numbers |
+|---|---|---|---|
+| Fishing | `<date>/` | `text/<date>.txt` | sound tides, weather, wind, beach, water, marine, sun, moon |
+| Island Edition | `<date>/island/` | `text/<date>-island.txt` | weather day and night, wind, beach, water, beach low tide, sun |
+
+Each text goes out from the sender's own number through its own iPhone
+Shortcut automation and its own group (`docs/SHORTCUT.md`). Both open
+with "Topsail Reporter", so the same begins-with check guards both.
 
 ## 2. Hard rules
 
@@ -39,12 +50,16 @@ which the gate turns away (`OFF`).
 1. `gate.py`: OFF / DONE / BUSY stop the fire; GO carries on.
 2. `fetch.py` -> `render.py` -> `publish.py --what numbers`: a numbers-only
    edition is live a few minutes after the fire starts.
-3. Research, then `reports/<date>.md` per the playbook.
+3. Research, then `reports/<date>.md` per the playbook: the fishing
+   sections, plus `island_headline`, Island Text, Island Lead and Things
+   To Do for the Island Edition (`reference/island.md` is its background).
 4. `validate.py` until OK, `render.py --print`, `publish.py --what full`,
-   `check_live.py` until LIVE.
+   `check_live.py` until LIVE (it waits for both texts).
 5. Pages deploys `site/` after the tests pass (about two minutes).
 6. 6:30 AM: the Shortcut fetches `text/<date>.txt`, checks that it begins
-   with "Topsail Reporter", and sends it (`docs/SHORTCUT.md`).
+   with "Topsail Reporter", and sends it (`docs/SHORTCUT.md`). The Island
+   Edition's Shortcut does the same with `text/<date>-island.txt`, at
+   whatever time its owner set.
 
 The second fire stands down (BUSY) while the first fire's numbers edition
 is under 75 minutes old, and (DONE) once the full report is on origin.

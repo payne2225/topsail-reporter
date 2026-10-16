@@ -1,5 +1,24 @@
 # Patch notes
 
+## 2026-10-16
+
+- The Island Edition: a second, non-fishing edition every morning from the
+  same report (Nate: "the current one stays as is for us who fish, but we
+  could have a non-fishing one for everyone else"). Its own page
+  (`<date>/island/`, newest at `island/`), its own text
+  (`text/<date>-island.txt`, opening "Topsail Reporter, Island Edition") and
+  its own numbers: weather day and night, wind, beach, water, the beach-side
+  low tides, the sun. No sound tides, marine forecast or moon.
+- The report gains `island_headline`, `## Island Text`, `## Island Lead` and
+  `## Things To Do`. The validator holds the Island Text to the same text
+  rules; a time in the Island Text or Lead may be a data time or one that
+  Around the Island or Things To Do already sources.
+- `check_live.py` waits for both texts. `render.py --print` prints both.
+- `reference/island.md`: off the water (eating, attractions and their
+  November hours, beach rules, day trips, rainy days, what's-on sources).
+- The fishing page links to the Island Edition and back.
+- SHORTCUT.md: a second automation for the island group.
+
 ## 2026-10-14
 
 - The text's numbers block reads at a glance: one short line per item with
