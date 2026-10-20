@@ -259,3 +259,57 @@ def test_computed_sun_times_are_credited_on_the_page(data):
     assert "\U0001f305 Sun up 7:15a, down 6:38p" in render.numbers_block(data)
     html = render.page(data, None, ["2026-10-14"], "2026-10-14")
     assert "Sun times computed (NOAA solar equations)" in html
+
+
+# ---- the page: tiles, tide charts, outlook, switch --------------------------
+
+def test_a_spillover_tide_lands_on_its_own_day(data):
+    data["tides"]["sound"]["days"] = [
+        {"date": "2026-10-14", "events": [
+            {"type": "high", "time": "6:03 PM", "height_ft": 3.9},
+            {"type": "low", "time": "12:25 AM", "height_ft": 0.6, "day": "Thu"}]},
+        {"date": "2026-10-15", "events": [
+            {"type": "low", "time": "12:25 AM", "height_ft": 0.6}]}]
+    # Thursday's 12:25 AM is 24 hours plus 25 minutes after Wednesday's midnight,
+    # and the two blocks that both carry it give one tide, not two.
+    assert render.tide_timeline(data, "sound", "2026-10-14") == [
+        (1083, 3.9, "high", "6:03 PM"), (1465, 0.6, "low", "12:25 AM")]
+
+
+def test_the_tide_curve_passes_through_every_tide(data):
+    tl = render.tide_timeline(data, "sound", "2026-10-14")
+    for m, h, *_ in tl:
+        assert abs(render.tide_height(tl, m) - h) < 1e-9
+    (m0, h0, *_), (m1, h1, *_) = tl[:2]
+    assert abs(render.tide_height(tl, (m0 + m1) / 2) - (h0 + h1) / 2) < 1e-9
+    assert render.tide_height(tl, m0 - 1) is None   # nothing drawn before the first tide
+
+
+def test_the_outlook_pairs_each_day_with_its_night(data):
+    overnight = dict(data["forecast"][1], name="Overnight", is_day=False)
+    data["forecast"].insert(0, overnight)
+    days = render.outlook_days(data)
+    assert [(d["day"]["name"], d["night"]["name"]) for d in days[:2]] == [
+        ("This Afternoon", "Tonight"), ("Thursday", "Thursday Night")]
+    assert len(days) <= 7
+
+
+def test_the_page_leads_with_tiles_charts_and_the_edition_switch(data):
+    report = render.parse_report(GOOD_REPORT)
+    html = render.page(data, report, ["2026-10-14"], "2026-10-14")
+    assert "<ul class=tiles>" in html and html.count("<figure class=tidechart") == 2
+    assert "<span aria-current=page>🎣 Fishing</span>" in html
+    assert "<script>" in html                          # the chart readout
+    assert "<h2>Outlook</h2>" in html and "<b class=dn>Today</b>" in html
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    assert island.count("<figure class=tidechart") == 1   # the beach side only
+    assert "<span aria-current=page>🏝️ Island</span>" in island
+    assert ">Low tide</span>" in island and ">Moon</span>" not in island
+
+
+def test_a_page_with_no_tides_draws_no_chart(data):
+    data["tides"] = None
+    html = render.page(data, None, ["2026-10-14"], "2026-10-14")
+    assert "tidechart" not in html.split("<style>")[0] + html.split("</style>")[1]
+    assert "<script>" not in html
+    assert html.count("<p class=muted>no reading</p>") == 2   # each station says so

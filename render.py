@@ -25,6 +25,7 @@ import datetime as dt
 import glob
 import html
 import json
+import math
 import os
 import re
 import sys
@@ -184,12 +185,13 @@ def alerts_for(data: dict, edition: str = "fishing") -> list[dict]:
     return [a for a in alerts if a.get("where") != "water"] if edition == "island" else alerts
 
 
-def alert_when(a: dict, data: dict) -> str:
-    """' from Sat 2:00p' when it has not started, else ' until Mon 6:00a'."""
+def alert_when(a: dict, data: dict, short: bool = True) -> str:
+    """' from Sat 2:00p' when it has not started, else ' until Mon 6:00a'
+    (the page, with room to spare, says '6:00 AM')."""
     def stamp(iso: str) -> str:
         t = dt.datetime.fromisoformat(iso)
         day = "" if t.date().isoformat() == data["date"] else f"{t.strftime('%a')} "
-        return f"{day}{config.short_clock(config.clock(t))}"
+        return f"{day}{config.short_clock(config.clock(t)) if short else config.clock(t)}"
     try:
         made = dt.datetime.fromisoformat(data["generated_utc"].replace("Z", "+00:00"))
         if a.get("onset") and dt.datetime.fromisoformat(a["onset"]) > made:
@@ -380,41 +382,304 @@ def esc(v) -> str:
     return html.escape("" if v is None else str(v), quote=True)
 
 
-def tide_table(data: dict, day: str, keys: tuple[str, ...] = ("sound", "ocean")) -> str:
-    rows = []
-    for st in (s for s in config.TIDE_STATIONS if s["key"] in keys):
-        events = tides_for(data, st["key"], day)
-        if not events:
-            rows.append(f"<tr><th>{esc(st['label'])}</th><td colspan=4 class=muted>no reading</td></tr>")
+def _minutes(clock_text: str) -> int:
+    """'3:47 AM' -> 227, minutes after midnight."""
+    t = dt.datetime.strptime(clock_text.strip(), "%I:%M %p")
+    return t.hour * 60 + t.minute
+
+
+def _range(text: str) -> str:
+    """'N 7 to 10 mph' -> 'N 7–10 mph'."""
+    return re.sub(r"\s+to\s+", "–", text.strip())
+
+
+# ---- the tide chart
+
+def tide_timeline(data: dict, key: str, day: str) -> list[tuple]:
+    """Every tide the data holds for a station, in order, as (minutes after
+    `day`'s midnight, feet, 'high' or 'low', '3:47 AM'). A spillover tide,
+    tagged with another weekday, lands on its own day."""
+    st = (data.get("tides") or {}).get(key)
+    if not st:
+        return []
+    d0 = dt.date.fromisoformat(day)
+    seen = {}
+    for block in st["days"]:
+        base = dt.date.fromisoformat(block["date"])
+        for e in block["events"]:
+            when = base
+            for step in ((-1, 1) if e.get("day") else ()):
+                near = base + dt.timedelta(days=step)
+                if near.strftime("%a") == e["day"]:
+                    when = near
+            m = (when - d0).days * 1440 + _minutes(e["time"])
+            seen[m] = (m, e["height_ft"], e["type"], e["time"])
+    return sorted(seen.values())
+
+
+def tide_height(timeline: list[tuple], m: float) -> float | None:
+    """The height at minute m on the smooth (cosine) curve between the
+    predicted tides either side of it, the usual way to draw a tide."""
+    for (m0, h0, *_), (m1, h1, *_) in zip(timeline, timeline[1:]):
+        if m0 <= m <= m1:
+            return h0 + (h1 - h0) * (1 - math.cos(math.pi * (m - m0) / (m1 - m0))) / 2
+    return None
+
+
+# One chart per station, drawn in a 340-wide box (about its size on a phone,
+# beside its twin on an iPad, and in the desktop sidebar, so its labels stay
+# near 12px everywhere). The day runs from the hour of the first tide to
+# midnight; side-by-side stations share the time and height scales.
+TC_W, TC_H = 340, 142
+TC_X0, TC_X1, TC_YT, TC_YB = 12, 328, 42, 106
+TIDE_CURVE_NOTE = ("Curves are drawn smooth between NOAA's predicted highs and lows; "
+                   "shading marks the hours before sunrise and after sunset.")
+
+
+def tide_domain(data: dict, day: str, keys: tuple[str, ...]) -> tuple | None:
+    """(start minute, low ft, high ft) shared by the charts for `keys`."""
+    starts, heights = [], []
+    for key in keys:
+        tl = tide_timeline(data, key, day)
+        inside = [m for m, *_ in tl if 0 <= m < 1440]
+        if not inside:
             continue
-        cells = "".join(
-            f"<td><span class='tt {e['type']}'>{e['type'][0].upper()}</span> {esc(e['time'])}"
-            f"{' <small>' + esc(e['day']) + '</small>' if e.get('day') else ''}"
-            f"<br><small>{e['height_ft']:g} ft</small></td>" for e in events)
-        rows.append(f"<tr><th>{esc(st['label'])}</th>{cells}</tr>")
-    return "<table class=tides>" + "".join(rows) + "</table>"
+        starts.append(0 if any(m < 0 for m, *_ in tl) else inside[0] // 60 * 60)
+        heights += [h for m, h, *_ in tl if -400 <= m <= 1840]
+    if not starts:
+        return None
+    return min(starts), min(0.0, min(heights)), max(heights)
 
 
-def sun_card(data: dict, day: str) -> str:
+def tide_chart(data: dict, key: str, day: str, dom: tuple, label: str) -> str:
+    start, lo, hi = dom
+    tl = tide_timeline(data, key, day)
+    if not tl:
+        return ""
+    first, last = max(start, tl[0][0]), min(1440, tl[-1][0])
+    if last <= first:
+        return ""
+    span = (hi - lo) or 1.0
+
+    def x(m: float) -> float:
+        return TC_X0 + (m - start) / (1440 - start) * (TC_X1 - TC_X0)
+
+    def y(h: float) -> float:
+        return TC_YB - (h - lo) / span * (TC_YB - TC_YT)
+
+    pts = [(x(m), y(tide_height(tl, m))) for m in [*range(first, last, 5), last]]
+    curve = "M" + " L".join(f"{px:.1f},{py:.1f}" for px, py in pts)
+    area = f"{curve} L{pts[-1][0]:.1f},{TC_YB} L{pts[0][0]:.1f},{TC_YB} Z"
+    out = []
     sun = sun_for(data, day)
-    source = (data.get("weather_model") or {}).get("sun_source")
-    note = f"<p class=muted>Sun times {esc(source)}: Open-Meteo did not answer.</p>" if source and sun else ""
-    return ("<div class=card><h3>Sun</h3><ul>"
-            + (f"<li><b>Sunrise</b> {esc(sun['sunrise'])}</li><li><b>Sunset</b> "
-               f"{esc(sun['sunset'])}</li>" if sun else "<li class=muted>no reading</li>")
-            + "</ul>" + note + "</div>")
+    if sun:
+        rise, sets = _minutes(sun["sunrise"]), _minutes(sun["sunset"])
+        if rise > start:
+            out.append(f'<rect class="night" x="{x(start):.1f}" y="0" '
+                       f'width="{x(rise) - x(start):.1f}" height="{TC_YB}"/>')
+        out.append(f'<rect class="night" x="{x(sets):.1f}" y="0" '
+                   f'width="{x(1440) - x(sets):.1f}" height="{TC_YB}"/>')
+    out.append(f'<path class="area" d="{area}"/>')
+    out.append(f'<line class="base" x1="{TC_X0}" y1="{TC_YB}" x2="{TC_X1}" y2="{TC_YB}"/>')
+    # A low's label sits under its dot; a clock label that would land on
+    # one is left out (its tick stays).
+    low_labels = [x(m) for m, h, kind, _ in tl
+                  if kind == "low" and start <= m < 1440 and y(h) > TC_YB - 30]
+    for m, tick in ((360, "6a"), (720, "noon"), (1080, "6p")):
+        if m - start >= 45:
+            out.append(f'<line class="base" x1="{x(m):.1f}" y1="{TC_YB}" x2="{x(m):.1f}" '
+                       f'y2="{TC_YB + 4}"/>')
+            if all(abs(x(m) - lx) > 34 for lx in low_labels):
+                out.append(f'<text class="ax" x="{x(m):.1f}" y="{TC_YB + 16}" '
+                           f'text-anchor="middle">{tick}</text>')
+    out.append(f'<path class="curve" d="{curve}"/>')
+    for m, h, kind, clk in tl:
+        if not start <= m < 1440:
+            continue
+        px, py = x(m), y(h)
+        if px < 34:
+            anchor, tx = "start", px - 6
+        elif px > TC_W - 34:
+            anchor, tx = "end", px + 6
+        else:
+            anchor, tx = "middle", px
+        t1, t2 = (py - 23, py - 10) if kind == "high" else (py + 19, py + 32)
+        out.append(f'<circle class="mk" cx="{px:.1f}" cy="{py:.1f}" r="4"/>'
+                   f'<text class="tm" x="{tx:.1f}" y="{t1:.1f}" text-anchor="{anchor}">'
+                   f'{esc(config.short_clock(clk))}</text>'
+                   f'<text x="{tx:.1f}" y="{t2:.1f}" text-anchor="{anchor}">{h:g} ft</text>')
+    out.append(f'<line class="xh" x1="0" y1="0" x2="0" y2="{TC_YB}" visibility="hidden"/>'
+               '<circle class="xd" cx="0" cy="0" r="4" visibility="hidden"/>')
+    cfg = {"s": start, "a": first, "b": last, "lo": lo, "hi": hi, "w": TC_W,
+           "x0": TC_X0, "x1": TC_X1, "yt": TC_YT, "yb": TC_YB,
+           "ev": [[m, h] for m, h, *_ in tl]}
+    said = ", ".join(f"{kind} {clk} {h:g} ft" for m, h, kind, clk in tl if 0 <= m < 1440)
+    return (f"<figure class=tidechart tabindex=0 role=group "
+            f"aria-label='{esc(label)} tide curve: {esc(said)}'>"
+            f"<svg viewBox='0 0 {TC_W} {TC_H}' aria-hidden=true "
+            f"data-tide='{esc(json.dumps(cfg))}'>{''.join(out)}</svg>"
+            "<div class=tip aria-live=polite hidden></div></figure>")
 
 
-def numbers_panel(data: dict) -> str:
+def tide_list(data: dict, key: str, day: str) -> str:
+    """The chart's table twin: every tide, its time and height."""
+    return "<ul class=tidelist>" + "".join(
+        f"<li><span class='tt {e['type']}'>{e['type'][0].upper()}</span> <b>{esc(e['time'])}</b>"
+        f"{' <small>' + esc(e['day']) + '</small>' if e.get('day') else ''} "
+        f"<small>{e['height_ft']:g} ft</small></li>" for e in tides_for(data, key, day)) + "</ul>"
+
+
+def tides_card(data: dict, day: str, keys: tuple[str, ...], title: str, note: str) -> str:
+    """`note` is HTML, escaped by the caller."""
+    dom = tide_domain(data, day, keys)
+    stations = []
+    for st in (s for s in config.TIDE_STATIONS if s["key"] in keys):
+        if not tides_for(data, st["key"], day):
+            stations.append(f"<div class=station><h4>{esc(st['label'])}</h4>"
+                            "<p class=muted>no reading</p></div>")
+            continue
+        chart = tide_chart(data, st["key"], day, dom, st["label"]) if dom else ""
+        stations.append(f"<div class=station><h4>{esc(st['label'])}</h4>{chart}"
+                        f"{tide_list(data, st['key'], day)}</div>")
+    return (f"<div class='card wide'><h3>{esc(title)}</h3><div class=stations>"
+            f"{''.join(stations)}</div><p class=muted>{note}</p></div>")
+
+
+# ---- the wind by the hour
+
+COMPASS = {n: i * 22.5 for i, n in enumerate(
+    "N NNE NE ENE E ESE SE SSE S SSW SW WSW W WNW NW NNW".split())}
+# A down arrow, turned by the bearing the wind comes FROM, points the way it blows.
+ARROW = ("<svg viewBox='0 0 16 16' aria-hidden=true style='transform:rotate({deg}deg)'>"
+         "<path d='M8 2v11M3.5 8.5 8 13l4.5-4.5'/></svg>")
+
+
+def wind_row(hourly: list[dict]) -> str:
+    cells = []
+    for h in hourly:
+        deg = COMPASS.get(h["from"])
+        arrow = ARROW.format(deg=f"{deg:g}") if deg is not None else "<span>&middot;</span>"
+        when = config.short_clock(h["time"]).replace(":00", "")
+        cells.append(f"<li><span class=t>{esc(when)}</span>{arrow}<b>{esc(h['speed_mph'])}</b>"
+                     f"<small>g{esc(h['gust_mph'])}</small><span class=d>{esc(h['from'])}</span></li>")
+    return "<ol class=windrow>" + "".join(cells) + "</ol>"
+
+
+# ---- at a glance
+
+def _tile(label: str, value: str, sub: str = "") -> str:
+    """`value` is HTML (it may carry an emoji or &deg;); the rest is escaped here."""
+    return (f"<li class=tile><span class=k>{esc(label)}</span><span class=v>{value}</span>"
+            + (f"<span class=s>{esc(sub)}</span>" if sub else "") + "</li>")
+
+
+def glance(data: dict, edition: str = "fishing") -> str:
+    """The tiles at the top of the numbers: the day in six numbers, every one
+    from data/<date>.json."""
     day = numbers_date(data)
     ahead = day != data["date"]
-    when = config.weekday_label(day)
+    island = edition == "island"
+    tiles = []
+    fc, night = day_forecast(data, day), night_forecast(data, day)
+    if fc:
+        sub = fc["short"] + (f"; tonight {night['short'].lower()}, {night['temp_f']}°"
+                             if night else "")
+        tiles.append(_tile(dt.date.fromisoformat(day).strftime("%A") if ahead else "Today",
+                           f"{sky_emoji(fc['short'])} {esc(fc['temp_f'])}&deg;", sub))
+        wind_sub = ""
+        gust = re.search(r"gusts as high as (\d+) mph", fc.get("detailed") or "")
+        if gust:
+            wind_sub = f"Gusts to {gust.group(1)} mph"
+        marine = data.get("marine") or {}
+        if not island and not ahead and marine.get("periods"):
+            m = re.match(r"([NSEW]{1,3}) winds? (\d+(?: to \d+)?) kt",
+                         marine["periods"][0]["headline"])
+            if m:
+                wind_sub = f"On the water {m.group(1)} {_range(m.group(2))} kt"
+        tiles.append(_tile("Wind", esc(_range(fc["wind"])), wind_sub))
+    sp = surf_period(data, day)
+    f = sp["fields"] if sp else {}
+    if f.get("surf_height"):
+        tiles.append(_tile("Surf", esc(feet(f["surf_height"]).replace("-", "–")),
+                           f"Rip risk {f['rip_current_risk'].lower()}"
+                           if f.get("rip_current_risk") else ""))
+    else:
+        w = wave_for(data, day)
+        if w and w.get("max_ft") is not None:
+            tiles.append(_tile("Waves", f"{w['max_ft']:g} ft", "Model, just offshore"))
+    buoy = data.get("buoy") or {}
+    if not ahead and buoy.get("water_temp_f") is not None:
+        sound = data.get("sound_temp")
+        sub = (f"Ocean; sound side ~{sound['water_temp_f']:.0f}°" if sound and not island
+               else "Ocean, at the buoy")
+        tiles.append(_tile("Water", f"{esc(buoy['water_temp_f'])}&deg;", sub))
+    elif f.get("water_temp"):
+        n = re.search(r"\d+", f["water_temp"])
+        if n:
+            tiles.append(_tile("Water", f"~{n.group()}&deg;", "NWS surf forecast"))
+    sun = sun_for(data, day)
+    if sun:
+        tiles.append(_tile("Sunset", esc(sun["sunset"]), f"Sunrise {sun['sunrise']}") if island
+                     else _tile("Sunrise", esc(sun["sunrise"]), f"Sunset {sun['sunset']}"))
+    if island:
+        lows = [e for e in tides_for(data, "ocean", day) if e["type"] == "low" and not e.get("day")]
+        if lows:
+            tiles.append(_tile("Low tide", esc(lows[0]["time"]),
+                               "And " + ", ".join(e["time"] for e in lows[1:]) if lows[1:]
+                               else "Beach side"))
+    else:
+        moon = data.get("moon") or {}
+        # The moon in the data is the morning's, so a preview leaves it out.
+        if not ahead and moon.get("phase"):
+            emoji = MOON_EMOJI.get(moon["phase"].removesuffix(" moon").lower(), "🌙")
+            lit = f" {moon['illumination_pct']}%" if moon.get("illumination_pct") is not None else ""
+            tiles.append(_tile("Moon", f"{emoji}{esc(lit)}",
+                               ", ".join(p for p in (moon["phase"].capitalize(),
+                                                     (moon.get("tides") or "").split(" (")[0]) if p)))
+    source = (data.get("weather_model") or {}).get("sun_source")
+    note = (f"<p class=muted>Sun times {esc(source)}: Open-Meteo did not answer.</p>"
+            if source and sun else "")
+    return "<ul class=tiles>" + "".join(tiles) + "</ul>" + note
+
+
+# ---- the numbers, in cards
+
+def numbers_panel(data: dict) -> tuple[str, str]:
+    """The fishing edition's cards: (the tides, which ride up with the tiles;
+    the rest, which follow the write-up on a phone)."""
+    day = numbers_date(data)
+    ahead = day != data["date"]
     cards = []
-    sound_note = config.TIDE_STATIONS[0]["note"]
-    cards.append(f"<div class='card wide'><h3>Tides, {esc(when)}</h3>{tide_table(data, day)}"
-                 f"<p class=muted>Sound station leads: {esc(sound_note)}. "
-                 f"Moon: {esc((data.get('moon') or {}).get('phase', 'no reading'))}, "
-                 f"{esc((data.get('moon') or {}).get('tides', ''))}.</p></div>")
+    moon = data.get("moon") or {}
+    moon_note = (f"Moon: {esc(moon['phase'])}, {esc(moon.get('tides', ''))}. "
+                 if moon.get("phase") and not ahead else "")
+    tides = tides_card(data, day, ("sound", "ocean"), "Tides",
+                       f"The sound station leads: {esc(config.TIDE_STATIONS[0]['note'])}. "
+                       f"{moon_note}{TIDE_CURVE_NOTE}")
+
+    wind_bits = []
+    hourly = (data.get("weather_model") or {}).get("wind") or []
+    if hourly and not ahead:
+        wind_bits.append(wind_row(hourly))
+    items = []
+    marine = data.get("marine") or {}
+    if marine.get("periods") and not ahead:
+        p0 = marine["periods"][0]
+        items.append(f"<li><b>{esc(p0['name'])}, on the water:</b> {esc(p0['text'])}</li>")
+        if len(marine["periods"]) > 1:
+            p1 = marine["periods"][1]
+            items.append(f"<li><b>{esc(p1['name'])}:</b> {esc(p1['headline'])}</li>")
+    fc = day_forecast(data, day)
+    if fc:
+        items.append(f"<li><b>Ashore:</b> {esc(fc['detailed'])}</li>")
+    if items:
+        wind_bits.append("<ul>" + "".join(items) + "</ul>")
+    cards.append("<div class='card wide'><h3>Wind &amp; weather</h3>"
+                 + ("".join(wind_bits) or "<p class=muted>no reading</p>")
+                 + f"<p class=muted>Marine zone {esc(config.MARINE_ZONE)} "
+                   f"({esc(config.MARINE_ZONE_NAME)}). "
+                 + ("Hourly row in mph, g = gusts; arrows point the way the wind blows."
+                    if hourly and not ahead else "") + "</p></div>")
 
     water = []
     buoy = data.get("buoy")
@@ -453,39 +718,14 @@ def numbers_panel(data: dict) -> str:
                 "<p class=muted>No NWS surf zone forecast for this day.</p>")
     cards.append("<div class=card><h3>Surf</h3><ul>" + ("".join(surf) or
                  "<li class=muted>no reading</li>") + "</ul>" + surf_src + "</div>")
-
-    wind_bits = []
-    marine = data.get("marine") or {}
-    if marine.get("periods") and not ahead:
-        p0 = marine["periods"][0]
-        wind_bits.append(f"<li><b>{esc(p0['name'])}:</b> {esc(p0['text'])}</li>")
-        if len(marine["periods"]) > 1:
-            p1 = marine["periods"][1]
-            wind_bits.append(f"<li><b>{esc(p1['name'])}:</b> {esc(p1['headline'])}</li>")
-    hourly = (data.get("weather_model") or {}).get("wind") or []
-    if hourly and not ahead:
-        cells = "".join(f"<td>{esc(config.short_clock(h['time']))}<br><b>{esc(h['from'])} "
-                        f"{h['speed_mph']}</b><br><small>g{h['gust_mph']}</small></td>"
-                        for h in hourly)
-        wind_bits.append(f"</ul><table class=wind><tr>{cells}</tr></table><ul>")
-    fc = day_forecast(data, day)
-    if fc:
-        wind_bits.append(f"<li><b>Forecast:</b> {esc(fc['detailed'])}</li>")
-    cards.append("<div class='card wide'><h3>Wind &amp; weather</h3><ul>"
-                 + ("".join(wind_bits) or "<li class=muted>no reading</li>")
-                 + f"</ul><p class=muted>Marine zone {esc(config.MARINE_ZONE)} "
-                   f"({esc(config.MARINE_ZONE_NAME)}). Wind row in mph, g = gusts.</p></div>")
-
-    cards.append(sun_card(data, day))
-    return "<section class=numbers>" + "".join(cards) + "</section>"
+    return tides, "<div class=numbers>" + "".join(cards) + "</div>"
 
 
-def island_numbers_panel(data: dict) -> str:
-    """The Island Edition's cards: weather day and night, the beach, the
-    sun, and the beach-side tides."""
+def island_numbers_panel(data: dict) -> tuple[str, str]:
+    """The Island Edition's cards: (the beach-side tides; weather day and
+    night, and the beach)."""
     day = numbers_date(data)
     ahead = day != data["date"]
-    when = config.weekday_label(day)
     cards = []
 
     weather = []
@@ -493,8 +733,11 @@ def island_numbers_panel(data: dict) -> str:
         if p:
             weather.append(f"<li><b>{esc(p['name'] if not ahead else label)}:</b> "
                            f"{esc(p['detailed'])}</li>")
-    cards.append(f"<div class='card wide'><h3>Weather, {esc(when)}</h3><ul>"
+    cards.append("<div class='card wide'><h3>Weather</h3><ul>"
                  + ("".join(weather) or "<li class=muted>no reading</li>") + "</ul></div>")
+
+    tides = tides_card(data, day, ("ocean",), "Beach tides",
+                       f"Low tide uncovers the most beach. {TIDE_CURVE_NOTE}")
 
     beach = []
     sp = surf_period(data, day)
@@ -510,66 +753,185 @@ def island_numbers_panel(data: dict) -> str:
                      f"{esc(buoy['observed_et'])} ET</li>")
     elif sp and sp["fields"].get("water_temp"):
         beach.append(f"<li><b>Ocean:</b> {esc(sp['fields']['water_temp'].lower())}</li>")
-    cards.append("<div class=card><h3>The beach</h3><ul>"
+    cards.append("<div class='card wide'><h3>The beach</h3><ul>"
                  + ("".join(beach) or "<li class=muted>no reading</li>") + "</ul></div>")
-
-    cards.append(sun_card(data, day))
-
-    cards.append(f"<div class='card wide'><h3>Beach tides, {esc(when)}</h3>"
-                 f"{tide_table(data, day, ('ocean',))}<p class=muted>Low tide uncovers the "
-                 "most beach.</p></div>")
-    return "<section class=numbers>" + "".join(cards) + "</section>"
+    return tides, "<div class=numbers>" + "".join(cards) + "</div>"
 
 
-def outlook_table(data: dict) -> str:
-    rows = []
-    for p in (data.get("forecast") or [])[:10]:
-        pop = f"{p['pop_pct']}%" if p.get("pop_pct") else ""
-        rows.append(f"<tr><th>{esc(p['name'])}</th><td>{esc(p['temp_f'])}&deg;</td>"
-                    f"<td>{esc(p['short'])}</td><td>{esc(p['wind'])}</td><td>{pop}</td></tr>")
-    if not rows:
+# ---- the week
+
+def outlook_days(data: dict) -> list[dict]:
+    """The NWS periods paired into days: each daytime period and the night
+    after it. A lone night at the head of the list (an 'Overnight') is left out."""
+    days = []
+    for p in data.get("forecast") or []:
+        if p.get("is_day"):
+            days.append({"date": p["start"], "day": p, "night": None})
+        elif days and days[-1]["date"] == p["start"] and days[-1]["night"] is None:
+            days[-1]["night"] = p
+    return days[:7]
+
+
+def outlook(data: dict) -> str:
+    items = []
+    for d in outlook_days(data):
+        p, n = d["day"], d["night"]
+        name = ("Today" if d["date"] == data["date"]
+                else dt.date.fromisoformat(d["date"]).strftime("%a"))
+        low = f" <small>{esc(n['temp_f'])}&deg;</small>" if n else ""
+        rain = max(p.get("pop_pct") or 0, (n or {}).get("pop_pct") or 0)
+        items.append(f"<li><b class=dn>{name}</b><span class=sk aria-hidden=true>"
+                     f"{sky_emoji(p['short'])}</span><span class=hl>{esc(p['temp_f'])}&deg;{low}</span>"
+                     f"<span class=sh>{esc(p['short'])}"
+                     f"{f' <span class=rain>Rain {rain}%</span>' if rain >= 10 else ''}</span>"
+                     f"<span class=wd>{esc(_range(p['wind']))}</span></li>")
+    if not items:
         return ""
-    return ("<section><h2>Outlook</h2><table class=outlook>" + "".join(rows)
-            + "</table><p class=muted>NWS Wilmington point forecast for Topsail Beach.</p></section>")
+    return ("<section class=out><h2>Outlook</h2><ol class=outlook>" + "".join(items)
+            + "</ol><p class=muted>NWS Wilmington point forecast for Topsail Beach: "
+              "the day's high, then the night's low.</p></section>")
 
 
 CSS = """
-:root{--bg:#f6f3ec;--ink:#1d2a33;--muted:#5d6b75;--card:#fffdf8;--line:#e2dccf;--sea:#0d5c75;--accent:#c9572b;--hi:#0d5c75;--lo:#8a6d3b}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1a20;--ink:#e8eef1;--muted:#97a6ae;--card:#16242c;--line:#24363f;--sea:#6cc3dc;--accent:#f08a5d;--hi:#6cc3dc;--lo:#d6b47a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,'Times New Roman',serif}
-main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
-header.mast{border-bottom:3px double var(--ink);padding-bottom:10px;margin-bottom:18px;text-align:center}
-.mast h1{font:700 2.1rem/1.1 Georgia,serif;letter-spacing:.02em;margin:0}
-.mast .sub{font:600 .78rem/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:6px}
-h2.headline{font-size:1.55rem;line-height:1.25;margin:.2em 0 .5em}
-h2{font:700 1.15rem/1.3 system-ui,sans-serif;color:var(--sea);border-top:1px solid var(--line);padding-top:14px;margin-top:28px}
-h3{font:700 .95rem/1.3 system-ui,sans-serif;margin:.2em 0 .5em}
-a{color:var(--sea)}
-.lead{font-size:1.08rem}
-.alert{background:var(--accent);color:#fff;font:600 .95rem/1.4 system-ui,sans-serif;padding:10px 14px;border-radius:8px;margin:12px 0}
-.numbers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:15px/1.45 system-ui,sans-serif;min-width:0}
-.card.wide{grid-column:1/-1}.card ul{margin:0;padding-left:18px}.card li{margin:2px 0}
-table{border-collapse:collapse;width:100%;font:14px/1.35 system-ui,sans-serif}
-.tides th{text-align:left;font-weight:600;padding:6px 6px 6px 0;width:28%;vertical-align:top}
-.tides td{padding:6px 4px;vertical-align:top}
-.tt{display:inline-block;width:1.4em;text-align:center;border-radius:4px;color:#fff;font-weight:700;font-size:.8em}
+:root{color-scheme:light dark;--bg:#f6f3ec;--ink:#1d2a33;--muted:#59666f;--card:#fffdf8;--line:#e2dccf;--chip:#ebe5d8;--sea:#0d5c75;--tide:#0b6e96;--night:rgba(29,42,51,.07);--hi:#0d5c75;--lo:#8a6d3b;--warn-bg:#fbe9df;--warn:#b4461c;--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--serif:Georgia,'Times New Roman',serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a20;--ink:#e8eef1;--muted:#9aa9b1;--card:#16242c;--line:#263a44;--chip:#1d3039;--sea:#6cc3dc;--tide:#2f9ccc;--night:rgba(0,0,0,.32);--hi:#2a85a8;--lo:#9a7a44;--warn-bg:#3a2119;--warn:#f08a5d}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--serif)}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 40px}
+a{color:var(--sea);text-underline-offset:2px}p{margin:0 0 .9em;text-wrap:pretty}
+.mast{text-align:center;padding-bottom:14px;border-bottom:3px double var(--ink)}
+.mast h1{font:700 2.1rem/1.1 var(--serif);margin:0;letter-spacing:.01em}
+.mast .sub{font:600 .72rem/1.6 var(--sans);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-top:6px}
+.mast .sub span{white-space:nowrap}
+.switch{display:flex;gap:4px;max-width:340px;margin:14px auto 0;padding:4px;background:var(--chip);border-radius:999px;font:600 .95rem/1 var(--sans)}
+.switch a,.switch span{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;text-decoration:none;color:var(--muted)}
+.switch a:hover{color:var(--ink)}
+.switch span[aria-current]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.alert{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:10px;padding:10px 14px;margin:16px 0 0;font:.95rem/1.45 var(--sans)}
+.alert .w{color:var(--muted);font-size:.85rem}
+.lead{font-size:1.06rem}
+h2{font:700 .82rem/1.3 var(--sans);text-transform:uppercase;letter-spacing:.12em;color:var(--sea);margin:0 0 12px;padding-top:12px;border-top:2px solid var(--ink)}
+h3{font:700 1.02rem/1.3 var(--sans);margin:1.3em 0 .4em}
+h2.headline{font:700 1.8rem/1.2 var(--serif);margin:20px 0 12px;padding:0;border:0;text-transform:none;letter-spacing:0;color:var(--ink);text-wrap:balance}
+section,.side,.more{margin-top:34px}
+.page{display:flex;flex-direction:column}.col-main,.col-side{display:contents}
+.top{order:1}.side{order:2}.body{order:3}.more{order:4}.out{order:5}.src{order:6}
+.body ul{padding-left:1.25em}.body li{margin:.4em 0}
+.tiles{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-family:var(--sans)}
+.tile .k{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font-size:1.45rem;font-weight:650;line-height:1.25}
+.tile .s{font-size:.82rem;line-height:1.35;color:var(--muted)}
+.tiles .tile:last-child:nth-child(odd){grid-column:1/-1}
+.numbers{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font:15px/1.5 var(--sans)}
+.card h3{margin:0 0 8px}.card h4{margin:0;font-size:.85rem;color:var(--muted)}
+.card ul{margin:0;padding-left:18px}.card li{margin:4px 0}
+.muted{color:var(--muted);font-size:.85rem;font-family:var(--sans)}.card p.muted{margin:10px 0 0}
+.stations{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px 24px}
+.tidelist{list-style:none;padding:0!important;margin:2px 0 0!important;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}
+.tidelist li{margin:0;white-space:nowrap}
+.tt{display:inline-block;width:1.4em;text-align:center;border-radius:4px;color:#fff;font-weight:700;font-size:.75em;line-height:1.5}
 .tt.high{background:var(--hi)}.tt.low{background:var(--lo)}
-.wind{margin:8px 0;text-align:center}.wind td{padding:4px 2px;border-left:1px solid var(--line)}.wind td:first-child{border-left:0}
-.outlook th{text-align:left;padding:5px 8px 5px 0;white-space:nowrap}.outlook td{padding:5px 6px;border-top:1px solid var(--line)}.outlook th{border-top:1px solid var(--line)}
-.muted{color:var(--muted);font-size:.85rem}
-.sources{font:14px/1.5 system-ui,sans-serif}
-footer{margin-top:32px;border-top:1px solid var(--line);padding-top:12px;font:13px/1.5 system-ui,sans-serif;color:var(--muted)}
-footer a{margin-right:10px;white-space:nowrap}
-@media (max-width:560px){.numbers{grid-template-columns:1fr}.mast h1{font-size:1.7rem}body{font-size:16px}.wind{font-size:12px}}
+.tidechart{position:relative;margin:4px 0 2px;border-radius:8px}
+.tidechart svg{display:block;width:100%;max-width:520px;height:auto;touch-action:pan-y;overflow:visible}
+.tidechart .night{fill:var(--night)}
+.tidechart .area{fill:var(--tide);fill-opacity:.12}
+.tidechart .curve{fill:none;stroke:var(--tide);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.tidechart .base{stroke:var(--line);stroke-width:1}
+.tidechart .mk,.tidechart .xd{fill:var(--tide);stroke:var(--card);stroke-width:2}
+.tidechart .xh{stroke:var(--muted);stroke-width:1}
+.tidechart text{font:11px var(--sans);fill:var(--muted)}
+.tidechart text.tm{font-size:12px;font-weight:700;fill:var(--ink)}
+.tidechart text.ax{font-size:10.5px}
+.tip{position:absolute;top:-4px;transform:translate(-50%,-100%);background:var(--ink);color:var(--bg);font:600 .8rem/1.3 var(--sans);padding:5px 9px;border-radius:6px;white-space:nowrap;pointer-events:none}
+.windrow{list-style:none;padding:0!important;margin:2px 0 12px!important;display:grid;grid-template-columns:repeat(auto-fit,minmax(44px,1fr));text-align:center;border:1px solid var(--line);border-radius:10px}
+.windrow li{display:flex;flex-direction:column;align-items:center;gap:1px;margin:0;padding:6px 2px;border-left:1px solid var(--line)}
+.windrow li:first-child{border-left:0}
+.windrow .t,.windrow small,.windrow .d{font-size:.72rem;color:var(--muted)}
+.windrow svg{width:18px;height:18px;fill:none;stroke:var(--tide);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.windrow b{font-size:1.05rem;line-height:1.2}
+.outlook{list-style:none;margin:0;padding:0;font-family:var(--sans)}
+.outlook li{display:grid;grid-template-columns:3.2em 1.9em 4.9em minmax(0,1fr);grid-template-areas:"dn sk hl sh" "dn sk hl wd";column-gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.outlook li:first-child{border-top:0}
+.outlook .dn{grid-area:dn}.outlook .sk{grid-area:sk;font-size:1.3rem;line-height:1}
+.outlook .hl{grid-area:hl;font-size:1.1rem;font-weight:650}.outlook .hl small{font-size:.85em;font-weight:500;color:var(--muted)}
+.outlook .sh{grid-area:sh;font-size:.92rem;line-height:1.3}.outlook .wd{grid-area:wd;font-size:.8rem;color:var(--muted)}
+.outlook .rain{color:var(--tide);font-weight:600;white-space:nowrap}
+.out p.muted{margin-top:8px}
+.src details{font:14px/1.55 var(--sans)}
+.src summary{cursor:pointer;list-style:none}.src summary h2{margin:0}.src details[open] summary h2{margin-bottom:12px}.src summary::-webkit-details-marker{display:none}
+.src summary h2::after{content:"  +";letter-spacing:0}.src details[open] summary h2::after{content:"  \\2212"}
+.src ul{padding-left:1.2em}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.85rem/1.55 var(--sans);color:var(--muted)}
+.archive{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.archive .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
+.archive a,.archive span[aria-current]{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--chip);color:var(--ink);text-decoration:none;font-weight:600}
+.archive span[aria-current]{background:var(--sea);color:var(--card)}
+@media (min-width:700px){
+body{font-size:18px}.wrap{padding:28px 28px 56px}
+.mast h1{font-size:2.6rem}h2.headline{font-size:2.2rem}
+.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles .tile:last-child:nth-child(odd){grid-column:auto}
+.numbers{grid-template-columns:repeat(2,minmax(0,1fr))}.card.wide{grid-column:1/-1}
+.outlook{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.outlook li{grid-template-columns:minmax(0,1fr);grid-template-areas:"dn" "sk" "hl" "sh" "wd";align-content:start;row-gap:3px;text-align:center;padding:12px 4px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+}
+@media (min-width:1080px){
+.wrap{max-width:1200px;padding:32px 40px 64px}
+.page{display:grid;grid-template-columns:minmax(0,1fr) 384px;column-gap:48px;align-items:start}
+.col-main,.col-side{display:block}.side{margin-top:20px}.more{margin-top:12px}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles .tile:last-child:nth-child(odd){grid-column:1/-1}
+.numbers{grid-template-columns:minmax(0,1fr)}
+}
+@media print{.switch,.tip{display:none}.src details>*{display:block}}
 """
+
+# The tide chart's hover and tap readout. The page works without it: every
+# tide is printed under its chart.
+TIDE_JS = """
+(function(){
+function clock(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),n=m%60;return (h%12||12)+':'+(n<10?'0':'')+n+(h<12?' AM':' PM');}
+document.querySelectorAll('.tidechart').forEach(function(fig){
+var svg=fig.querySelector('svg'),c=JSON.parse(svg.getAttribute('data-tide')),xh=svg.querySelector('.xh'),xd=svg.querySelector('.xd'),tip=fig.querySelector('.tip'),cur=null;
+function x(m){return c.x0+(m-c.s)/(1440-c.s)*(c.x1-c.x0);}
+function y(h){return c.yb-(h-c.lo)/((c.hi-c.lo)||1)*(c.yb-c.yt);}
+function at(m){var e=c.ev;for(var i=0;i<e.length-1;i++){if(m>=e[i][0]&&m<=e[i+1][0]){var f=(1-Math.cos(Math.PI*(m-e[i][0])/(e[i+1][0]-e[i][0])))/2;return {h:e[i][1]+(e[i+1][1]-e[i][1])*f,up:e[i+1][1]>e[i][1]};}}return null;}
+function hide(){cur=null;xh.setAttribute('visibility','hidden');xd.setAttribute('visibility','hidden');tip.hidden=true;}
+function show(m){m=Math.max(c.a,Math.min(c.b,Math.round(m/5)*5));var p=at(m);if(!p){hide();return;}cur=m;
+var px=x(m),r=svg.getBoundingClientRect();xh.setAttribute('x1',px);xh.setAttribute('x2',px);xh.setAttribute('visibility','visible');
+xd.setAttribute('cx',px);xd.setAttribute('cy',y(p.h));xd.setAttribute('visibility','visible');
+tip.textContent=clock(m)+' · about '+p.h.toFixed(1)+' ft, '+(p.up?'rising':'falling');tip.hidden=false;
+var half=tip.offsetWidth/2;tip.style.left=Math.max(half,Math.min(r.width-half,px/c.w*r.width))+'px';}
+function from(ev){var r=svg.getBoundingClientRect();show(c.s+((ev.clientX-r.left)/r.width*c.w-c.x0)/(c.x1-c.x0)*(1440-c.s));}
+svg.addEventListener('pointermove',from);svg.addEventListener('pointerdown',from);
+svg.addEventListener('pointerleave',function(ev){if(ev.pointerType==='mouse')hide();});
+fig.addEventListener('keydown',function(ev){if(ev.key!=='ArrowLeft'&&ev.key!=='ArrowRight')return;ev.preventDefault();show((cur===null?c.a:cur)+(ev.key==='ArrowRight'?15:-15));});
+fig.addEventListener('blur',hide);
+});
+})();
+"""
+
+
+def edition_switch(date_iso: str, edition: str, root: str) -> str:
+    """Fishing | Island, at the top of every page: the other edition of the same day."""
+    out = []
+    for ed, label in (("fishing", "🎣 Fishing"), ("island", "🏝️ Island")):
+        if ed == edition:
+            out.append(f"<span aria-current=page>{label}</span>")
+        else:
+            out.append(f"<a href='{root}{config.page_path(date_iso, ed)}'>{label}</a>")
+    return "<nav class=switch aria-label='Edition'>" + "".join(out) + "</nav>"
 
 
 def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
          edition: str = "fishing", root: str | None = None) -> str:
     """One edition's page. `root` is the relative way back to the site root
     from where the page is served ('../' for site/<date>/, '../../' for
-    site/<date>/island/, './' for site/index.html); every link is built on it."""
+    site/<date>/island/, './' for site/index.html); every link is built on it.
+
+    One column on a phone and an iPad: the tiles and tides, the write-up,
+    then the rest of the numbers and the week. From 1080px wide the write-up
+    runs on the left and every number rides a sidebar on the right."""
     island = edition == "island"
     if root is None:
         root = "../../" if island else "../"
@@ -581,53 +943,62 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
         lead = sec.get("Island Lead")
         panel, sections = island_numbers_panel(data), ISLAND_PAGE_SECTIONS
         name = f"Topsail Reporter, {config.ISLAND_NAME}"
-        other = (f"<p class=muted><a href='{root}{config.page_path(date_iso)}'>"
-                 "Fishing? Today's fishing edition is here.</a></p>")
     else:
         headline = meta.get("headline") or "The numbers"
         lead = sec.get("Lead")
         panel, sections = numbers_panel(data), PAGE_SECTIONS
         name = "Topsail Reporter"
-        other = (f"<p class=muted><a href='{root}{config.page_path(date_iso, 'island')}'>"
-                 f"Not fishing? Today's {config.ISLAND_NAME} is here.</a></p>")
     title = f"{name}, {config.weekday_label(date_iso)}"
-    sub = f"{config.ISLAND_NAME} &middot; " if island else ""
-    parts = [f"<header class=mast><h1>Topsail Reporter</h1><div class=sub>{sub}"
-             f"Topsail Island, NC &middot; {esc(config.weekday_label(date_iso))}, "
-             f"{date_iso[:4]} &middot; {esc(KIND_LABEL.get(kind, kind))}</div></header>"]
+    sub = ([config.ISLAND_NAME] if island else []) + [
+        "Topsail Island, NC", f"{config.weekday_label(date_iso)}, {date_iso[:4]}",
+        KIND_LABEL.get(kind, kind)]
+    mast = ("<header class=mast><h1>Topsail Reporter</h1><div class=sub>"
+            + " &middot; ".join(f"<span>{esc(s)}</span>" for s in sub) + "</div>"
+            + edition_switch(date_iso, edition, root) + "</header>")
+
+    top = []
     for a in alerts_for(data, edition):
-        parts.append(f"<div class=alert>{esc(a['event'])}: {esc(a.get('headline') or '')}</div>")
-    parts.append(f"<h2 class=headline>{inline_md(headline)}</h2>")
+        where = "<span class=w>On the water</span>" if a.get("where") == "water" else ""
+        top.append(f"<div class=alert role=note><b>⚠️ {esc(a['event'])}</b>"
+                   f"<span>{esc(alert_when(a, data, short=False).strip())}</span>{where}</div>")
+    top.append(f"<h2 class=headline>{inline_md(headline)}</h2>")
     if lead:
-        parts.append(f"<div class=lead>{block_md(lead)}</div>")
+        top.append(f"<div class=lead>{block_md(lead)}</div>")
     elif not report:
-        parts.append("<p class=lead>Numbers only so far. The write-up lands here when it is done.</p>")
-    parts.append(other)
-    parts.append(panel)
-    for section in sections:
-        if sec.get(section):
-            parts.append(f"<section><h2>{esc(section)}</h2>{block_md(sec[section])}</section>")
-    parts.append(outlook_table(data))
-    if sec.get("Sources"):
-        parts.append(f"<section class=sources><h2>Sources</h2>{block_md(sec['Sources'])}</section>")
-    archive = " ".join(
+        top.append("<p class=lead>Numbers only so far. The write-up lands here when it is done.</p>")
+
+    when = config.weekday_label(numbers_date(data))
+    tides, more = panel
+    side = (f"<div class=side><h2>The numbers, {esc(when)}</h2>{glance(data, edition)}"
+            f"{tides}</div><div class=more>{more}</div>")
+    body = "".join(f"<section><h2>{esc(s)}</h2>{block_md(sec[s])}</section>"
+                   for s in sections if sec.get(s))
+    sources = (f"<section class=src><details><summary><h2>Sources</h2></summary>"
+               f"{block_md(sec['Sources'])}</details></section>" if sec.get("Sources") else "")
+    archive = "".join(
         f"<a href='{root}{config.page_path(d, edition)}'>{esc(config.weekday_label(d))}</a>"
-        if d != date_iso else f"<b>{esc(config.weekday_label(d))}</b>" for d in editions)
+        if d != date_iso else f"<span aria-current=page>{esc(config.weekday_label(d))}</span>"
+        for d in editions)
     care = ("Hours change in the off-season: call ahead before you drive anywhere."
             if island else
             "Size and bag limits change by proclamation: check NC Division of Marine "
             "Fisheries before you keep a fish.")
-    parts.append(
+    footer = (
         "<footer><p>Tides: NOAA CO-OPS. Forecasts, surf and alerts: NWS Wilmington. "
         "Buoy: NDBC. Sun and model waves: Open-Meteo. Numbers fetched "
         f"{esc(data.get('generated_et'))}. All times Eastern.</p>"
         f"<p>{care} Swim near a lifeguard or not at all when the rip risk is up.</p>"
-        f"<p>Editions: {archive}</p></footer>")
-    body = "\n".join(p for p in parts if p)
+        f"<nav class=archive aria-label='Editions'><span class=k>Editions</span>{archive}</nav>"
+        "</footer>")
+    script = f"<script>{TIDE_JS}</script>" if "class=tidechart" in side else ""
     return (f"<!doctype html><html lang=en><head><meta charset=utf-8>"
             f"<meta name=viewport content='width=device-width,initial-scale=1'>"
             f"<title>{esc(title)}</title><meta name=description content='{esc(headline)}'>"
-            f"<style>{CSS}</style></head><body><main>{body}</main></body></html>\n")
+            f"<style>{CSS}</style></head><body><main class=wrap>{mast}"
+            f"<div class=page><div class=col-main><div class=top>{''.join(top)}</div>\n"
+            f"<div class=body>{body}</div>\n{outlook(data)}\n{sources}</div>\n"
+            f"<aside class=col-side>{side}</aside></div>\n"
+            f"{footer}</main>{script}</body></html>\n")
 
 
 # ------------------------------------------------------------------ the site
@@ -683,7 +1054,7 @@ def render_all(root: str = HERE) -> list[str]:
 EMPTY_INDEX = (
     "<!doctype html><html lang=en><head><meta charset=utf-8>"
     "<meta name=viewport content='width=device-width,initial-scale=1'>"
-    f"<title>Topsail Reporter</title><style>{CSS}</style></head><body><main>"
+    f"<title>Topsail Reporter</title><style>{CSS}</style></head><body><main class=wrap>"
     "<header class=mast><h1>Topsail Reporter</h1><div class=sub>Topsail Island, NC</div>"
     "</header><p class=lead>No edition yet. The first one lands here at sunrise.</p>"
     "</main></body></html>\n")

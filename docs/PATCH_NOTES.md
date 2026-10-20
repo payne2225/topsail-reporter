@@ -1,5 +1,33 @@
 # Patch notes
 
+## 2026-10-20
+
+- The pages, restyled for a phone, an iPad and a computer (Nate: "can we
+  pretty it up? Style it better for easier reading on a phone, ipad, and
+  computer screen?"). The texts are unchanged.
+  - A Fishing | Island switch under the masthead (44px tap targets) in
+    place of the cross-link line.
+  - Alerts say what and until when ("Small Craft Advisory until Wed
+    6:00 PM, on the water") instead of the NWS's long headline sentence.
+  - The headline is the paper's serif, in ink.
+  - "The numbers": six tiles at a glance (the day, wind, surf and rip risk,
+    water, sunrise or sunset, the moon or the beach low tide), every one
+    from the data.
+  - A tide chart per station: the day's curve drawn smooth between NOAA's
+    predicted highs and lows, every high and low labelled, the dark hours
+    shaded. Each tide is still listed under its chart. Hover, tap or the
+    arrow keys give an estimated height and whether it is rising or falling.
+  - Wind by the hour as a strip with arrows pointing the way the wind blows.
+  - The outlook as one card per day (high, the night's low, sky, wind,
+    rain chance at 10% or more) instead of a wide table.
+  - Sources fold shut. The archive is a row of tap-sized pills.
+  - On a phone or iPad the tiles and tides come first, then the write-up,
+    then the detail cards and the week, so the write-up isn't buried. From
+    1080px wide the write-up runs on the left and the numbers ride a sidebar.
+  - Dark mode kept; the chart line colour passes the dataviz palette checks
+    on both backgrounds. Checked at 320, 390, 820 and 1440px: no sideways
+    scroll.
+
 ## 2026-10-16
 
 - The Island Edition: a second, non-fishing edition every morning from the

@@ -22,6 +22,18 @@ Each text goes out from the sender's own number through its own iPhone
 Shortcut automation and its own group (`docs/SHORTCUT.md`). Both open
 with "Topsail Reporter", so the same begins-with check guards both.
 
+The pages (since 2026-10-20) are built for a phone first. Order on a phone
+or iPad: the Fishing | Island switch, any alert, the headline and lead,
+"The numbers" (six tiles, then a tide chart per station with every tide
+listed under it), the write-up, the detail cards (wind by the hour and the
+marine forecast, water, surf; the island's weather and beach), the week as
+day cards, and Sources folded shut. From 1080px wide the write-up runs on
+the left and all the numbers ride a sidebar. Every page is one
+self-contained file: inline CSS, inline SVG, and a small inline script for
+the chart's hover and tap readout (the page reads fine without it).
+Restyle by editing `CSS` in `render.py`; every number on the page still
+comes from `data/<date>.json`.
+
 ## 2. Hard rules
 
 - The repo and site are PUBLIC: no reader names, no phone numbers, no
