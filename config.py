@@ -81,8 +81,9 @@ DEPARTURE_DATE = "2026-11-07"
 
 # Rehearsal editions outside the run, built end to end like a real one so
 # the whole chain is proven before the first preview. Kind "sample".
-# 2026-10-16 rehearses the Island Edition.
-SAMPLE_DATES = ("2026-10-14", "2026-10-15", "2026-10-16")
+# 2026-10-16 rehearses the Island Edition; 2026-10-20 is the island
+# Shortcut test with a real reader on the group.
+SAMPLE_DATES = ("2026-10-14", "2026-10-15", "2026-10-16", "2026-10-20")
 
 # The text. The writer's part is short on purpose: the numbers block and
 # the link are added by render.py, and a group MMS that scrolls forever is
