@@ -36,6 +36,14 @@ Put only your own number in Send Message and tap the play button. On a day
 with a sample edition, your phone texts you that sample. When it reads
 right, swap in the group's recipients.
 
+To get your own copy once others are on it, TYPE your number into the
+recipients rather than picking your own contact card. Messages treats your
+card as the sender and drops it, so the others get the text and you only
+see it as a sent message (found 2026-10-20).
+
+Every tap of play that passes the check sends a real text to everyone in
+the recipients, so test with yourself alone, or warn whoever is on it.
+
 ## The Island Edition: a second automation
 
 The non-fishing edition has its own text, so it gets its own automation and
