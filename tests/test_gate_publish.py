@@ -18,7 +18,7 @@ def data_json(made: dt.datetime) -> str:
 
 
 def test_off_outside_the_run():
-    assert gate.decide("2026-10-20", NOV2_430_EST, None, None)[0] == gate.OFF
+    assert gate.decide("2026-10-21", NOV2_430_EST, None, None)[0] == gate.OFF
     assert gate.decide("2026-11-08", NOV2_430_EST, None, None)[0] == gate.OFF
 
 
