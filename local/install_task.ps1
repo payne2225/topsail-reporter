@@ -17,7 +17,8 @@ $ErrorActionPreference = "Stop"
 $State = Join-Path $env:LOCALAPPDATA "topsail-reporter"
 $Repo = Join-Path $State "repo"
 $Hidden = Join-Path $env:USERPROFILE "Projects\silent-launch\run-hidden.vbs"
-$Python = (Get-Command python).Source
+# The interpreter itself, not the WindowsApps alias that launches it.
+$Python = (& python -c "import sys; print(sys.executable)").Trim()
 if (-not (Test-Path $Hidden)) { throw "run-hidden.vbs not found at $Hidden" }
 if (-not (Test-Path (Join-Path $Repo ".git"))) {
     git clone -q https://github.com/payne2225/topsail-reporter.git $Repo

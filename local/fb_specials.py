@@ -151,7 +151,7 @@ def alert_text(new: list[dict], names: dict[str, str], checked: str, day: str,
                failed: list[str]) -> str:
     lines = [f"Topsail specials, {checked} ET check:"]
     for p in new:
-        text = p["text"] if len(p["text"]) <= 700 else p["text"][:697].rsplit(" ", 1)[0] + "..."
+        text = p["text"] if len(p["text"]) <= 1800 else p["text"][:1797].rsplit(" ", 1)[0] + "..."
         lines.append(f"- {names.get(p['id'], p['id'])}: {text}")
     if failed:
         lines.append("Could not read: " + ", ".join(names.get(i, i) for i in failed) + ".")
