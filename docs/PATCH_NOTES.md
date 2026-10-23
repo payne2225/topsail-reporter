@@ -32,6 +32,16 @@
   Thu–Sun)"). A place open only for breakfast says "no lunch or dinner"
   instead of looking closed. The in-run note now gives the real check times
   (about 11:15 AM and 4:15 PM, not 10:30 and 3:30).
+- Every place's hours re-checked: own sites re-read (no change), and the
+  hours each restaurant posts on its own Facebook Page read for the ones
+  whose sites block readers. Island Delights posted fall hours today (Fri
+  now 11-3, Sat 11-7); Margaritas' Monday and Tuesday filled (11-10, from
+  a 2022 Visit Pender article; Wanderlog's were garbled); Riverview and
+  Shuckin' Shack confirmed by their pages; conflicts named in the notes
+  (Splash, Coastal Wing, Shaka Taco, Sears Landing, Fancy Sushi's
+  Tuesday). Ocean's Edge has no hours anyone stands behind: listings
+  disagree and two say temporarily closed, so it stays under Call first.
+  The list's `read` date is now Oct 23.
 - `restaurants.json` hours re-synced to the restaurants' own sites: Beach
   Shop & Grill closed Mon-Wed with lunch Fri-Sat only, Breezeway Sunday
   5-8:30, Daddy Mac's no Sunday dinner this fall.
