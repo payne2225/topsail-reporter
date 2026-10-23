@@ -7,6 +7,8 @@ Do-not-send list for Oct 29 - Nov 7 (all HIGH, details below): NC Aquarium at Fo
 
 ## 1. Eating and groceries
 
+Lunch and dinner: the Island Edition's page builds its Lunch & Dinner list from `reference/restaurants.json` (33 places, read 2026-10-21). Where its hours differ from this section's, that file is the newer read. This section stays the source for breakfast, coffee, sweets and groceries.
+
 General: no 2026 fall-closure announcements were found for island restaurants. Visit Pender's Topsail Beach dining page says "Because of seasonal hours, please call or check individual websites before visiting." https://visitpender.com/where-to-eat/location/topsail-beach (read 2026-10-16). Hours below are as each page published them on 2026-10-16; none of them carries a "November 2026" label unless stated. Many island spots post day-to-day changes only on Facebook (not fetchable).
 
 ### Coffee and breakfast

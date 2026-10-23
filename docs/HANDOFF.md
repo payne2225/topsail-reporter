@@ -34,6 +34,21 @@ the chart's hover and tap readout (the page reads fine without it).
 Restyle by editing `CSS` in `render.py`; every number on the page still
 comes from `data/<date>.json`.
 
+The fishing page is fishing and the outdoors only (since 2026-10-21):
+Around the Island moved to the Island Edition. The Island Edition also
+carries a Lunch & Dinner section that the writer never writes: `render.py`
+builds it from `reference/restaurants.json` (33 places: hours per weekday,
+status open/call/closed, Google and Tripadvisor ratings, a review summary,
+weekly specials from a place's own site, and a `pick` flag for the
+group's favorites) and from `specials/<date>.json` when one exists (the
+day's Facebook specials, written through the day by a local job on the
+home PC; the page names when it last checked). A place counts for lunch
+when it is open across 12:30-1:30 and for dinner when it is open at 6:30
+and stays open to 7; a `meals` list overrides that. The page opens on
+Dinner after 3 PM. Places with unknown hours or a `call` status are listed
+under "Call first" with their number; picks sort first, then by Google
+rating. Refresh hours and ratings by editing the JSON and its `read` date.
+
 ## 2. Hard rules
 
 - The repo and site are PUBLIC: no reader names, no phone numbers, no

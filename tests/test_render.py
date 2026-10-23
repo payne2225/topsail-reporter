@@ -76,8 +76,12 @@ def test_the_page_escapes_the_report_and_keeps_its_links(data):
     assert "<strong>warm</strong>" in html
     assert '<a href="https://topsailbeachnc.gov/">Town of Topsail Beach</a>' in html
     assert "Flat water, falling tide" in html
-    for name in ("The Bite", "Beach &amp; Weather", "Around the Island", "Sources"):
+    for name in ("The Bite", "Beach &amp; Weather", "Sources"):
         assert f"<h2>{name}</h2>" in html
+    # Fishing and the outdoors only: the island news lives on the Island Edition.
+    assert "<h2>Around the Island</h2>" not in html and "Lunch &amp; Dinner" not in html
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "<h2>Around the Island</h2>" in island and "<h2>Lunch &amp; Dinner</h2>" in island
 
 
 def test_render_all_writes_each_edition_the_index_and_the_texts(tmp_path, data):
@@ -313,3 +317,77 @@ def test_a_page_with_no_tides_draws_no_chart(data):
     assert "tidechart" not in html.split("<style>")[0] + html.split("</style>")[1]
     assert "<script>" not in html
     assert html.count("<p class=muted>no reading</p>") == 2   # each station says so
+
+
+# ---- lunch and dinner ---------------------------------------------------------
+
+def _places(*places):
+    return {"read": "2026-10-21", "places": list(places)}
+
+
+def _place(pid, name, hours, **extra):
+    return dict({"id": pid, "name": name, "town": "Surf City", "address": "1 Main St",
+                 "phone": "910-555-0100", "website": None, "facebook": None,
+                 "style": "Seafood", "status": "open", "pick": False, "hours": hours,
+                 "hours_note": None, "google": [4.5, 1000], "tripadvisor": None,
+                 "reviews": "Fresh fish.", "order": None}, **extra)
+
+
+def test_lunch_and_dinner_come_from_the_hours():
+    p = _place("x", "X", {"Wed": ["11:00-15:00", "17:00-21:00"], "Thu": ["16:00-21:00"],
+                          "Fri": ["07:30-13:45"], "Sat": "?"})
+    assert render.meals_open(p, "Wed") == {"lunch", "dinner"}
+    assert render.meals_open(p, "Thu") == {"dinner"}          # opens at 4: dinner only
+    assert render.meals_open(p, "Fri") == {"lunch"}           # a breakfast-and-lunch deli
+    assert render.meals_open(p, "Sat") is None                # unknown: call first
+    assert render.meals_open(p, "Mon") == set()               # closed
+    assert render.meals_open(dict(p, meals=["dinner"]), "Wed") == {"dinner"}
+    assert render.hours_today(p, "Wed") == "11 AM–3 PM, 5 PM–9 PM"
+
+
+def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data):
+    # 2026-10-14 is a Wednesday.
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}, google=[4.9, 50]),
+        _place("b", "Bravo Fish", {"Wed": ["11:00-21:00"]}, google=[4.1, 900], pick=True),
+        _place("c", "Charlie Pizza", {"Thu": ["11:00-21:00"]}),
+        _place("d", "Delta Diner", {"Wed": ["11:00-15:00"]}, status="call",
+               hours_note="Closes for the winter."),
+        _place("e", "Echo BBQ", {"Wed": ["11:00-20:00"]}, status="closed")))
+    assert eats.index("Bravo Fish") < eats.index("Our picks") + 400 < eats.index("Alpha Grill")
+    assert "<h3>Our picks</h3>" in eats and "<h3>Also worth trying</h3>" in eats
+    assert "<b>Closed today:</b> Charlie Pizza." in eats
+    assert ("<b>Call first</b><ul><li><b>Delta Diner</b> <a href='tel:9105550100'>910-555-0100</a>"
+            "<br>Closes for the winter.</li></ul>") in eats
+    assert "Echo BBQ" not in eats                             # gone for good
+    assert "Google 4.1 <small>(900)</small>" in eats
+
+
+def test_weekly_and_posted_specials_show_and_posts_are_escaped(data):
+    places = _places(_place("s", "SurfDog", {"Wed": ["11:00-21:00"]},
+                            weekly={"Wed": "Tacos with a side"}),
+                     _place("r", "Riverview", {"Wed": ["11:00-20:30"]}))
+    specials = {"date": "2026-10-14", "checked_et": ["10:31 AM"],
+                "posts": [{"id": "r", "posted_et": "10:05 AM", "text": "Fried <b>flounder</b> plate",
+                           "url": "https://www.facebook.com/x"}]}
+    eats = render.eats_section(data, places, specials)
+    assert "<b>SurfDog</b> Tacos with a side <small>every Wednesday" in eats
+    assert "Today: Tacos with a side" in eats                 # on the place's own line too
+    assert "Fried &lt;b&gt;flounder&lt;/b&gt; plate" in eats and "<b>flounder" not in eats
+    assert "checked at 10:31 AM" in eats
+    # Another day's file is never shown as today's.
+    assert "flounder" not in render.eats_section(data, places, dict(specials, date="2026-10-13"))
+
+
+def test_the_real_restaurant_list_loads_and_every_place_is_well_formed():
+    places = render.load_restaurants()["places"]
+    assert len(places) >= 30
+    for p in places:
+        assert p["status"] in ("open", "call", "closed"), p["id"]
+        for day, spans in p["hours"].items():
+            assert day in render.WEEKDAYS, (p["id"], day)
+            assert spans == "?" or all(render._hm(a) < render._hm(b)
+                                       for a, b in (s.split("-") for s in spans)), p["id"]
+        for day in (p.get("weekly") or {}):
+            assert p.get("weekly_source") and day in p["hours"], p["id"]
+    assert len({p["id"] for p in places}) == len(places)

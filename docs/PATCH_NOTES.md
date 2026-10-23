@@ -1,5 +1,27 @@
 # Patch notes
 
+## 2026-10-23
+
+- Lunch & Dinner on the Island Edition (Nate: "Could we build lunch and
+  dinner restaurant options in?"). Built from data, not written:
+  - `reference/restaurants.json`: 33 places on and near the island with
+    hours per weekday, ratings (Google and Tripadvisor via Wanderlog;
+    Topsail Guide's Google figure where Wanderlog has none), what reviewers
+    say, what people order, links, and weekly specials where a place posts
+    them on its own site (SurfDog, Italian Bistro).
+  - A Lunch | Dinner switch (no script needed; the page opens on Dinner
+    after 3 PM), the day's specials on top, every open place below with
+    tap-to-open details, then "Call first" (with numbers) and "Closed
+    today".
+  - The day's Facebook specials come from `specials/<date>.json` when it
+    exists; the job that writes it is being built.
+- The fishing page is fishing and the outdoors only (Nate: "maybe the
+  fishing side of it is just fishing info and outdoor conditions"): Around
+  the Island now shows on the Island Edition only.
+- The playbook: the writer leaves lunch and dinner to the page and never
+  picks one place for a meal (Nate: "we all discuss options for each
+  meal").
+
 ## 2026-10-20
 
 - The pages, restyled for a phone, an iPad and a computer (Nate: "can we

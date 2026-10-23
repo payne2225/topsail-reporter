@@ -9,8 +9,8 @@ two editions from one report file:
   sound behind the island.
 - **The Island Edition**, the same day off the water, for the readers who
   do not fish: adults and possibly kids. Weather, the beach, what is open,
-  what to do today, events, a good place to eat. No fishing talk beyond a
-  passing nod.
+  what to do today, events, and the day's lunch and dinner options. No
+  fishing talk beyond a passing nod.
 
 Each edition goes out as its own group text from one reader's iPhone, and
 each text links to its own web page. Write each for its readers.
@@ -130,14 +130,24 @@ page before you send anyone there. If you cannot confirm it is open, say
 "call ahead" or leave it out. Low tide on the beach side (the `ocean`
 station) is the time for shells and shark teeth.
 
+**Lunch and dinner are built for you.** The Island Edition's page adds a
+Lunch & Dinner section on its own: every place open that day for each meal,
+with hours, ratings and what reviewers say, from `reference/restaurants.json`,
+plus the day's specials (weekly ones from that file, and Facebook posts that
+a local job adds to `specials/<date>.json` through the day). The group
+decides each meal together from that list, so do not write a restaurant list
+or pick one place for lunch or dinner anywhere in the report, and do not edit
+either file. Breakfast and coffee stay yours (Things To Do, departure day).
+
 ## 4. Write `reports/<date>.md`
 
 Exactly this shape. Section names must match; Regs Corner and Parting Shot
-are optional, the rest are required. The fishing page shows the Lead, The
-Bite, Beach & Weather, Around the Island, Regs Corner and the Parting Shot;
-the Island Edition's page shows the Island Lead, Things To Do, Beach &
-Weather, Around the Island and the Parting Shot. So write Beach & Weather,
-Around the Island and the Parting Shot for both readers.
+are optional, the rest are required. The fishing page is fishing and the
+outdoors only: the Lead, The Bite, Beach & Weather, Regs Corner and the
+Parting Shot. The Island Edition's page shows the Island Lead, Things To Do,
+Lunch & Dinner (built from data, see above), Beach & Weather, Around the
+Island and the Parting Shot. So write Beach & Weather and the Parting Shot
+for both readers, and Around the Island for the Island Edition's.
 
 ```
 ---
@@ -190,7 +200,8 @@ markdown, no em dashes, no emoji beyond one at most.
 
 **The Island Text** lands on the other group's phones. Two to four short
 sentences: the day's weather call, the one thing most worth doing today,
-and room for one light touch. Same rules as the Text: no links, no
+and room for one light touch. Leave lunch and dinner out: the group picks
+each meal together from the page. Same rules as the Text: no links, no
 markdown, no em dashes, at most one emoji, and no fishing. Its own header,
 numbers (weather day and night, beach, water, beach low tide, sun) and link
 are added automatically.
@@ -199,7 +210,8 @@ are added automatically.
 day, as a short list. Mix them: something outside when the weather allows
 (a beach walk at low tide, a sunset spot, a pier walk, a bike ride),
 something to see (the museum, the turtle center if it is open to visitors),
-a place to eat or get coffee that is open today, and an indoor fallback
+a breakfast, coffee or ice cream stop that is open today (lunch and dinner
+are the Lunch & Dinner section's job), and an indoor fallback
 when rain is in the forecast. Each pick says where it is, when it is open
 (as its own page says, with the day you checked), and why it suits today.
 A family with kids may be reading: say when a pick suits kids. Event times
@@ -225,8 +237,8 @@ the weekend's events, and what is open on Saturday evening.
 
 **Arrival day**: the afternoon and evening bite, settling-in information
 (bait shops and their hours, pier hours), and the evening's events. Island
-Edition: groceries and their hours, dinner places open that night, and the
-evening's events.
+Edition: groceries and their hours and the evening's events (the page lists
+the dinner places open that night).
 
 **Departure day**: a short edition: the morning bite and the weather. Island
 Edition: a breakfast spot open that morning and the weather. Do not mention

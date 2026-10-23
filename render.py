@@ -39,8 +39,10 @@ SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather", "Around the Island",
 REQUIRED_SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather",
                      "Around the Island", "Island Text", "Island Lead",
                      "Things To Do", "Sources"]
-PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Around the Island",
-                 "Regs Corner", "Parting Shot"]
+# The fishing page is fishing and the outdoors only (Nate, 2026-10-21: "maybe
+# the fishing side of it is just fishing info and outdoor conditions");
+# Around the Island lives on the Island Edition.
+PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Regs Corner", "Parting Shot"]
 # The Island Edition shares Beach & Weather, Around the Island and the
 # Parting Shot with the fishing page, and has its own lead and picks.
 ISLAND_PAGE_SECTIONS = ["Things To Do", "Beach & Weather", "Around the Island",
@@ -868,6 +870,29 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .archive .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
 .archive a,.archive span[aria-current]{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--chip);color:var(--ink);text-decoration:none;font-weight:600}
 .archive span[aria-current]{background:var(--sea);color:var(--card)}
+.eats h3{font:700 1rem/1.3 var(--sans);margin:20px 0 6px}
+.specials{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--tide);border-radius:12px;padding:12px 16px;font:15px/1.5 var(--sans)}
+.specials h3{margin:0 0 4px}.specials p{margin:4px 0 0}
+.specials ul{margin:0;padding-left:18px}.specials li{margin:6px 0}.specials small{color:var(--muted)}
+.meals>input{position:absolute;opacity:0;pointer-events:none}
+.tabs{display:flex;gap:4px;max-width:280px;margin:18px 0 2px;padding:4px;background:var(--chip);border-radius:999px;font:600 .95rem/1 var(--sans)}
+.tabs label{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;cursor:pointer;color:var(--muted)}
+#meal-l:checked~.tabs [for=meal-l],#meal-d:checked~.tabs [for=meal-d]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+#meal-l:focus-visible~.tabs [for=meal-l],#meal-d:focus-visible~.tabs [for=meal-d]{outline:2px solid var(--sea);outline-offset:2px}
+#meal-l:checked~.places li:not(.l),#meal-d:checked~.places li:not(.d){display:none}
+.places{list-style:none;margin:0;padding:0!important;font-family:var(--sans)}
+.places>li{margin:0!important;border-top:1px solid var(--line)}
+.places summary{display:flex;flex-direction:column;gap:1px;padding:11px 0;cursor:pointer;list-style:none}
+.places summary::-webkit-details-marker{display:none}
+.places .pn{font-weight:700;font-size:1.02rem}
+.places .pn::after{content:" +";color:var(--muted);font-weight:400}.places details[open] .pn::after{content:" \\2212"}
+.places .pm,.places .pr{font-size:.85rem;color:var(--muted)}
+.places .sp{align-self:flex-start;margin-top:5px;padding:4px 9px;border-radius:6px;font-size:.88rem;background:color-mix(in srgb,var(--tide) 14%,transparent)}
+.places .pd{padding:0 0 12px;font-size:.92rem;line-height:1.5}.places .pd p{margin:0 0 6px}
+.places li.none{padding:11px 0;color:var(--muted);font-size:.9rem}
+.call{font:.9rem/1.5 var(--sans);color:var(--muted);margin:16px 0 0}.call b{color:var(--ink)}
+.call ul{list-style:none;margin:6px 0 0;padding:0!important}.call li{margin:0 0 8px!important}
+.eats>p.muted:last-child{margin-top:16px;font-size:.85rem}
 @media (min-width:700px){
 body{font-size:18px}.wrap{padding:28px 28px 56px}
 .mast h1{font-size:2.6rem}h2.headline{font-size:2.2rem}
@@ -912,6 +937,227 @@ fig.addEventListener('blur',hide);
 """
 
 
+# ---- lunch and dinner (the Island Edition)
+
+WEEKDAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+# A place counts for lunch when it is open across 12:30-1:30, for dinner
+# when it is open at 6:30 and stays open to at least 7.
+LUNCH, DINNER = (12 * 60 + 30, 13 * 60 + 30), (18 * 60 + 30, 19 * 60)
+
+
+def load_restaurants(root: str = HERE) -> dict:
+    """reference/restaurants.json: every place, its hours, ratings and picks."""
+    path = os.path.join(root, "reference", "restaurants.json")
+    if not os.path.exists(path):
+        return {"places": []}
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_specials(date_iso: str, root: str = HERE) -> dict | None:
+    """specials/<date>.json, written through the day by local/fb_specials.py."""
+    path = os.path.join(root, "specials", f"{date_iso}.json")
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _hm(text: str) -> int:
+    h, m = text.split(":")
+    return int(h) * 60 + int(m)
+
+
+def _spans(place: dict, weekday: str) -> list[tuple[int, int]] | None:
+    """That day's open spans in minutes; None when the hours are unknown ('?')."""
+    hours = (place.get("hours") or {}).get(weekday)
+    if hours == "?":
+        return None
+    return [(_hm(a), _hm(b)) for a, b in (s.split("-") for s in hours or [])]
+
+
+def meals_open(place: dict, weekday: str) -> set[str] | None:
+    spans = _spans(place, weekday)
+    if spans is None:
+        return None
+    meals = set()
+    for a, b in spans:
+        if a <= LUNCH[1] and b >= LUNCH[0]:
+            meals.add("lunch")
+        if a <= DINNER[0] and b >= DINNER[1]:
+            meals.add("dinner")
+    if place.get("meals"):
+        meals &= set(place["meals"])
+    return meals
+
+
+def _clock(mins: int) -> str:
+    """690 -> '11:30 AM', 720 -> 'noon', 1440 -> 'midnight'."""
+    if mins % 1440 == 0:
+        return "midnight"
+    h, m = divmod(mins, 60)
+    if (h, m) == (12, 0):
+        return "noon"
+    return f"{h % 12 or 12}{f':{m:02d}' if m else ''} {'AM' if h < 12 else 'PM'}"
+
+
+def hours_today(place: dict, weekday: str) -> str:
+    return ", ".join(f"{_clock(a)}–{_clock(b)}" for a, b in _spans(place, weekday) or [])
+
+
+def _rating(place: dict) -> str:
+    bits = []
+    for key, label in (("google", "Google"), ("tripadvisor", "Tripadvisor")):
+        if place.get(key):
+            score, count = place[key]
+            bits.append(f"{label} {score:g} <small>({count:,})</small>")
+    return " &middot; ".join(bits)
+
+
+def _place_item(place: dict, weekday: str, meals: set[str], special: str | None) -> str:
+    cls = " ".join(["place"] + [m[0] for m in sorted(meals)] + (["pick"] if place.get("pick") else []))
+    head = (f"<span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
+            f"<span class=pm>{esc(place['town'])} &middot; {esc(hours_today(place, weekday))}</span>")
+    rating = _rating(place)
+    if rating:
+        head += f"<span class=pr>{rating}</span>"
+    if special:
+        head += f"<span class=sp>Today: {esc(special)}</span>"
+    detail = [f"<p>{esc(place['style'])}.</p>"]
+    if place.get("reviews"):
+        detail.append(f"<p><b>Reviewers say:</b> {esc(place['reviews'])}</p>")
+    if place.get("order"):
+        detail.append(f"<p><b>Often ordered:</b> {esc(place['order'])}</p>")
+    links = [esc(place["address"])]
+    if place.get("phone"):
+        links.append(f"<a href='tel:{esc(re.sub(r'[^0-9]', '', place['phone']))}'>{esc(place['phone'])}</a>")
+    if place.get("website"):
+        links.append(f"<a href='{esc(place['website'])}'>Website</a>")
+    if place.get("facebook"):
+        links.append(f"<a href='{esc(place['facebook'])}'>Facebook</a>")
+    detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
+    if place.get("hours_note"):
+        detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
+    return (f"<li class='{cls}'><details><summary>{head}</summary>"
+            f"<div class=pd>{''.join(detail)}</div></details></li>")
+
+
+def _ranked(places: list[dict]) -> list[dict]:
+    """Best rated first (count breaks a tie); unrated places last."""
+    return sorted(places, key=lambda p: (-(p.get("google") or [0, 0])[0],
+                                         -(p.get("google") or [0, 0])[1], p["name"]))
+
+
+def _short_day(iso: str) -> str:
+    d = dt.date.fromisoformat(iso)
+    return f"{d.strftime('%b')} {d.day}"
+
+
+def eats_section(data: dict, restaurants: dict, specials: dict | None = None) -> str:
+    """Lunch & Dinner: the day's specials, then everything open that day
+    (the paper's picks first), with a Lunch | Dinner switch. Hours, ratings
+    and weekly specials come from reference/restaurants.json; the day's
+    posted specials from specials/<date>.json."""
+    day = numbers_date(data)
+    ahead = day != data["date"]
+    weekday = dt.date.fromisoformat(day).strftime("%a")
+    places = [p for p in restaurants.get("places", []) if p.get("status") != "closed"]
+    by_id = {p["id"]: p for p in places}
+
+    open_today, call, closed = [], [], []
+    for p in places:
+        meals = meals_open(p, weekday) if p.get("status") == "open" else None
+        if p.get("status") == "call" or meals is None:
+            call.append(p)
+        elif meals:
+            open_today.append((p, meals))
+        else:
+            closed.append(p)
+
+    # Specials: the weekly ones for this weekday, then what was posted today.
+    weekly = {p["id"]: p["weekly"][weekday] for p, _ in open_today
+              if (p.get("weekly") or {}).get(weekday)}
+    lines = [f"<li><b>{esc(by_id[i]['name'])}</b> {esc(text)} "
+             f"<small>every {dt.date.fromisoformat(day).strftime('%A')}, from its own site</small></li>"
+             for i, text in weekly.items()]
+    posted = (specials or {}).get("posts", []) if specials and not ahead and specials.get("date") == day else []
+    for post in posted:
+        place = by_id.get(post.get("id"))
+        if not place:
+            continue
+        text = " ".join(post.get("text", "").split())
+        if len(text) > 420:
+            text = text[:417].rsplit(" ", 1)[0] + "…"
+        link = f" on <a href='{esc(post['url'])}'>Facebook</a>" if post.get("url") else ""
+        lines.append(f"<li><b>{esc(place['name'])}</b> {esc(text)} "
+                     f"<small>posted {esc(post.get('posted_et', 'today'))}{link}</small></li>")
+    checked = (specials.get("checked_et") if specials and not ahead
+               and specials.get("date") == day else None)
+    in_run = config.FIRST_EDITION <= day <= config.LAST_EDITION and not ahead
+    if checked:
+        status = f"Restaurant Facebook pages checked at {', '.join(checked)}."
+    elif in_run:
+        status = ("Specials the restaurants post on Facebook are added here through the "
+                  "day (checked about 10:30 AM and 3:30 PM).")
+    else:
+        status = ""
+    parts = ["<section class=eats><h2>Lunch &amp; Dinner</h2>"]
+    if lines or status:
+        parts.append("<div class=specials><h3>Specials today</h3>"
+                     + (f"<ul>{''.join(lines)}</ul>" if lines else
+                        "<p>None posted yet.</p>" if checked else "")
+                     + (f"<p class=muted>{esc(status)}</p>" if status else "") + "</div>")
+
+    picks = _ranked([p for p, _ in open_today if p.get("pick")])
+    others = _ranked([p for p, _ in open_today if not p.get("pick")])
+    meals_of = {p["id"]: m for p, m in open_today}
+
+    def group(title: str, group_places: list[dict], empty: str) -> str:
+        items = [_place_item(p, weekday, meals_of[p["id"]], weekly.get(p["id"]))
+                 for p in group_places]
+        for meal in ("lunch", "dinner"):
+            if not any(meal in meals_of[p["id"]] for p in group_places):
+                items.append(f"<li class='none {meal[0]}'>{esc(empty.format(meal=meal))}</li>")
+        return f"<h3>{esc(title)}</h3><ol class=places>{''.join(items)}</ol>"
+
+    label = "Today" if not ahead else dt.date.fromisoformat(day).strftime("%A")
+    parts.append("<div class=meals><input type=radio name=meal id=meal-l checked>"
+                 "<input type=radio name=meal id=meal-d>"
+                 "<div class=tabs role=group aria-label='Meal'><label for=meal-l>Lunch</label>"
+                 "<label for=meal-d>Dinner</label></div>")
+    if picks:
+        parts.append(group("Our picks", picks, "None of our picks is open for {meal} " + label.lower() + "."))
+        parts.append(group("Also worth trying", others, "Nothing else open for {meal}."))
+    else:
+        parts.append(group(f"Open {label.lower() if label == 'Today' else label}",
+                           others, "Nothing listed is open for {meal}."))
+    parts.append("</div>")
+    if call:
+        def tel(p: dict) -> str:
+            return (f" <a href='tel:{esc(re.sub(r'[^0-9]', '', p['phone']))}'>{esc(p['phone'])}</a>"
+                    if p.get("phone") else "")
+        parts.append("<div class=call><b>Call first</b><ul>" + "".join(
+            f"<li><b>{esc(p['name'])}</b>{tel(p)}<br>"
+            f"{esc(p.get('hours_note') or 'Hours not published.')}</li>"
+            for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
+    if closed:
+        parts.append(f"<p class=call><b>Closed {esc(label.lower() if label == 'Today' else label)}:</b> "
+                     + ", ".join(esc(p["name"]) for p in sorted(closed, key=lambda p: p["name"]))
+                     + ".</p>")
+    read = restaurants.get("read")
+    parts.append("<p class=muted>Hours as each place published them"
+                 + (f" (read {esc(_short_day(read))})" if read else "")
+                 + "; off-season hours change, so call ahead. Ratings: Google and Tripadvisor "
+                   "as Wanderlog shows them (Topsail Guide's Google figure where Wanderlog has "
+                   "none). Tap a place for what reviewers say.</p></section>")
+    return "".join(parts)
+
+
+# Dinner is the likelier question after 3 PM; the page opens on that tab.
+EATS_JS = ("(function(){var d=document.getElementById('meal-d');"
+           "if(d&&new Date().getHours()>=15){d.checked=true;}})();")
+
+
 def edition_switch(date_iso: str, edition: str, root: str) -> str:
     """Fishing | Island, at the top of every page: the other edition of the same day."""
     out = []
@@ -924,7 +1170,8 @@ def edition_switch(date_iso: str, edition: str, root: str) -> str:
 
 
 def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
-         edition: str = "fishing", root: str | None = None) -> str:
+         edition: str = "fishing", root: str | None = None,
+         specials: dict | None = None) -> str:
     """One edition's page. `root` is the relative way back to the site root
     from where the page is served ('../' for site/<date>/, '../../' for
     site/<date>/island/, './' for site/index.html); every link is built on it.
@@ -971,8 +1218,13 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
     tides, more = panel
     side = (f"<div class=side><h2>The numbers, {esc(when)}</h2>{glance(data, edition)}"
             f"{tides}</div><div class=more>{more}</div>")
-    body = "".join(f"<section><h2>{esc(s)}</h2>{block_md(sec[s])}</section>"
-                   for s in sections if sec.get(s))
+    body = []
+    for s in sections:
+        if sec.get(s):
+            body.append(f"<section><h2>{esc(s)}</h2>{block_md(sec[s])}</section>")
+        if island and s == "Things To Do":
+            body.append(eats_section(data, load_restaurants(), specials))
+    body = "".join(body)
     sources = (f"<section class=src><details><summary><h2>Sources</h2></summary>"
                f"{block_md(sec['Sources'])}</details></section>" if sec.get("Sources") else "")
     archive = "".join(
@@ -990,7 +1242,9 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
         f"<p>{care} Swim near a lifeguard or not at all when the rip risk is up.</p>"
         f"<nav class=archive aria-label='Editions'><span class=k>Editions</span>{archive}</nav>"
         "</footer>")
-    script = f"<script>{TIDE_JS}</script>" if "class=tidechart" in side else ""
+    script = ((TIDE_JS if "class=tidechart" in side else "")
+              + (EATS_JS if "class=eats" in body else ""))
+    script = f"<script>{script}</script>" if script else ""
     return (f"<!doctype html><html lang=en><head><meta charset=utf-8>"
             f"<meta name=viewport content='width=device-width,initial-scale=1'>"
             f"<title>{esc(title)}</title><meta name=description content='{esc(headline)}'>"
@@ -1035,7 +1289,8 @@ def render_all(root: str = HERE) -> list[str]:
         report = load_report(d, root)
         _write(os.path.join(site, d, "index.html"), page(data, report, shown, d))
         _write(os.path.join(site, d, "island", "index.html"),
-               page(data, report, shown, d, edition="island"))
+               page(data, report, shown, d, edition="island",
+                    specials=load_specials(d, root)))
         _write(os.path.join(site, "text", config.text_file(d)), build_text(data, report))
         _write(os.path.join(site, "text", config.text_file(d, "island")),
                build_island_text(data, report))
@@ -1044,7 +1299,8 @@ def render_all(root: str = HERE) -> list[str]:
         data, report = load_data(latest, root), load_report(latest, root)
         _write(os.path.join(site, "index.html"), page(data, report, shown, latest, root="./"))
         _write(os.path.join(site, "island", "index.html"),
-               page(data, report, shown, latest, edition="island", root="../"))
+               page(data, report, shown, latest, edition="island", root="../",
+                    specials=load_specials(latest, root)))
     else:
         _write(os.path.join(site, "index.html"), EMPTY_INDEX)
         _write(os.path.join(site, "island", "index.html"), EMPTY_INDEX)
