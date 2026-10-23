@@ -105,18 +105,27 @@ slack before 6:30 even with the scheduler running late.
 
 **Specials through the day (home PC, not the routine).** The cloud routine
 cannot read Facebook, so `local/fb_specials.py` runs on the home PC in its
-own clone (`%LOCALAPPDATA%	opsail-reporterepo`), signed in to a
+own clone (`%LOCALAPPDATA%\topsail-reporter\repo`), signed in to a
 personal Facebook account in a browser profile beside it (`fb-profile`;
 sign in once with `python local/fb_login.py`; the session never leaves that
 folder). Each check reads every place's `facebook` page, keeps that
-page's own posts from today that read like food or hours news (a photo of
-a specials board comes through Facebook's alt text), merges them into
-`specials/<date>.json`, re-renders, runs the tests, pushes, and sends the
+page's own posts from today, has Opus 5.5 keep only the ones about eating or
+drinking there that day (specials, deals, hours changes; not events, party
+booking, history or hiring; the keyword filter stands in if Claude cannot
+be reached), merges them into `specials/<date>.json`, re-renders, runs the tests, pushes, and sends the
 new posts to one person through `alert.json` in the same folder (ntfy or a
-Discord webhook; never committed). A check resets its clone to GitHub's
+Discord webhook; never committed). Some places (SurfDog) post the day's
+specials only as a photo of their board: a photo Facebook says shows text,
+on a post from today, is read by Opus 5.5 through the home PC's Claude CLI
+(image passed inline, no tools, told to copy only what is written and
+answer NONE for a photo with no menu); the page then says "read from the
+photo posted ...". A check resets its clone to GitHub's
 main first, so it never conflicts with the routine, and it refuses to push
 from any other checkout. A lapsed sign-in or a failed push sends an alert
-instead. Times: about 10:30 AM and 3:30 PM ET, the days the paper runs.
+instead. A post kept at an earlier check is reused, not re-read. The
+hidden scheduled task "Topsail Reporter specials" is installed by
+`local/install_task.ps1` (its `-Times` are the check times; the days the
+paper runs); its log is `specials.log` beside the clone.
 
 ## 4. Data sources (all keyless, checked 2026-10-14)
 

@@ -391,3 +391,12 @@ def test_the_real_restaurant_list_loads_and_every_place_is_well_formed():
         for day in (p.get("weekly") or {}):
             assert p.get("weekly_source") and day in p["hours"], p["id"]
     assert len({p["id"] for p in places}) == len(places)
+
+
+def test_a_special_read_off_a_photo_says_so(data):
+    places = _places(_place("s", "SurfDog", {"Wed": ["11:00-21:00"]}))
+    specials = {"date": "2026-10-14", "checked_et": ["11:15 AM"],
+                "posts": [{"id": "s", "posted_et": "10:12 AM", "text": "Ribeye plate $21",
+                           "url": "https://www.facebook.com/x", "from_photo": True}]}
+    eats = render.eats_section(data, places, specials)
+    assert "Ribeye plate $21 <small>read from the photo posted 10:12 AM on <a" in eats

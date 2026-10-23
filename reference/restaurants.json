@@ -13,7 +13,7 @@
     {
       "id": "daddy-macs", "name": "Daddy Mac's Beach Grille", "town": "Surf City",
       "address": "108 N Shore Dr, Surf City", "phone": "910-328-5577",
-      "website": "https://daddymacsbeachgrille.com/", "facebook": "https://www.facebook.com/Daddymacsbeachgrille",
+      "website": "https://daddymacsbeachgrille.com/", "facebook": "https://www.facebook.com/profile.php?id=100064759564276",
       "style": "Oceanfront seafood, crab cakes and steaks by the Surf City pier; full bar",
       "status": "open", "pick": false,
       "hours": {"Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"], "Thu": ["11:00-21:00"],
@@ -64,7 +64,7 @@
     {
       "id": "sears-landing", "name": "Sears Landing", "town": "Surf City",
       "address": "806 Roland Ave, Surf City (on the ICW at the high-rise bridge)", "phone": "910-328-1312",
-      "website": "http://www.searslanding.com/", "facebook": null,
+      "website": "http://www.searslanding.com/", "facebook": "https://www.facebook.com/profile.php?id=100064772468237",
       "style": "Dockside seafood on the waterway; covered deck and outdoor bar",
       "status": "open", "pick": false,
       "hours": {"Mon": ["08:00-20:00"], "Tue": ["08:00-20:00"], "Wed": ["08:00-20:00"],
@@ -80,7 +80,7 @@
     {
       "id": "maxs-pizza", "name": "Max's Pizza", "town": "Surf City",
       "address": "602 A Roland Ave, Surf City", "phone": "910-328-2158",
-      "website": "http://www.maxspizzatopsail.com/", "facebook": "https://www.facebook.com/maxspizzatopsail",
+      "website": "http://www.maxspizzatopsail.com/", "facebook": "https://www.facebook.com/profile.php?id=100063795361702",
       "style": "Family pizza, pasta, subs and burgers",
       "status": "open", "pick": false,
       "hours": {"Wed": ["11:00-20:00"], "Thu": ["11:00-20:00"], "Fri": ["11:00-21:00"],
@@ -218,7 +218,7 @@
     {
       "id": "fancy-sushi", "name": "Fancy Sushi Asian Fusion", "town": "Surf City",
       "address": "124 N New River Dr, Surf City", "phone": "910-328-1121",
-      "website": "https://fancysushisurfcity.com/", "facebook": null,
+      "website": "https://fancysushisurfcity.com/", "facebook": "https://www.facebook.com/fancysushi124",
       "style": "Sushi and Chinese; takeout",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-21:30"], "Tue": "?", "Wed": ["11:00-21:30"],
@@ -402,7 +402,7 @@
     {
       "id": "seaview-pier", "name": "Seaview Pier Restaurant", "town": "North Topsail Beach",
       "address": "124 Fishing Pier Ln, North Topsail Beach", "phone": "910-328-3172",
-      "website": "https://seaviewfishingpier.godaddysites.com/restaurant", "facebook": null,
+      "website": "https://seaviewfishingpier.godaddysites.com/restaurant", "facebook": "https://www.facebook.com/SeaViewFishingPier",
       "style": "Pier restaurant: burgers, sandwiches, fried seafood, breakfast",
       "status": "call", "pick": false,
       "hours": {"Mon": ["07:00-20:00"], "Tue": ["07:00-20:00"], "Wed": ["07:00-20:00"],
@@ -418,7 +418,7 @@
     {
       "id": "oceans-edge", "name": "Ocean's Edge Restaurant", "town": "North Topsail Beach",
       "address": "2000 New River Inlet Rd (St. Regis resort), North Topsail Beach", "phone": "910-328-0582",
-      "website": null, "facebook": null,
+      "website": null, "facebook": "https://www.facebook.com/oceansedgenc",
       "style": "Seafood with 7th-floor ocean views",
       "status": "call", "pick": false,
       "hours": {},

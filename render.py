@@ -1086,11 +1086,12 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
         if not place:
             continue
         text = " ".join(post.get("text", "").split())
-        if len(text) > 420:
-            text = text[:417].rsplit(" ", 1)[0] + "…"
+        if len(text) > 700:
+            text = text[:697].rsplit(" ", 1)[0] + "…"
         link = f" on <a href='{esc(post['url'])}'>Facebook</a>" if post.get("url") else ""
+        how = "read from the photo posted" if post.get("from_photo") else "posted"
         lines.append(f"<li><b>{esc(place['name'])}</b> {esc(text)} "
-                     f"<small>posted {esc(post.get('posted_et', 'today'))}{link}</small></li>")
+                     f"<small>{how} {esc(post.get('posted_et', 'today'))}{link}</small></li>")
     checked = (specials.get("checked_et") if specials and not ahead
                and specials.get("date") == day else None)
     in_run = config.FIRST_EDITION <= day <= config.LAST_EDITION and not ahead

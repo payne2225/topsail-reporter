@@ -21,6 +21,24 @@
   person (Nate: "just update the page. Maybe alert just me"). Facebook
   URLs for 26 places added to `reference/restaurants.json`. Not scheduled
   yet: it needs the one-time sign-in and an alert channel first.
+- Tuned on the signed-in feed: a post's time comes from hovering its time
+  link (Facebook shows the full date only as a tooltip), and posts are read
+  while on screen (Facebook empties the ones scrolled past). A specials
+  board posted as a photo is read by Opus 5.5 through the Claude CLI and
+  marked "read from the photo posted" on the page.
+- Opus 5.5 keeps or drops each of the day's posts in one call (on Oct 22's
+  posts it kept 11 specials and dropped 13: karaoke, a pub crawl, party
+  booking, throwbacks, a fish catch); the keyword filter is the fallback.
+  Post text loses "See more/less" and hashtags; long Discord alerts are
+  split instead of cut. A page Facebook no longer shows is reported as
+  unreadable.
+- Facebook pages: Daddy Mac's and Max's Pizza had moved; found by Facebook
+  search with Sears Landing, Fancy Sushi, SeaView Pier and Ocean's Edge.
+  30 of the 32 open places now have one (none found for NY Corner Deli or
+  Margherita).
+- `local/install_task.ps1`: clones the job's own checkout and registers
+  the hidden scheduled task (run-hidden.vbs, wake to run, run late if
+  missed).
 - The fishing page is fishing and the outdoors only (Nate: "maybe the
   fishing side of it is just fishing info and outdoor conditions"): Around
   the Island now shows on the Island Edition only.

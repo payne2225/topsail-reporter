@@ -76,3 +76,45 @@ def test_the_alert_names_each_new_post_and_links_the_page():
 def test_the_check_refuses_to_push_from_a_working_copy(capsys):
     assert fb.main(["--ids", "none"]) == 2
     assert "use --no-push or --dry-run here" in capsys.readouterr().out
+
+
+def test_a_board_photo_is_read_only_when_it_looks_like_one():
+    assert fb.wants_reading("", ["No photo description available."])            # says nothing else
+    assert fb.wants_reading("Today's lineup!", ["May be an image of text"])
+    assert fb.wants_reading("Thursday Lunch Specials. Specials are available til 3, call us!",
+                            ["No photo description available."])
+    assert not fb.wants_reading("Our new patio heaters are in, come warm up by the water tonight",
+                                ["May be an image of 2 people and outdoors"])
+
+
+def test_post_text_drops_see_more_and_hashtags():
+    assert (fb.tidy("TODAY: 50% off domestics & $5 craft! #thirstythursday #beer See less")
+            == "TODAY: 50% off domestics & $5 craft!")
+    assert fb.tidy("Three #1 wins") == "Three #1 wins"
+
+
+def _post(i, text):
+    return {"id": f"p{i}", "posted_et": "10:00 AM", "text": text}
+
+
+def test_claude_keeps_or_drops_and_the_keywords_stand_in_when_it_cannot():
+    posts = [_post(0, "Tacos and taps tonight, $4 tacos"), _post(1, "Plan your next party with us!"),
+             _post(2, "Closed today for a private event")]
+    seen = []
+
+    def ask(prompt):
+        seen.append(prompt)
+        return "[0, 2]"
+    assert fb.keep_posts(posts, {}, ask) == [posts[0], posts[2]]
+    assert '"text": "Plan your next party with us!"' in seen[0]
+    # No answer, or a garbled one: the keyword filter decides.
+    assert fb.keep_posts(posts, {}, lambda _: None) == [posts[0], posts[2]]
+    assert fb.keep_posts(posts, {}, lambda _: "Sure! Here you go") == [posts[0], posts[2]]
+    assert fb.keep_posts([], {}, ask) == []
+
+
+def test_long_alerts_split_at_line_breaks():
+    text = "\n".join(["head"] + ["x" * 900] * 3 + ["link"])
+    parts = fb.chunks(text, 1900)
+    assert all(len(c) <= 1900 for c in parts) and "\n".join(parts) == text
+    assert fb.chunks("y" * 4000, 1900) == ["y" * 1900, "y" * 1900, "y" * 200]
