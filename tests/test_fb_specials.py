@@ -118,3 +118,10 @@ def test_long_alerts_split_at_line_breaks():
     parts = fb.chunks(text, 1900)
     assert all(len(c) <= 1900 for c in parts) and "\n".join(parts) == text
     assert fb.chunks("y" * 4000, 1900) == ["y" * 1900, "y" * 1900, "y" * 200]
+
+
+def test_a_page_is_known_by_its_address_and_the_home_feed_by_none():
+    assert fb.page_owner("https://www.facebook.com/SurfDogBitesAndBrews?ref=x") == "surfdogbitesandbrews"
+    assert fb.page_owner("https://www.facebook.com/profile.php?id=100064772468237&sk=posts") == "100064772468237"
+    assert fb.page_owner("https://www.facebook.com/") == ""
+    assert fb.page_owner("https://www.facebook.com/home.php") == ""

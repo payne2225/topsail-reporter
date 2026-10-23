@@ -300,6 +300,17 @@ def _permalink(page_url: str, href: str, photos: list[str]) -> str:
     return page_url
 
 
+def page_owner(url: str) -> str:
+    """Who a Page is, from its address: 'surfdogbitesandbrews', or the id
+    of a profile.php page. '' for Facebook's home feed."""
+    import urllib.parse
+    u = urllib.parse.urlparse(url)
+    if u.path.rstrip("/") == "/profile.php":
+        return urllib.parse.parse_qs(u.query).get("id", [""])[0]
+    first = u.path.strip("/").split("/")[0].lower()
+    return "" if first in ("", "home.php") else first
+
+
 def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int = 5) -> list[dict]:
     """The newest posts on one Page: [{text, when, url}]."""
     page.goto(url, wait_until="domcontentloaded", timeout=45000)
@@ -308,6 +319,12 @@ def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int =
         raise NotSignedIn(url)
     if page.get_by_text("This content isn't available right now").count():
         raise RuntimeError("Facebook says this page is not available (moved or renamed?)")
+    # Only the restaurant's own posts are ever kept: a unit must link to the
+    # Page it was read on (never a friend's post from the home feed, never a
+    # post someone else shared to the Page).
+    owner = page_owner(page.url)
+    if not owner:
+        raise RuntimeError("Facebook sent the check to the home feed")
     seen, out = set(), []
     for _ in range(14):
         units = page.locator("div[aria-posinset]")
@@ -325,6 +342,12 @@ def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int =
                 if not msg.count() and not photos:
                     continue                        # not loaded yet
                 seen.add(pos)
+                links = unit.locator("a[href]").evaluate_all(
+                    "els => els.slice(0, 12).map(e => (e.getAttribute('href') || '').toLowerCase())")
+                if not any(owner in h for h in links):
+                    if debug:
+                        print(f"    [{pos}] skipped: not the page's own post")
+                    continue
                 more = msg.first.get_by_role("button", name="See more") if msg.count() else None
                 if more is not None and more.count():
                     more.first.click(timeout=2000)

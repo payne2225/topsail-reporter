@@ -39,6 +39,19 @@
 - `local/install_task.ps1`: clones the job's own checkout and registers
   the hidden scheduled task (run-hidden.vbs, wake to run, run late if
   missed).
+- The first picks (Nate: "lets start with Sear's Landing, Breezeway
+  Restaurant, and Riverview Cafe"), starred and listed first; a pick that
+  needs a call is starred under Call first.
+- Sears Landing's Wing & Wine Night (half-price wings and wine, every
+  Wednesday) from its own Facebook post; a weekly special now says whether
+  it came from the place's site or its Facebook page. Breezeway's note now
+  says it has posted through Oct 19 with no closing date.
+- The check keeps only posts that link to the Page it read them on, and
+  stops if Facebook sends it to the home feed, so no one else's post can
+  reach the page.
+- Check times 11:15 AM and 4:15 PM ET (Nate: "yes"): Riverview posted its
+  lunch list at 10:48 and its dinner list at 3:42 on Oct 22, SurfDog
+  between 9:20 and 11:30.
 - The fishing page is fishing and the outdoors only (Nate: "maybe the
   fishing side of it is just fishing info and outdoor conditions"): Around
   the Island now shows on the Island Edition only.

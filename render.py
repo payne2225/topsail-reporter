@@ -1078,7 +1078,9 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     weekly = {p["id"]: p["weekly"][weekday] for p, _ in open_today
               if (p.get("weekly") or {}).get(weekday)}
     lines = [f"<li><b>{esc(by_id[i]['name'])}</b> {esc(text)} "
-             f"<small>every {dt.date.fromisoformat(day).strftime('%A')}, from its own site</small></li>"
+             f"<small>every {dt.date.fromisoformat(day).strftime('%A')}, from its "
+             f"{'Facebook page' if 'facebook.com' in by_id[i].get('weekly_source', '') else 'own site'}"
+             f"</small></li>"
              for i, text in weekly.items()]
     posted = (specials or {}).get("posts", []) if specials and not ahead and specials.get("date") == day else []
     for post in posted:
@@ -1138,7 +1140,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
             return (f" <a href='tel:{esc(re.sub(r'[^0-9]', '', p['phone']))}'>{esc(p['phone'])}</a>"
                     if p.get("phone") else "")
         parts.append("<div class=call><b>Call first</b><ul>" + "".join(
-            f"<li><b>{esc(p['name'])}</b>{tel(p)}<br>"
+            f"<li><b>{'★ ' if p.get('pick') else ''}{esc(p['name'])}</b>{tel(p)}<br>"
             f"{esc(p.get('hours_note') or 'Hours not published.')}</li>"
             for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
     if closed:
