@@ -1,24 +1,24 @@
-# NC Recreational Fishing Rules: Topsail Island, Oct 29 - Nov 7, 2026
+# NC Recreational Fishing Rules: Topsail Island, Nov 5 - Nov 14, 2026
 
-Checked: 2026-10-14. Scope: surf, piers, New Topsail Inlet, Topsail Sound (Coastal and Joint Fishing Waters, Pender/Onslow).
+Checked: 2026-10-14; re-checked for the Nov 5-14 window 2026-10-23. Scope: surf, piers, New Topsail Inlet, Topsail Sound (Coastal and Joint Fishing Waters, Pender/Onslow).
 Rules change by proclamation. Before quoting a limit in an edition, re-check the "current proclamations" index (sources.md).
 
-## Primary sources (all read 2026-10-14)
-- [GUIDE] NCDMF "2026 NC Recreational Coastal and Joint Fishing Waters Guide", UPDATED 9/2/2026, "effective September 2, 2026": https://www.deq.nc.gov/printable-recreational-guide/open
-- [SIZEBAG] NCDMF size/bag page (same content, "EFFECTIVE September 2, 2026"): https://www.deq.nc.gov/about/divisions/marine-fisheries/rules-proclamations-and-size-and-bag-limits/recreational-size-and-bag-limits
-- [PROCS] Current proclamations index (6 pages, ?page=0..5): https://www.deq.nc.gov/current-fisheries-management-proclamations
+## Primary sources (all read 2026-10-14; all re-read 2026-10-23)
+- [GUIDE] NCDMF "2026 NC Recreational Coastal and Joint Fishing Waters Guide", UPDATED 9/2/2026, "effective September 2, 2026": https://www.deq.nc.gov/printable-recreational-guide/open (re-read 2026-10-23: still "UPDATED 9/2/2026"; no newer edition)
+- [SIZEBAG] NCDMF size/bag page (same content, "EFFECTIVE September 2, 2026"): https://www.deq.nc.gov/about/divisions/marine-fisheries/rules-proclamations-and-size-and-bag-limits/recreational-size-and-bag-limits (re-read 2026-10-23: still "EFFECTIVE September 2, 2026"; flounder row now reads "Sep 1-14: OPEN / Sep 15-30: CLOSED / UNLAWFUL TO POSSESS")
+- [PROCS] Current proclamations index (6 pages, ?page=0..5; 85 entries on 2026-10-23): https://www.deq.nc.gov/current-fisheries-management-proclamations
 - Guide disclaimer: "FOR GENERAL INFORMATIONAL PURPOSES AND HAS NO LEGAL FORCE OR EFFECT"; DMF phone 252-515-5500 or 800-682-2632; Wilmington office 910-796-7215. [GUIDE]
 
 ## Quick table (state Coastal/Joint waters, recreational)
-| Species | Size | Bag | Status Oct 29-Nov 7, 2026 | Source |
+| Species | Size | Bag | Status Nov 5-14, 2026 | Source |
 |---|---|---|---|---|
 | Red drum (puppy drum) | 18" min - 27" max TL | 1/day | OPEN. Unlawful to possess >27" TL; unlawful to gig, spear or gaff | [GUIDE] note C |
-| Spotted seatrout (speckled trout) | 14"-20" TL slot, plus 1 fish >26" TL allowed | 3/day | OPEN (reopened 12:01 a.m. July 1, 2026 by FF-31-2026). Harvest 7 days a week | [GUIDE]; FF-31-2026 listing on [PROCS] page 4; DMF Spotted Seatrout FMP Update Aug 2026 (link below) |
+| Spotted seatrout (speckled trout) | 14"-20" TL slot, plus 1 fish >26" TL allowed | 3/day | OPEN (reopened 12:01 a.m. July 1, 2026 by FF-31-2026). Harvest 7 days a week | [GUIDE]; FF-31-2026 listing on [PROCS] page 5 (page 4 on Oct 14); DMF Spotted Seatrout FMP Update Aug 2026 (link below) |
 | Flounder (all species, incl. southern) | 15" TL (when open) | 1/day (when open) | CLOSED. Unlawful to possess. 2026 season was Sept 1-14 only | FF-27-2026 (link below) |
 | Black drum | 14" min - 25" max TL | 10/day, of which 1 may be >25" TL | OPEN | [GUIDE] note C; FF-73-2013 |
 | Sheepshead | 14" TL | 5/person/day or trip | OPEN | FF-16-2026 |
 | Bluefish | none | 5/day private; 7/day on for-hire | OPEN | FF-1-2026 |
-| Spanish mackerel | 12" FL | 15/day | OPEN | [GUIDE] |
+| Spanish mackerel | 12" FL | 15/day | OPEN. Recreational limits unchanged inside the window (see note below on the commercial close Nov 13) | [GUIDE]; FF-35-2026 sec. I and IV |
 | King mackerel | 24" FL | 3/day | OPEN | [GUIDE] |
 | Weakfish (gray trout) | 12" TL | 1/day | OPEN | [GUIDE]; FF-10-2024 |
 | Spot | none | 50/day | OPEN | [GUIDE]; FF-23-2021 |
@@ -27,6 +27,7 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 | Striped bass, Atlantic Ocean 0-3 mi | 28"-31" TL slot | 1/day | OPEN year-round; non-offset, non-stainless circle hook required with natural bait; no gaff | FF-25-2023 (REVISED) |
 | Striped bass, inside (Topsail Sound, New River, Cape Fear) | n/a | 0 | CLOSED, unlawful to possess (CSMA) | [GUIDE] note A; FF-19-2026 |
 | Cobia | 36" FL | 1/person/day; private boat max 1/vessel/day (Jul 1-Dec 31) | OPEN (rec season May 1-Dec 31, 2026) | FF-4-2026 |
+| Black sea bass (south of Cape Hatteras, i.e. Topsail) | 13" TL | 7/day | OPEN | [SIZEBAG] (read 2026-10-23); FF-45-2026 sec. II |
 | Florida pompano | not listed | not listed | No state size/bag limit appears in the 2026 guide | [GUIDE] (absence) |
 | Kingfish / sea mullet / whiting | not listed | not listed | No state size/bag limit appears in the 2026 guide | [GUIDE] (absence) |
 | Tautog | not listed | not listed | No state size/bag limit appears in the 2026 guide | [GUIDE] (absence) |
@@ -35,6 +36,12 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 - For pompano, kingfish, tautog, false albacore: "not listed" means the DMF guide shows no limit. Before printing "no limit", confirm by phone with DMF (252-515-5500). UNVERIFIED as "no limit" beyond the guide omitting them.
 - Head and tail must stay attached on any fish subject to limits (exception: mullet and hickory shad used as bait). [GUIDE] (15A NCAC 03M .0101)
 - You cannot keep both a federal and a state bag limit of the same species on the same trip. [GUIDE]
+
+## Does anything change between Nov 5 and Nov 14, 2026? (checked 2026-10-23)
+- Recreational: NO season opens or closes inside the window on the DMF index read 2026-10-23 ([PROCS] ?page=0..5). Every status in the table holds for the whole window unless a new proclamation is issued; re-check [PROCS] page 0 each morning.
+- Commercial only (not a recreational change): FF-35-2026 (issued Aug 21, 2026) keeps the state-waters commercial Spanish mackerel fishery open "until 8:00 P.M., Friday, November 13, 2026, unless closed earlier by proclamation", 500 lb/trip. Recreational stays 12" FL, 15/person/day (sec. IV). https://files.nc.gov/deq/documents/2026-08/FF-35-2026%20SpanishMackerel-Commercial%20Open%20500lbs%20TripLimit_2026.pdf?VersionId=sVdmFG1RGkyzn.n0rWmGZqidSc9wMfRZ (read 2026-10-23)
+- New since the Oct 14 check, effective before the window: FF-45-2026 (issued Oct 20, effective 12:01 a.m. Oct 28, 2026), snapper-grouper recreational (offshore boats only): black sea bass south of Cape Hatteras 13" TL, 7/person/day; gag possession only "May 1, 2026 through 11:59 P.M. on August 1, 2026" (so gag is CLOSED in the window); gag/black grouper vessel limit "two (2) gag grouper or two (2) black grouper in any combination" per private vessel per day; red snapper "unlawful to possess" (the 2026 limited season was Oct 9-11 only, FF-40-2026). https://files.nc.gov/deq/documents/2026-10/FF-45-2026%20Snapper-Grouper%20Recreational_GagBlackGrouperAggVesselLimit-RegAmend36_Final.pdf?VersionId=bkKeFSUYfyCWuPE90pin6lbtRHLdwvnL (read 2026-10-23)
+- Other new index entries since Oct 14 are commercial only (FF-42/43/44-2026 commercial flounder; M-21/22/23/24-2026 gill nets and stop nets; FF-46-2026 black sea bass pots). None changes a recreational limit.
 
 ## Coastal Recreational Fishing License (CRFL)
 - Required for anyone 16 or older fishing recreationally for finfish in coastal and joint waters, including from shore/surf. Under 16: not required. https://www.deq.nc.gov/about/divisions/marine-fisheries/licenses-permits-and-leases/recreational-fishing-licenses/recreational-license-faqs
@@ -47,18 +54,18 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 ## Mandatory harvest reporting (new since Dec 1, 2025)
 - Anyone who recreationally harvests (keeps) red drum, flounder, spotted seatrout, striped bass or weakfish must report the harvest. https://www.deq.nc.gov/about/divisions/marine-fisheries/science-and-statistics/mandatory-harvest-reporting
 - Report online at deq.nc.gov/report-my-fish (redirects to an ArcGIS Survey123 form: https://survey123.arcgis.com/share/10dd44bc671f4463bd47f5f11344ecf5). [GUIDE]; https://deq.nc.gov/mandatory-harvest-reporting
-- Timing: due when harvest is complete or at trip end. UNVERIFIED (search snippet only; the DMF pages read did not state a deadline).
-- Enforcement: verbal warnings from Dec 1, 2025; warning tickets from Dec 1, 2026; $35 infraction from Dec 1, 2027. UNVERIFIED (search summary only; not read on a DMF page). Not relevant inside Oct 29-Nov 7 except that reporting is already required.
+- Timing (DMF recreational reporting page, read 2026-10-23): online webform "reporting is required at the time the fishing trip is completed" (boat: when the fish reach the shore/dock; shore: "once you are no longer actively fishing and your gear is stowed away"); paper report card users "have until midnight the day following completion of the trip to report online". https://www.deq.nc.gov/mandatory-harvest-reporting-recreational
+- Enforcement (same page, read 2026-10-23): "Dec. 1, 2025 - Nov. 30, 2026: Verbal warnings for non-reporting"; "Dec. 1, 2026 - Nov. 30, 2027: Written warnings"; from Dec. 1, 2027 infractions "may result in a $35 fine" plus court costs. The whole Nov 5-14 window falls in the verbal-warning phase, but reporting is already required. Questions: HarvestReporting@deq.nc.gov, 252-515-5515.
 
 ## Spotted seatrout detail
 - FF-12-2026 closed all coastal and joint waters (incl. the ocean) to seatrout harvest effective 4:00 p.m. Feb 6, 2026, after a cold-stun event. Read the PDF: https://www.deq.nc.gov/marine-fisheries/fisheries-management-proclamations/2026/spotted-seatrout-coastal-and-joint-fishing-waters-including-atlantic-ocean-commercial-and/open
-- FF-31-2026 (issued June 25, 2026; effective 12:01 a.m. July 1, 2026) reopened harvest under Amendment 1 limits. Index entry on [PROCS] ?page=4. The PDF itself returned HTTP 403 (https://files.nc.gov/deq/documents/2026-06/FF-31-2026_SpottedSeatrout%20open%20harvest_final.pdf); limits confirmed via [GUIDE] and the DMF FMP update below.
-- Cold-stun rule: under Amendment 1 the DMF Director may close the fishery by proclamation after a severe cold stun, with the closure able to run through June 30. A cold stun closure in late Oct/early Nov would be unusual (stuns are typically January-February) but would come by new proclamation. Source: DMF Spotted Seatrout FMP Update, August 2026, p.1 and p.5: https://www.deq.nc.gov/marine-fisheries/fisheries-management/spotted-seatrout/spotted-seatrout-fmp-update-2026/open
+- FF-31-2026 (issued June 25, 2026; effective 12:01 a.m. July 1, 2026) reopened harvest under Amendment 1 limits. Index entry on [PROCS] ?page=5 as of 2026-10-23 (was ?page=4 on Oct 14). The PDF itself returned HTTP 403 (https://files.nc.gov/deq/documents/2026-06/FF-31-2026_SpottedSeatrout%20open%20harvest_final.pdf); limits confirmed via [GUIDE] and the DMF FMP update below.
+- Cold-stun rule: under Amendment 1 the DMF Director may close the fishery by proclamation after a severe cold stun, with the closure able to run through June 30. A cold stun closure in early/mid November would be unusual (stuns are typically January-February) but would come by new proclamation. None is in effect: FF-31-2026 is still the current seatrout proclamation on [PROCS] ?page=5 (read 2026-10-23). Source: DMF Spotted Seatrout FMP Update, August 2026, p.1 and p.5: https://www.deq.nc.gov/marine-fisheries/fisheries-management/spotted-seatrout/spotted-seatrout-fmp-update-2026/open
 - Recreational limits per the Aug 2026 FMP update: 3-fish bag, 14-20" slot, 1 allowed over 26", harvest allowed 7 days a week. Same URL.
 
 ## Flounder detail (southern, summer, Gulf: all closed in the window)
 - FF-27-2026, signed June 3, 2026, effective 12:01 a.m. Sept 1, 2026: "It shall be unlawful to possess flounder for recreational purposes except from 12:01 A.M. on September 1, 2026, until 11:59 P.M. on September 14, 2026." 15" min, 1/person/day; harvest under a Recreational Commercial Gear License prohibited. Applies to internal coastal, joint AND Atlantic Ocean waters. https://www.deq.nc.gov/marine-fisheries/fisheries-management-proclamations/2026/flounder-recreational-internal-coastal-and-joint-fishing-waters-and-atlantic-ocean-waters/open
-- Hook-and-line flounder harvest is CLOSED Oct 29-Nov 7, 2026. Catch and release only.
+- Hook-and-line flounder harvest is CLOSED Nov 5-14, 2026. Catch and release only. FF-27-2026 is still the only recreational flounder entry on [PROCS] (?page=1, read 2026-10-23); no fall reopening has been issued.
 - NCWRC inland flounder season is the same Sept 1-14 (15A NCAC 10C .0307), per FF-27-2026 section III.F.
 - Separate spring Gulf flounder ocean season (Portsmouth Island south to SC line) was March 9-22, 2026 (FF-13-2026). Not relevant to the window. https://www.deq.nc.gov/marine-fisheries/fisheries-management-proclamations/2026/flounder-recreational-atlantic-ocean-state-waters-portsmouth-island-south-ncsc-state-line/open
 
@@ -80,7 +87,7 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 - Minimum size 3" shell length; cull on site; max 5% undersize/dead shell by volume. SF-1-2026 sec. I.F, IV.F.
 - Hand and hand-operated implements only (tongs, rakes); rakes max 12" wide and 6 lb. No harvest between sunset and sunrise. Oyster sanctuaries are off limits. SF-1-2026 sec. I.A, IV.C, IV.E, IV.H.
 - Cannot have commercial and recreational oyster limits on the same vessel. SF-1-2026 sec. I.A.3.
-- NOTE: the 9/2/2026 guide still shows "OYSTER: SEASON CLOSED" because it predates SF-1-2026. In the window the season is OPEN in open (not polluted-closed) areas.
+- NOTE: the 9/2/2026 guide and the size/bag page (both re-read 2026-10-23) still show "OYSTER: SEASON CLOSED" because they predate SF-1-2026; the same page's note I says "Oyster season is October 15 - March 31 unless closed earlier by proclamation." SF-1-2026 is still listed on [PROCS] ?page=0 (read 2026-10-23). In the Nov 5-14 window the season is OPEN in open (not polluted-closed) areas.
 - No license required for recreational shellfish. Recreational License FAQ (CRFL section above).
 
 ## Hard clams (recreational)
@@ -93,20 +100,23 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 - Interactive Shellfish Sanitation temporary-closure map (linked in SF-1-2026 and the guide): https://ncdenr.maps.arcgis.com/apps/webappviewer/index.html?id=5759aa19d7484a3b82a8e440fba643aa
 - Polluted Area Proclamations list, newest first: https://www.deq.nc.gov/about/divisions/marine-fisheries/rules-proclamations-and-size-and-bag-limits/polluted-area-proclamations
 - 24-hour recorded closure hotline: 252-515-5656. Email list: andrew.haines@deq.nc.gov, subject "Proclamation Subscription". (Polluted Area page)
-- Rain triggers temporary closures in Topsail Sound and Stump Sound. Status as of 2026-10-14 per that page:
+- Rain triggers temporary closures in Topsail Sound and Stump Sound. Status as of 2026-10-23 per that page (newest entry PA-67-2026): Topsail Sound and Stump Sound are both at normal closure boundaries (no temporary closure in force). History:
   - PA-59-2026 (eff. 7:55 a.m. Sun Oct 4) closed portions of Topsail Sound (and others).
   - PA-61-2026 (eff. sunrise Fri Oct 9) reopened Topsail Sound (also Myrtle Grove Sound, Oyster Creek).
   - PA-63-2026 (eff. 8:00 a.m. Sun Oct 11) closed Stump Sound, a portion of Myrtle Grove Sound and others (New Hanover, Pender, Onslow, Carteret). No reopening of Stump Sound was listed as of Oct 14.
   - PA-65-2026 (eff. sunrise Thu Oct 15) reopens Queens Creek, North River, Ward Creek, Whitehurst Creek, Oyster Creek (Onslow, Carteret).
+  - PA-66-2026 (issued 10/15, eff. sunrise Fri Oct 16) "returns the following areas to normal closure boundaries: Myrtle Grove Sound, Stump Sound, Alligator Bay, Chadwick Bay, Pamlico River, and Gale Creek" (New Hanover, Pender, Onslow, Pamlico). Read 2026-10-23.
+  - PA-67-2026 (eff. sunrise Sat Oct 17) reopens Brunswick and Carteret areas only. Read 2026-10-23.
+  - Conditions in the window depend on rain between now and then; check the list every morning.
 - Earlier 2026 pattern: PA-5-2026 closed all of Topsail Sound and Stump Sound Apr 6, 2026; PA-21/22/25-2026 closed and reopened portions in July. Expect rain-driven closures; the routine must check the list every morning.
-- RS-4-2026: a UNC-Wilmington research sanctuary in Topsail Sound (submerged aquatic vegetation study), effective July 23, 2026. Listed on [PROCS] ?page=3: https://files.nc.gov/deq/documents/2026-07/RS-4-2026_Topsail-UNCW_SAV-FINAL.pdf?VersionId=lUJjBvugD_BORPy17lnOu_XS1cXxV.cB . Restrictions inside it not read: UNVERIFIED (PDF not opened).
+- RS-4-2026: a UNC-Wilmington research sanctuary in Topsail Sound (submerged aquatic vegetation study), effective July 23, 2026. Listed on [PROCS] ?page=3: https://files.nc.gov/deq/documents/2026-07/RS-4-2026_Topsail-UNCW_SAV-FINAL.pdf?VersionId=lUJjBvugD_BORPy17lnOu_XS1cXxV.cB (PDF read 2026-10-23). Three small sites "Along the west side of Intracoastal Waterway (IWW) in Topsail Sound", each "delineated by poles with signs": Site 1 near Howard Landing / Howard Channel / Old Topsail Creek (~1.57 acres); Site 2 about halfway between Sloop Point and Kings Landing, mainland side (~3.16 acres); Site 3 near Sloop Point by Moore Landing (~3.52 acres). Rule: "unlawful to use recreational and commercial gears except hand harvest for shellfish, crab pots, hook and line, and cast nets". So rod-and-reel and cast-netting stay legal inside them; other gear (e.g. gigs, nets other than cast nets) is not. Closure lasts no more than one year unless renewed (sec. III.F).
 
 ## Crabbing (recreational)
 - Blue crab: 5" carapace width min (males and mature females); immature females unlawful; 50/person/day, max 100/vessel/day; sale prohibited. https://www.deq.nc.gov/marine-fisheries/public-info-education/recreational-crabbing-guide/open (dated Jan 6, 2025)
-- Closed possession windows: south of the Hwy 58 bridge Mar 1-15 (not in our window). [GUIDE]
+- Closed possession windows: south of the Hwy 58 bridge Mar 1-15 (not in the Nov 5-14 window). [GUIDE]
 - No license needed for: chicken necking/handlines; collapsible traps (largest open dimension 18" or less); 1 pot per person from a private pier or shoreline with no public access (does NOT apply on public fee piers). Crabbing guide.
 - Otherwise a Recreational Commercial Gear License (RCGL) is needed: $70 resident / $500 nonresident; max 5 crab pots; one hot-pink buoy with owner ID; pots fished at least every 5 days; 3 cull rings. Crabbing guide.
-- Crab pots open in the Atlantic Ocean and in internal waters south and west of the Hwy 58 bridge, May 3 through 11:59 p.m. Nov 30, 2026 (PT-1-2026). Listed on [PROCS] ?page=2: https://files.nc.gov/deq/documents/2026-04/PT-1-2026%20-%20Pots%20Open%20Atlantic%20Ocean%20FINAL.pdf?VersionId=68fEeqTHzTNxdzwoqttNJmZwNxiolK8G (index entry only; PDF not opened)
+- Crab pots open in the Atlantic Ocean and in internal waters south and west of the Hwy 58 bridge, May 3 through 11:59 p.m. Nov 30, 2026 (PT-1-2026). Listed on [PROCS] ?page=2: https://files.nc.gov/deq/documents/2026-04/PT-1-2026%20-%20Pots%20Open%20Atlantic%20Ocean%20FINAL.pdf?VersionId=68fEeqTHzTNxdzwoqttNJmZwNxiolK8G (PDF read 2026-10-23: "effective at 12:01 A.M., Sunday, May 3, 2026, until 11:59 PM, Monday, November 30, 2026"; so pots stay open through the whole Nov 5-14 window. The PDF's area-by-area list was not summarized here.)
 
 ## Shrimping (recreational)
 - Cast net only without RCGL: 48 quarts heads-on or 30 quarts heads-off per person per day, or per vessel per day if a vessel is used. Same limit in areas closed and open to shrimping. [GUIDE] (also SH-4-2022 on [PROCS] ?page=4)
@@ -119,5 +129,7 @@ Rules change by proclamation. Before quoting a limit in an edition, re-check the
 - Sheepshead proclamation reissued (FF-16-2026, Mar 16, 2026); recreational 14"/5 fish (rec numbers unchanged from the guide).
 - Oyster 2026-27 season opens Oct 15, 2026 (SF-1-2026) under Oyster FMP Amendment 5.
 - Mandatory harvest reporting in effect since Dec 1, 2025 (5 species).
-- Red drum: no 2026 rule change found. DMF opened a red drum FMP review scoping comment period Oct 1-30, 2026 (meetings Oct 13 Wilmington, Oct 15 Raleigh). https://www.deq.nc.gov/news/press-releases/2026/10/01/scoping-period-red-drum-fishery-management-plan-review-begins-today (from search result; page not opened. UNVERIFIED in detail)
-- Leadership: SF-1-2026 (Oct 2, 2026) is signed by Interim Director Michael S. Loeffler. Earlier 2026 proclamations were signed by Director Kathy B. Rawls.
+- Red drum: no 2026 rule change found. DMF opened a red drum FMP review scoping comment period Oct 1-30, 2026 (meetings Oct 13 Wilmington, Oct 15 Raleigh). https://www.deq.nc.gov/news/press-releases/2026/10/01/scoping-period-red-drum-fishery-management-plan-review-begins-today (read 2026-10-23: comments "postmarked by 5 p.m. Oct. 30, 2026"; meetings Oct 13 Wilmington, Oct 15 Raleigh, Oct 20 New Bern, Oct 22 Manteo; "DMF has not developed management options"). The scoping period ends before the window; no red drum rule changes in Nov 5-14.
+- Leadership: SF-1-2026 (Oct 2, 2026) and FF-45-2026 (Oct 20, 2026) are signed by Interim Director Michael S. Loeffler. Earlier 2026 proclamations were signed by Director Kathy B. Rawls. New DMF Director Jonathan Howell "will take the helm at DMF Oct. 26" (DEQ press release Oct 20, 2026, read 2026-10-23), so any proclamation issued during the window would come from his office. https://www.deq.nc.gov/news/press-releases/2026/10/20/jonathan-howell-lead-division-marine-fisheries
+- Snapper-grouper (offshore): FF-45-2026 (effective Oct 28, 2026) sets a gag/black grouper vessel limit under federal Regulatory Amendment 36 and supersedes FF-40-2026 (the Oct 9-11 red snapper season). See "Does anything change" above.
+- Not in the window: Marine Fisheries Commission quarterly business meeting Nov 17-18, 2026, Holiday Inn Resort Lumina, Wrightsville Beach (after the window). https://www.deq.nc.gov/about/divisions/marine-fisheries/marine-fisheries-commission/marine-fisheries-commission-meetings (read 2026-10-23)

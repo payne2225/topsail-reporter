@@ -52,33 +52,33 @@ Rule for the routine: if a WORKS source fails on a given morning, say so in the 
 | REDIRECT to paywall service | https://www.swellinfo.com/surf-forecast/topsail-north-carolina | Redirects to tollbit.swellinfo.com; treat as BLOCKED. |
 | WORKS | https://topsailguide.com/weather/ | Local site's surf/tide page (third-party; prefer NWS/NOAA). |
 
-## Almanac for the window (precomputed 2026-10-14; still re-fetch daily)
-Tides, NOAA predictions, feet above MLLW, local time (EDT through Oct 31, EST from Nov 1). Wind and pressure change real water levels.
+## Almanac for the window, Nov 5-14, 2026 (recomputed 2026-10-23 from the NOAA and USNO APIs below; still re-fetch daily)
+Tides, NOAA predictions, feet above MLLW, local time (EST all window; daylight saving time ended Sun Nov 1, before the window). Wind and pressure change real water levels.
 Ocean side, 8657419 Ocean City Beach (North Topsail):
-- Oct 29: L 3:33a -0.1 | H 10:16a 6.1 | L 4:46p 0.2 | H 10:36p 4.1
-- Oct 30: L 4:27a 0.0 | H 11:12a 5.9 | L 5:44p 0.4 | H 11:35p 4.0
-- Oct 31: L 5:27a 0.3 | H 12:13p 5.5 | L 6:47p 0.6
-- Nov 1: H 12:42a 3.9 | L 5:35a 0.5 | H 12:20p 5.2 | L 6:52p 0.6
-- Nov 2: H 12:55a 4.0 | L 6:50a 0.6 | H 1:27p 5.0 | L 7:55p 0.6
-- Nov 3: H 2:06a 4.2 | L 8:06a 0.6 | H 2:32p 4.8 | L 8:52p 0.5
-- Nov 4: H 3:10a 4.5 | L 9:16a 0.6 | H 3:31p 4.7 | L 9:42p 0.4
 - Nov 5: H 4:06a 4.9 | L 10:17a 0.5 | H 4:24p 4.5 | L 10:27p 0.3
 - Nov 6: H 4:55a 5.2 | L 11:10a 0.4 | H 5:11p 4.4 | L 11:09p 0.2
 - Nov 7: H 5:39a 5.4 | L 11:58a 0.3 | H 5:55p 4.3 | L 11:47p 0.2
+- Nov 8: H 6:20a 5.5 | L 12:43p 0.3 | H 6:36p 4.1
+- Nov 9: L 12:24a 0.2 | H 6:59a 5.5 | L 1:24p 0.3 | H 7:16p 4.0
+- Nov 10: L 1:00a 0.3 | H 7:37a 5.4 | L 2:05p 0.4 | H 7:54p 3.8
+- Nov 11: L 1:37a 0.4 | H 8:15a 5.3 | L 2:45p 0.6 | H 8:32p 3.7
+- Nov 12: L 2:14a 0.6 | H 8:54a 5.1 | L 3:26p 0.7 | H 9:12p 3.5
+- Nov 13: L 2:53a 0.7 | H 9:35a 4.9 | L 4:09p 0.9 | H 9:54p 3.4
+- Nov 14: L 3:36a 0.9 | H 10:19a 4.7 | L 4:55p 1.0 | H 10:41p 3.3
 Sound side, 8657813 Hampstead (ICW):
-- Oct 29: L 5:12a 0.1 | H 11:27a 4.7 | L 6:16p 0.5 | H 11:48p 3.4
-- Oct 30: L 6:05a 0.2 | H 12:25p 4.6 | L 7:13p 0.6
-- Oct 31: H 12:47a 3.4 | L 7:03a 0.3 | H 1:25p 4.5 | L 8:12p 0.7
-- Nov 1: H 1:46a 3.4 | L 7:06a 0.4 | H 1:22p 4.3 | L 8:11p 0.7
-- Nov 2: H 1:43a 3.5 | L 8:11a 0.4 | H 2:17p 4.2 | L 9:07p 0.6
-- Nov 3: H 2:40a 3.6 | L 9:14a 0.5 | H 3:12p 4.0 | L 9:58p 0.5
-- Nov 4: H 3:39a 3.8 | L 10:14a 0.5 | H 4:07p 3.9 | L 10:45p 0.4
 - Nov 5: H 4:38a 3.9 | L 11:09a 0.5 | H 5:00p 3.8 | L 11:30p 0.3
 - Nov 6: H 5:32a 4.1 | L 12:02p 0.6 | H 5:49p 3.6
 - Nov 7: L 12:14a 0.3 | H 6:20a 4.2 | L 12:54p 0.6 | H 6:35p 3.6
-Sun (USNO, Topsail Beach 34.37N 77.63W): Oct 29 rise 7:28a set 6:20p; Oct 30 7:29a/6:19p; Oct 31 7:30a/6:18p; Nov 1 6:31a/5:17p (EST); Nov 2 6:32a/5:16p; Nov 3 6:33a/5:15p; Nov 4 6:33a/5:14p; Nov 5 6:34a/5:13p; Nov 6 6:35a/5:13p; Nov 7 6:36a/5:12p.
-Moon (USNO, times converted from UT): Full Moon Oct 26 (00:12 EDT); Last Quarter Nov 1 (20:28 UT = 3:28 PM EST); New Moon Nov 9 (07:02 UT = 2:02 AM EST). Illumination: Oct 29 83%, Oct 31 63%, Nov 1 52%, Nov 3 30%, Nov 5 13%, Nov 7 3%.
-Note: Oct 29-30 morning highs (6.1 / 5.9 ft at the ocean station) are the biggest tides of the window; the Topsail Beach 2026 king-tide list was not checked (calendar.md).
+- Nov 8: L 12:57a 0.3 | H 7:05a 4.3 | L 1:44p 0.6 | H 7:19p 3.5
+- Nov 9: L 1:41a 0.3 | H 7:48a 4.3 | L 2:29p 0.6 | H 8:02p 3.4
+- Nov 10: L 2:22a 0.4 | H 8:31a 4.2 | L 3:11p 0.7 | H 8:45p 3.3
+- Nov 11: L 3:02a 0.4 | H 9:13a 4.1 | L 3:50p 0.7 | H 9:27p 3.1
+- Nov 12: L 3:39a 0.5 | H 9:56a 4.0 | L 4:28p 0.8 | H 10:10p 3.0
+- Nov 13: L 4:17a 0.6 | H 10:41a 3.9 | L 5:08p 0.9 | H 10:56p 3.0
+- Nov 14: L 4:57a 0.6 | H 11:29a 3.8 | L 5:51p 1.0 | H 11:44p 2.9
+Sun (USNO, Topsail Beach 34.37N 77.63W, EST): Nov 5 rise 6:34a set 5:13p; Nov 6 6:35a/5:13p; Nov 7 6:36a/5:12p; Nov 8 6:37a/5:11p; Nov 9 6:38a/5:10p; Nov 10 6:39a/5:09p; Nov 11 6:40a/5:09p; Nov 12 6:41a/5:08p; Nov 13 6:42a/5:07p; Nov 14 6:43a/5:07p.
+Moon (USNO, times converted from UT): Last Quarter Nov 1 (before the window); New Moon Nov 9 (07:02 UT = 2:02 AM EST); First Quarter Nov 17 (11:48 UT = 6:48 AM EST, after the window). Illumination (USNO daily value): Nov 5 13%, Nov 6 7%, Nov 7 3%, Nov 8 1%, Nov 9 0%, Nov 10 2%, Nov 11 6%, Nov 12 11%, Nov 13 17%, Nov 14 25%. Dark nights all window; the moon sets between 3:05 PM (Nov 5) and 9:21 PM (Nov 14).
+Note: the biggest tides of the window are the new-moon mornings, Nov 8-9 (5.5 ft highs at 6:20a and 6:59a at the ocean station, with 0.2-0.3 ft lows around them); the range shrinks toward Nov 14 (4.7 ft high, 0.9-1.0 ft lows). For the Topsail Beach 2026 king-tide list see calendar.md.
 
 ## Local news and notices
 | Status | URL | What it carries |

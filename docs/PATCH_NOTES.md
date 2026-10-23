@@ -8,6 +8,19 @@
   cron (`30 8,9 5-14 11 *` UTC, 3:30 and 4:30 AM EST), the specials task
   (Nov 7-14, 11:15 AM and 4:15 PM) and the tests that pin run days. The
   reference files are re-researched for the new window.
+- Reference files re-read for Nov 5-14 (all sources read 2026-10-23):
+  `calendar.md` rebuilt (Nov 6-8 surf and pier challenge on all three
+  piers, Sat Nov 7 Spot Festival / Holly Ridge Live / veterans parades,
+  Veterans Day closures, roadwork); `regs.md` gains a "does anything change
+  in the window" section (no recreational change; FF-45-2026 black sea
+  bass row; commercial Spanish mackerel closes 8 PM Nov 13); `sources.md`
+  almanac recomputed (new moon Nov 9, sunrise 6:34-6:43 AM after the clock
+  change); `spots.md` and `island.md` open-in-the-window lines (Bush Marina
+  ramp closed from Nov 2, free parking in Topsail Beach and Surf City,
+  turtle hospital no tours until Nov 27).
+- `restaurants.json` hours re-synced to the restaurants' own sites: Beach
+  Shop & Grill closed Mon-Wed with lunch Fri-Sat only, Breezeway Sunday
+  5-8:30, Daddy Mac's no Sunday dinner this fall.
 
 ## 2026-10-23
 

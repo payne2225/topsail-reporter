@@ -62,5 +62,5 @@ URL: https://www.fishermanspost.com/wrightsville-beach-october-2026/
 - NDBC buoy 41110 (Masonboro Inlet): water 76.8°F, waves 1.6 ft at 8 s, 2:00 PM EDT Oct 14, 2026: https://www.ndbc.noaa.gov/station_page.php?station=41110
 - NWS notes tornado damage on Oct 11, 2026 linked to the remnants of Hurricane Isaias (Pender and Columbus counties named by WWAY). https://forecast.weather.gov/MapClick.php?lat=34.3655&lon=-77.6294 ; https://www.wwaytv3.com/the-national-weather-service-confirms-two-tornadoes-as-severe-storms-sweep-across-the-region/ (headline only)
 - Rain closures: Topsail Sound shellfish waters closed Oct 4 and reopened Oct 9; Stump Sound closed Oct 11 (regs.md). Signals recent heavy rain and runoff in the sounds.
-- Expect the Fisherman's Post November 2026 report on or about Nov 1, 2026; it is the best single "this year" update inside the window.
+- Expect the Fisherman's Post November 2026 report on or about Nov 1, 2026, a few days before the Nov 5-14 run starts; it is the best single "this year" update for the run.
 - Pier reports beyond these: none online (Jolly Roger site last updated 6/1/25; Surf City and Seaview post on Facebook, which cannot be fetched).
