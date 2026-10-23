@@ -5,16 +5,21 @@
 # Clones the repo into %LOCALAPPDATA%\topsail-reporter\repo (the job's own
 # checkout; a live check resets it to GitHub's main), then registers
 # "Topsail Reporter specials": daily at each time, the days the paper
-# runs, through run-hidden.vbs so no window ever shows, and "Topsail
+# runs, through run-hidden.vbs so no window ever shows; "Topsail
 # Reporter hours check": fb_hours.py once at -HoursCheck, before the run
-# starts. Re-running replaces both. Remove them with:
+# starts; and "Topsail Reporter restaurant news": fb_news.py daily at
+# -NewsTime from -NewsFirst to -Last. Re-running replaces all three.
+# Remove them with:
 #   Unregister-ScheduledTask -TaskName "Topsail Reporter specials" -Confirm:$false
 #   Unregister-ScheduledTask -TaskName "Topsail Reporter hours check" -Confirm:$false
+#   Unregister-ScheduledTask -TaskName "Topsail Reporter restaurant news" -Confirm:$false
 param(
     [string[]]$Times = @("11:15", "16:15"),
     [string]$First = "2026-11-07",
     [string]$Last = "2026-11-14",
-    [string]$HoursCheck = "2026-11-05 11:15"
+    [string]$HoursCheck = "2026-11-05 11:15",
+    [string]$NewsTime = "20:30",
+    [string]$NewsFirst = "2026-10-24"
 )
 $ErrorActionPreference = "Stop"
 $State = Join-Path $env:LOCALAPPDATA "topsail-reporter"
@@ -51,5 +56,14 @@ Register-ScheduledTask -TaskName "Topsail Reporter hours check" -Action $HoursAc
     -Trigger (New-ScheduledTaskTrigger -Once -At ([datetime]$HoursCheck)) `
     -Settings $Settings -Principal $Principal -Force `
     -Description "Reads the favorite places' Facebook pages for closing or hours posts before the Topsail Reporter's run." | Out-Null
-Get-ScheduledTask -TaskName "Topsail Reporter specials", "Topsail Reporter hours check" | Get-ScheduledTaskInfo |
-    Select-Object TaskName, NextRunTime | Format-List
+
+$News = Join-Path $Repo "local\fb_news.py"
+$NewsAction = New-ScheduledTaskAction -Execute "wscript.exe" -WorkingDirectory $Repo `
+    -Argument "//nologo //B `"$Hidden`" `"$Python`" `"$News`" --log `"$Log`""
+$NewsTrigger = New-ScheduledTaskTrigger -Daily -At ([datetime]"$NewsFirst $NewsTime")
+$NewsTrigger.EndBoundary = ([datetime]"$Last 23:59").ToString("s")
+Register-ScheduledTask -TaskName "Topsail Reporter restaurant news" -Action $NewsAction `
+    -Trigger $NewsTrigger -Settings $Settings -Principal $Principal -Force `
+    -Description "Reads every restaurant's Facebook page for hours, season and menu news for the Topsail Reporter." | Out-Null
+Get-ScheduledTask -TaskName "Topsail Reporter specials", "Topsail Reporter hours check", "Topsail Reporter restaurant news" |
+    Get-ScheduledTaskInfo | Select-Object TaskName, NextRunTime | Format-List

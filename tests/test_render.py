@@ -363,6 +363,29 @@ def test_every_place_shows_its_week_and_the_days_it_opens():
     assert render.week_hours(_place("n", "N", {})) == "" and render.open_days(_place("n", "N", {})) == ""
 
 
+def test_facebook_news_shows_on_the_place_for_three_weeks_and_never_early(data):
+    # 2026-10-14 is a Wednesday.
+    news = [dict(key="m", id="a", date="2026-10-12", kind="menu", line="Off-season <menu> is out.",
+                 url="https://www.facebook.com/m"),
+            dict(key="h", id="a", date="2026-10-10", kind="hours", line="Now open Wed-Sun only.",
+                 url="https://www.facebook.com/h"),
+            dict(key="late", id="a", date="2026-10-15", kind="hours", line="Closing for the season.", url="u"),
+            dict(key="old", id="a", date="2026-09-01", kind="hours", line="Summer hours.", url="u"),
+            dict(key="once", id="a", date="2026-10-09", kind="hours", line="Closed Saturday, Oct 10.",
+                 until="2026-10-10", url="u")]
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}, news=news),
+        _place("d", "Delta Diner", {"Wed": ["11:00-15:00"]}, status="call",
+               news=[dict(news[1], id="d")])))
+    assert ("<p class=news><b>On Facebook, Oct 12:</b> Off-season &lt;menu&gt; is out. "
+            "<a href='https://www.facebook.com/m'>Post</a></p>") in eats
+    assert "<span class=sp>Oct 10 on Facebook: Now open Wed-Sun only.</span>" in eats   # hours: no tap needed
+    assert "Closing for the season" not in eats                # dated after the edition
+    assert "Summer hours" not in eats                          # more than 21 days old
+    assert "Closed Saturday, Oct 10" not in eats               # that day has passed
+    assert "<br><span class=news><b>On Facebook, Oct 10:</b> Now open Wed-Sun only." in eats  # Call first
+
+
 def test_a_place_open_only_for_breakfast_is_not_called_closed_all_day(data):
     eats = render.eats_section(data, _places(
         _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}),

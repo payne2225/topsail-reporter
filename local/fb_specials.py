@@ -312,8 +312,10 @@ def page_owner(url: str) -> str:
 
 
 def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int = 5,
-              scrolls: int = 14) -> list[dict]:
-    """The newest posts on one Page: [{text, when, url}]."""
+              scrolls: int = 14, stop_before: dt.datetime | None = None) -> list[dict]:
+    """The newest posts on one Page: [{text, when, url}]. With stop_before,
+    reading stops once two posts older than it have gone by (two, so one
+    old pinned post at the top does not end it)."""
     page.goto(url, wait_until="domcontentloaded", timeout=45000)
     page.wait_for_timeout(4000)
     if "/login" in page.url or page.locator("input[name=pass]").count():
@@ -369,6 +371,8 @@ def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int =
             if when and (text or images):
                 out.append({"text": text, "when": when, "url": link, "images": images[:2]})
         if len(seen) >= want:
+            break
+        if stop_before and sum(1 for x in out if x["when"] < stop_before) >= 2:
             break
         page.mouse.wheel(0, 700)
         page.wait_for_timeout(1300 + random.randint(0, 700))

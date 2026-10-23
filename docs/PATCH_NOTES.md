@@ -25,6 +25,17 @@
   that there were none). Task "Topsail Reporter hours check" via
   `install_task.ps1`. `read_page` takes a `scrolls` limit (default 14,
   unchanged for the specials check).
+- Restaurant news, daily until the last edition (Nate: "Start collecting
+  data from the restaurants daily until the end of our trip because some
+  places made off season menu postings today like Daddy Mac's"):
+  `local/fb_news.py` reads every place's Facebook page each evening at
+  8:30 PM ET, archives every post locally (never committed), and has Opus
+  5.5 keep hours, season and menu news as one plain sentence each in
+  `reference/fb_news.json`. The Island Edition shows them on the place
+  ("On Facebook, Oct 23: Off-season lunch specials start Tuesday, Oct
+  27..."); hours news shows without a tap; a one-time closure disappears
+  after its date. New items alert Nate. `read_page` gains `stop_before`
+  (stops once two posts older than the window have gone by).
 - Every restaurant shows its open days and hours (Nate: "i want all the
   restaurants (not just the fave list) to have their open hours and days"):
   the whole posted week in each place's details and under Call first, and

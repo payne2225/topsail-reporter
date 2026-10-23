@@ -141,6 +141,25 @@ one alert either way, with each page's newest post date. It writes nothing
 to the repo. `install_task.ps1` registers it as "Topsail Reporter hours
 check", once at `-HoursCheck` (Thu Nov 5, 11:15 AM ET); same log.
 
+**Restaurant news, daily (home PC).** Off-season hours and menus show up on
+Facebook first. `local/fb_news.py` runs every evening (8:30 PM ET, Oct 24 to
+the last edition) over every place's page, two days back (`--days 14` for
+the first run). Every own post it finds goes into a local archive,
+`%LOCALAPPDATA%\topsail-reporter\posts\<id>.json`, never committed (post text
+can name customers). Opus 5.5 keeps the posts that are news about the place
+(hours or days changing, closing for the season, reopening, a temporary
+closure, a new or off-season menu) and writes each as one plain sentence,
+naming no one, with relative days turned into dates and an `until` date for
+a one-time closure. Those go into `reference/fb_news.json` (30 days kept).
+The Island Edition shows a place's items from the 21 days before the
+edition in its details and under Call first; an hours item also shows on
+the place's line without a tap; nothing shows past its `until`. New items
+are pushed (same clone, reset, test and retry rules as the specials check)
+and sent to the alert channel. If Claude cannot be reached nothing is
+published and the posts wait for the next run (`news_seen.json` beside the
+archive marks what Claude has judged). Task "Topsail Reporter restaurant
+news" via `install_task.ps1` (`-NewsTime`, `-NewsFirst`).
+
 ## 4. Data sources (all keyless, checked 2026-10-14)
 
 | Feed | Where | Note |

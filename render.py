@@ -951,7 +951,16 @@ def load_restaurants(root: str = HERE) -> dict:
     if not os.path.exists(path):
         return {"places": []}
     with open(path, encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    # Hours, season and menu news from each place's own Facebook page
+    # (reference/fb_news.json, written daily by local/fb_news.py).
+    news_path = os.path.join(root, "reference", "fb_news.json")
+    if os.path.exists(news_path):
+        with open(news_path, encoding="utf-8") as f:
+            news = json.load(f).get("news", [])
+        for p in data.get("places", []):
+            p["news"] = [n for n in news if n.get("id") == p["id"]]
+    return data
 
 
 def load_specials(date_iso: str, root: str = HERE) -> dict | None:
@@ -1063,7 +1072,8 @@ def _rating(place: dict) -> str:
     return " &middot; ".join(bits)
 
 
-def _place_item(place: dict, weekday: str, meals: set[str], special: str | None) -> str:
+def _place_item(place: dict, weekday: str, meals: set[str], special: str | None,
+                day: str = "") -> str:
     cls = " ".join(["place"] + [m[0] for m in sorted(meals)] + (["pick"] if place.get("pick") else []))
     head = (f"<span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
             f"<span class=pm>{esc(place['town'])} &middot; {esc(hours_today(place, weekday))}</span>")
@@ -1072,6 +1082,10 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None)
         head += f"<span class=pr>{rating}</span>"
     if special:
         head += f"<span class=sp>Today: {esc(special)}</span>"
+    # Hours news decides whether to go, so it shows without a tap.
+    hours_news = [n for n in place_news(place, day, limit=5) if n["kind"] == "hours"][:1] if day else []
+    for n in hours_news:
+        head += f"<span class=sp>{esc(_short_day(n['date']))} on Facebook: {esc(n['line'])}</span>"
     detail = [f"<p>{esc(place['style'])}.</p>"]
     if place.get("reviews"):
         detail.append(f"<p><b>Reviewers say:</b> {esc(place['reviews'])}</p>")
@@ -1079,6 +1093,8 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None)
         detail.append(f"<p><b>Often ordered:</b> {esc(place['order'])}</p>")
     if week_hours(place):
         detail.append(f"<p><b>Hours:</b> {_week_html(place)}</p>")
+    if day:
+        detail.append(_news_html(place, day))
     links = [esc(place["address"])]
     if place.get("phone"):
         links.append(f"<a href='tel:{esc(re.sub(r'[^0-9]', '', place['phone']))}'>{esc(place['phone'])}</a>")
@@ -1091,6 +1107,27 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None)
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
     return (f"<li class='{cls}'><details><summary>{head}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
+
+
+NEWS_DAYS = 21                      # a place's Facebook news shows this long
+
+
+def place_news(place: dict, day: str, limit: int = 2) -> list[dict]:
+    """The place's newest hours or menu news from the NEWS_DAYS before day
+    (never a post dated after the edition, never one whose until has passed)."""
+    first = (dt.date.fromisoformat(day) - dt.timedelta(days=NEWS_DAYS)).isoformat()
+    items = [n for n in place.get("news") or [] if first <= n.get("date", "") <= day
+             and (n.get("until") or day) >= day]
+    return sorted(items, key=lambda n: n["date"], reverse=True)[:limit]
+
+
+def _news_html(place: dict, day: str, tag: str = "p") -> str:
+    out = []
+    for n in place_news(place, day):
+        link = f" <a href='{esc(n['url'])}'>Post</a>" if n.get("url") else ""
+        out.append(f"{'<br>' if tag == 'span' else ''}<{tag} class=news><b>On Facebook, "
+                   f"{esc(_short_day(n['date']))}:</b> {esc(n['line'])}{link}</{tag}>")
+    return "".join(out)
 
 
 def _closed_name(place: dict, weekday: str) -> str:
@@ -1176,7 +1213,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     meals_of = {p["id"]: m for p, m in open_today}
 
     def group(title: str, group_places: list[dict], empty: str) -> str:
-        items = [_place_item(p, weekday, meals_of[p["id"]], weekly.get(p["id"]))
+        items = [_place_item(p, weekday, meals_of[p["id"]], weekly.get(p["id"]), day)
                  for p in group_places]
         for meal in ("lunch", "dinner"):
             if not any(meal in meals_of[p["id"]] for p in group_places):
@@ -1203,7 +1240,8 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
             return f"<br>Posted hours: {_week_html(p)}" if week_hours(p) else ""
         parts.append("<div class=call><b>Call first</b><ul>" + "".join(
             f"<li><b>{'★ ' if p.get('pick') else ''}{esc(p['name'])}</b>{tel(p)}<br>"
-            f"{esc(p.get('hours_note') or 'Hours not published.')}{posted(p)}</li>"
+            f"{esc(p.get('hours_note') or 'Hours not published.')}{posted(p)}"
+            f"{_news_html(p, day, tag='span')}</li>"
             for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
     if closed:
         parts.append(f"<p class=call><b>Closed {esc(label.lower() if label == 'Today' else label)}:</b> "
