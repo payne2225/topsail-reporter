@@ -1,5 +1,14 @@
 # Patch notes
 
+## 2026-10-23 (the run moves)
+
+- The run moved one week later (Nate: "we need to change the dates to 11/7
+  to 11/14"): previews Thu Nov 5 and Fri Nov 6, arrival Sat Nov 7, daily
+  Nov 8-13, last morning Sat Nov 14. `config.py` run dates, the routine's
+  cron (`30 8,9 5-14 11 *` UTC, 3:30 and 4:30 AM EST), the specials task
+  (Nov 7-14, 11:15 AM and 4:15 PM) and the tests that pin run days. The
+  reference files are re-researched for the new window.
+
 ## 2026-10-23
 
 - Lunch & Dinner on the Island Edition (Nate: "Could we build lunch and

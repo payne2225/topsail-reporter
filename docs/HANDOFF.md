@@ -5,9 +5,10 @@ that changes how the Reporter works.
 
 ## 1. What it is
 
-A morning report on Topsail Island, NC. Ten mornings: previews Thu Oct 29
-and Fri Oct 30, arrival day Sat Oct 31, daily Nov 1-6, last morning Sat
-Nov 7 (2026). Clean voice, light humor.
+A morning report on Topsail Island, NC. Ten mornings: previews Thu Nov 5
+and Fri Nov 6, arrival day Sat Nov 7, daily Nov 8-13, last morning Sat
+Nov 14 (2026; moved one week later on 2026-10-23, from Oct 29 - Nov 7).
+Clean voice, light humor.
 
 Two editions a morning from one report file (since 2026-10-16, Nate: "the
 current one stays as is for us who fish, but we could have a non-fishing
@@ -66,13 +67,12 @@ rating. Refresh hours and ratings by editing the JSON and its `read` date.
 
 Cloud routine **Topsail Reporter**, `trig_0191168AXrPkqA7rHyQ446eP`
 (environment `env_01HRBGRSDmfX7Vur76oE8Lkh`, source this repo only, no
-secrets: it only pushes here). Disable it after Nov 7 with
+secrets: it only pushes here). Disable it after Nov 14 with
 `{"enabled": false}` (the API has no delete).
 
-Fable 5.1, cron `30 8,9 1-7,29-31 10,11 *` (UTC): 4:30 and
-5:30 AM EDT through Oct 31, 3:30 and 4:30 AM EST from Nov 1. The day list
-in the cron keeps it silent outside the run, except Oct 1-7 and Nov 29-30,
-which the gate turns away (`OFF`).
+Fable 5.1, cron `30 8,9 5-14 11 *` (UTC): 3:30 and 4:30 AM EST (the
+whole run is after the Nov 1 clock change). The cron fires only on the
+run's ten days; the gate still turns away any other day (`OFF`).
 
 1. `gate.py`: OFF / DONE / BUSY stop the fire; GO carries on.
 2. `fetch.py` -> `render.py` -> `publish.py --what numbers`: a numbers-only

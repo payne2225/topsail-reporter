@@ -1,7 +1,7 @@
 """Turn data/<date>.json (+ reports/<date>.md when written) into the site.
 
     python render.py                 # every edition, the index, every text
-    python render.py --print 2026-10-29   # also print that day's text
+    python render.py --print 2026-11-05   # also print that day's text
 
 Outputs, all under site/ (what GitHub Pages serves):
     site/<date>/index.html          the fishing edition's full report

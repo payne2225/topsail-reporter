@@ -1,7 +1,7 @@
 """Commit this morning's edition on top of origin/main and push it.
 
-    python publish.py --date 2026-10-29 --what numbers   # the quick edition
-    python publish.py --date 2026-10-29 --what full      # the written report
+    python publish.py --date 2026-11-05 --what numbers   # the quick edition
+    python publish.py --date 2026-11-05 --what full      # the written report
 
 Publishes data/<date>.json, reports/<date>.md when it exists, and all of
 site/. The commit is built on a fresh fetch of origin/main with this

@@ -1,6 +1,6 @@
 """Wait until the live site serves this morning's texts exactly as rendered.
 
-    python check_live.py --date 2026-10-29
+    python check_live.py --date 2026-11-05
 
 Polls both published texts (the fishing one and the Island Edition) every
 20 seconds, with a cache-buster, and compares each with its copy under

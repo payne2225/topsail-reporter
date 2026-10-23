@@ -10,7 +10,7 @@ import publish
 from conftest import git
 
 UTC = dt.timezone.utc
-NOV2_430_EST = dt.datetime(2026, 11, 2, 9, 30, tzinfo=UTC)
+NOV9_430_EST = dt.datetime(2026, 11, 9, 9, 30, tzinfo=UTC)
 
 
 def data_json(made: dt.datetime) -> str:
@@ -18,27 +18,27 @@ def data_json(made: dt.datetime) -> str:
 
 
 def test_off_outside_the_run():
-    assert gate.decide("2026-10-21", NOV2_430_EST, None, None)[0] == gate.OFF
-    assert gate.decide("2026-11-08", NOV2_430_EST, None, None)[0] == gate.OFF
+    assert gate.decide("2026-10-21", NOV9_430_EST, None, None)[0] == gate.OFF
+    assert gate.decide("2026-11-15", NOV9_430_EST, None, None)[0] == gate.OFF
 
 
 def test_go_on_a_fresh_morning():
-    assert gate.decide("2026-11-02", NOV2_430_EST, None, None) == (gate.GO, "daily")
+    assert gate.decide("2026-11-09", NOV9_430_EST, None, None) == (gate.GO, "daily")
 
 
 def test_done_once_the_report_is_published():
-    assert gate.decide("2026-11-02", NOV2_430_EST, "---", data_json(NOV2_430_EST))[0] == gate.DONE
+    assert gate.decide("2026-11-09", NOV9_430_EST, "---", data_json(NOV9_430_EST))[0] == gate.DONE
 
 
 def test_busy_while_an_earlier_fire_is_writing():
-    made = NOV2_430_EST - dt.timedelta(minutes=58)
-    assert gate.decide("2026-11-02", NOV2_430_EST, None, data_json(made))[0] == gate.BUSY
+    made = NOV9_430_EST - dt.timedelta(minutes=58)
+    assert gate.decide("2026-11-09", NOV9_430_EST, None, data_json(made))[0] == gate.BUSY
 
 
 def test_go_when_the_numbers_edition_is_old_and_no_report_came():
-    made = NOV2_430_EST - dt.timedelta(minutes=80)
-    assert gate.decide("2026-11-02", NOV2_430_EST, None, data_json(made)) == (gate.GO, "daily")
-    assert gate.decide("2026-11-02", NOV2_430_EST, None, "not json")[0] == gate.GO
+    made = NOV9_430_EST - dt.timedelta(minutes=80)
+    assert gate.decide("2026-11-09", NOV9_430_EST, None, data_json(made)) == (gate.GO, "daily")
+    assert gate.decide("2026-11-09", NOV9_430_EST, None, "not json")[0] == gate.GO
 
 
 def test_the_first_winter_fire_is_still_the_right_day():
@@ -46,21 +46,21 @@ def test_the_first_winter_fire_is_still_the_right_day():
     first = config.eastern(dt.datetime(2026, 11, 1, 8, 30, tzinfo=UTC))
     assert (first.date().isoformat(), first.hour, first.minute) == ("2026-11-01", 3, 30)
     # The day after the run, the gate stops before it ever touches git.
-    status, date, _ = gate.gate("/nonexistent", dt.datetime(2026, 11, 8, 8, 30, tzinfo=UTC))
-    assert (status, date) == (gate.OFF, "2026-11-08")
+    status, date, _ = gate.gate("/nonexistent", dt.datetime(2026, 11, 15, 8, 30, tzinfo=UTC))
+    assert (status, date) == (gate.OFF, "2026-11-15")
 
 
 def test_gate_reads_origin_not_the_checkout(repo_pair):
     clone, origin, seed = repo_pair
-    now = dt.datetime(2026, 10, 29, 8, 40, tzinfo=UTC)
+    now = dt.datetime(2026, 11, 5, 8, 40, tzinfo=UTC)
     assert gate.gate(clone, now)[0] == gate.GO
     os.makedirs(os.path.join(seed, "reports"))
-    with open(os.path.join(seed, "reports", "2026-10-29.md"), "w") as f:
+    with open(os.path.join(seed, "reports", "2026-11-05.md"), "w") as f:
         f.write("---\n")
     git(seed, "add", "reports")
     git(seed, "commit", "-q", "-m", "report")
     git(seed, "push", "-q", "origin", "HEAD:refs/heads/main")
-    assert gate.gate(clone, now)[:2] == (gate.DONE, "2026-10-29")
+    assert gate.gate(clone, now)[:2] == (gate.DONE, "2026-11-05")
 
 
 def _edition(repo: str, date: str, body: str = "x") -> None:

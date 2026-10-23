@@ -145,9 +145,10 @@ def test_eastern_time_follows_the_us_rule(utc, offset):
 
 
 @pytest.mark.parametrize("date, kind", [
-    ("2026-10-28", None), ("2026-10-29", "preview"), ("2026-10-30", "preview"),
-    ("2026-10-31", "arrival"), ("2026-11-01", "daily"), ("2026-11-06", "daily"),
-    ("2026-11-07", "departure"), ("2026-11-08", None), ("2026-10-14", "sample"),
+    ("2026-11-04", None), ("2026-11-05", "preview"), ("2026-11-06", "preview"),
+    ("2026-11-07", "arrival"), ("2026-11-08", "daily"), ("2026-11-13", "daily"),
+    ("2026-11-14", "departure"), ("2026-11-15", None), ("2026-10-14", "sample"),
+    ("2026-10-29", None), ("2026-10-31", None),       # the old run, moved a week on 2026-10-23
 ])
 def test_every_day_of_the_run_has_its_kind(date, kind):
     assert config.kind_for(date) == kind

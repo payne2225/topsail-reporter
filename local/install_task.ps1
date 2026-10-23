@@ -10,8 +10,8 @@
 #   Unregister-ScheduledTask -TaskName "Topsail Reporter specials" -Confirm:$false
 param(
     [string[]]$Times = @("11:15", "16:15"),
-    [string]$First = "2026-10-31",
-    [string]$Last = "2026-11-07"
+    [string]$First = "2026-11-07",
+    [string]$Last = "2026-11-14"
 )
 $ErrorActionPreference = "Stop"
 $State = Join-Path $env:LOCALAPPDATA "topsail-reporter"

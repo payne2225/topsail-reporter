@@ -1,6 +1,6 @@
 """Check a written report against its own morning's data before it ships.
 
-    python validate.py --date 2026-10-29
+    python validate.py --date 2026-11-05
 
 Prints OK, or every problem found and exits 2. Fix the REPORT, never this
 file: each rule is here because a text that breaks it should not reach a

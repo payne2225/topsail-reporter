@@ -73,11 +73,12 @@ SOUND_TEMP_STATION = {"id": "8656483", "name": "Beaufort", "miles": 60,
 MARINE_MODEL_POINT = (34.35, -77.60)
 
 # ------------------------------------------------------------------ the run
-FIRST_EDITION = "2026-10-29"
-LAST_EDITION = "2026-11-07"
-PREVIEW_DATES = ("2026-10-29", "2026-10-30")
-ARRIVAL_DATE = "2026-10-31"
-DEPARTURE_DATE = "2026-11-07"
+# Moved one week later on 2026-10-23 (was Oct 29 - Nov 7).
+FIRST_EDITION = "2026-11-05"
+LAST_EDITION = "2026-11-14"
+PREVIEW_DATES = ("2026-11-05", "2026-11-06")
+ARRIVAL_DATE = "2026-11-07"
+DEPARTURE_DATE = "2026-11-14"
 
 # Rehearsal editions outside the run, built end to end like a real one so
 # the whole chain is proven before the first preview. Kind "sample".

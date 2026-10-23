@@ -1,7 +1,7 @@
 """Every hard number the Topsail Reporter prints, fetched once a morning.
 
-    python fetch.py --date 2026-10-29          # -> data/2026-10-29.json
-    python fetch.py --date 2026-10-29 --raw tests/fixtures   # also keep raw payloads
+    python fetch.py --date 2026-11-05          # -> data/2026-11-05.json
+    python fetch.py --date 2026-11-05 --raw tests/fixtures   # also keep raw payloads
 
 Sources, all free and keyless:
   - NOAA CO-OPS tide predictions: Hampstead (sound, leads) and Ocean City
