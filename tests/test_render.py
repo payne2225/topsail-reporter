@@ -345,6 +345,31 @@ def test_lunch_and_dinner_come_from_the_hours():
     assert render.hours_today(p, "Wed") == "11 AM–3 PM, 5 PM–9 PM"
 
 
+def test_every_place_shows_its_week_and_the_days_it_opens():
+    p = _place("x", "X", {"Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"], "Thu": ["11:00-21:00"],
+                          "Fri": ["11:00-21:00"], "Sat": ["11:00-21:00"], "Sun": ["10:00-15:00"]})
+    assert render.week_hours(p) == "Mon closed · Tue–Sat 11 AM–9 PM · Sun 10 AM–3 PM"
+    assert render.open_days(p) == "Tue–Sun"
+    every = _place("e", "E", {d: ["11:30-21:00"] for d in render.WEEKDAYS})
+    assert render.week_hours(every) == "Every day 11:30 AM–9 PM"
+    assert render.open_days(every) == "every day"
+    wrap = _place("w", "W", {"Fri": ["17:00-21:00"], "Sat": ["17:00-21:00"],
+                             "Sun": ["17:00-20:30"], "Mon": ["17:00-21:00"], "Wed": "?"})
+    assert render.open_days(wrap) == "Fri–Mon"               # runs past Sunday
+    assert render.week_hours(wrap) == ("Mon 5 PM–9 PM · Tue closed · Wed hours not posted · "
+                                       "Thu closed · Fri–Sat 5 PM–9 PM · Sun 5 PM–8:30 PM")
+    assert render.open_days(_place("t", "T", {"Tue": ["11:00-14:00"], "Thu": ["11:00-14:00"],
+                                              "Fri": ["11:00-14:00"]})) == "Tue, Thu–Fri"
+    assert render.week_hours(_place("n", "N", {})) == "" and render.open_days(_place("n", "N", {})) == ""
+
+
+def test_a_place_open_only_for_breakfast_is_not_called_closed_all_day(data):
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}),
+        _place("b", "Biscuit Hut", {"Wed": ["06:00-10:30"], "Thu": ["06:00-10:30"]})))
+    assert "Biscuit Hut (no lunch or dinner)." in eats
+
+
 def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data):
     # 2026-10-14 is a Wednesday.
     eats = render.eats_section(data, _places(
@@ -356,9 +381,12 @@ def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data)
         _place("e", "Echo BBQ", {"Wed": ["11:00-20:00"]}, status="closed")))
     assert eats.index("Bravo Fish") < eats.index("Our picks") + 400 < eats.index("Alpha Grill")
     assert "<h3>Our picks</h3>" in eats and "<h3>Also worth trying</h3>" in eats
-    assert "<b>Closed today:</b> Charlie Pizza." in eats
+    assert "<b>Closed today:</b> Charlie Pizza (open Thu)." in eats
     assert ("<b>Call first</b><ul><li><b>Delta Diner</b> <a href='tel:9105550100'>910-555-0100</a>"
-            "<br>Closes for the winter.</li></ul>") in eats
+            "<br>Closes for the winter.<br>Posted hours: <span class=nw>Mon–Tue closed</span> · "
+            "<span class=nw>Wed 11 AM–3 PM</span> · <span class=nw>Thu–Sun closed</span></li></ul>") in eats
+    assert ("<p><b>Hours:</b> <span class=nw>Mon–Tue closed</span> · <span class=nw>Wed 11 AM–9 PM</span>"
+            " · <span class=nw>Thu–Sun closed</span></p>") in eats
     assert "Echo BBQ" not in eats                             # gone for good
     assert "Google 4.1 <small>(900)</small>" in eats
 

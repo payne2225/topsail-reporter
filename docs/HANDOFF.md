@@ -48,7 +48,11 @@ when it is open across 12:30-1:30 and for dinner when it is open at 6:30
 and stays open to 7; a `meals` list overrides that. The page opens on
 Dinner after 3 PM. Places with unknown hours or a `call` status are listed
 under "Call first" with their number; picks sort first, then by Google
-rating. Refresh hours and ratings by editing the JSON and its `read` date.
+rating. Every place shows its whole posted week (Monday first, days with the
+same hours run together: "Mon closed · Tue–Sat 11 AM–9 PM · Sun 10 AM–3 PM")
+in its tap-open details and under Call first, and the "Closed today" list
+names the days each one does open. Refresh hours and ratings by editing the
+JSON and its `read` date.
 
 ## 2. Hard rules
 

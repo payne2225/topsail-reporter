@@ -891,7 +891,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .places .pd{padding:0 0 12px;font-size:.92rem;line-height:1.5}.places .pd p{margin:0 0 6px}
 .places li.none{padding:11px 0;color:var(--muted);font-size:.9rem}
 .call{font:.9rem/1.5 var(--sans);color:var(--muted);margin:16px 0 0}.call b{color:var(--ink)}
-.call ul{list-style:none;margin:6px 0 0;padding:0!important}.call li{margin:0 0 8px!important}
+.nw{white-space:nowrap}.call ul{list-style:none;margin:6px 0 0;padding:0!important}.call li{margin:0 0 8px!important}
 .eats>p.muted:last-child{margin-top:16px;font-size:.85rem}
 @media (min-width:700px){
 body{font-size:18px}.wrap{padding:28px 28px 56px}
@@ -1005,6 +1005,55 @@ def hours_today(place: dict, weekday: str) -> str:
     return ", ".join(f"{_clock(a)}–{_clock(b)}" for a, b in _spans(place, weekday) or [])
 
 
+def _days(run: list[str]) -> str:
+    """A run of days in a row: ['Tue', 'Wed', 'Thu'] -> 'Tue–Thu'."""
+    return run[0] if len(run) == 1 else f"{run[0]}–{run[-1]}"
+
+
+def week_hours(place: dict) -> str:
+    """The posted week, Monday first, days with the same hours run together:
+    'Mon closed · Tue–Sat 11 AM–9 PM · Sun 10 AM–3 PM'. '' when no hours
+    are posted."""
+    hours = place.get("hours") or {}
+    if not hours or all(v == "?" for v in hours.values()):
+        return ""
+    runs: list[tuple[list[str], str]] = []
+    for day in WEEKDAYS:
+        v = hours.get(day)
+        text = "hours not posted" if v == "?" else hours_today(place, day) if v else "closed"
+        if runs and runs[-1][1] == text:
+            runs[-1][0].append(day)
+        else:
+            runs.append(([day], text))
+    if len(runs) == 1:
+        return f"Every day {runs[0][1]}"
+    return " · ".join(f"{_days(days)} {text}" for days, text in runs)
+
+
+def _week_html(place: dict) -> str:
+    """week_hours with each run kept on one line ('11 AM–9 PM' never splits)."""
+    return " · ".join(f"<span class=nw>{esc(run)}</span>" for run in week_hours(place).split(" · "))
+
+
+def open_days(place: dict) -> str:
+    """The days a place opens, runs joined and wrapping past Sunday:
+    'Thu–Sun', 'Fri–Mon', 'Tue, Thu–Sat'; 'every day'."""
+    hours = place.get("hours") or {}
+    is_open = [bool(hours.get(d)) and hours.get(d) != "?" for d in WEEKDAYS]
+    if all(is_open):
+        return "every day"
+    start = (is_open.index(False) + 1) % 7         # begin just after a closed day
+    runs: list[list[str]] = []
+    for k in range(7):
+        i = (start + k) % 7
+        if is_open[i]:
+            if runs and runs[-1][-1] == WEEKDAYS[(i - 1) % 7]:
+                runs[-1].append(WEEKDAYS[i])
+            else:
+                runs.append([WEEKDAYS[i]])
+    return ", ".join(_days(r) for r in runs)
+
+
 def _rating(place: dict) -> str:
     bits = []
     for key, label in (("google", "Google"), ("tripadvisor", "Tripadvisor")):
@@ -1028,6 +1077,8 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None)
         detail.append(f"<p><b>Reviewers say:</b> {esc(place['reviews'])}</p>")
     if place.get("order"):
         detail.append(f"<p><b>Often ordered:</b> {esc(place['order'])}</p>")
+    if week_hours(place):
+        detail.append(f"<p><b>Hours:</b> {_week_html(place)}</p>")
     links = [esc(place["address"])]
     if place.get("phone"):
         links.append(f"<a href='tel:{esc(re.sub(r'[^0-9]', '', place['phone']))}'>{esc(place['phone'])}</a>")
@@ -1040,6 +1091,15 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None)
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
     return (f"<li class='{cls}'><details><summary>{head}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
+
+
+def _closed_name(place: dict, weekday: str) -> str:
+    """A name in the closed list, with the days it does open."""
+    name = esc(place["name"])
+    if _spans(place, weekday):                     # open, but not at lunch or dinner time
+        return f"{name} (no lunch or dinner)"
+    days = open_days(place)
+    return f"{name} (open {esc(days)})" if days else name
 
 
 def _ranked(places: list[dict]) -> list[dict]:
@@ -1101,7 +1161,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
         status = f"Restaurant Facebook pages checked at {', '.join(checked)}."
     elif in_run:
         status = ("Specials the restaurants post on Facebook are added here through the "
-                  "day (checked about 10:30 AM and 3:30 PM).")
+                  "day (checked about 11:15 AM and 4:15 PM).")
     else:
         status = ""
     parts = ["<section class=eats><h2>Lunch &amp; Dinner</h2>"]
@@ -1139,13 +1199,16 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
         def tel(p: dict) -> str:
             return (f" <a href='tel:{esc(re.sub(r'[^0-9]', '', p['phone']))}'>{esc(p['phone'])}</a>"
                     if p.get("phone") else "")
+        def posted(p: dict) -> str:
+            return f"<br>Posted hours: {_week_html(p)}" if week_hours(p) else ""
         parts.append("<div class=call><b>Call first</b><ul>" + "".join(
             f"<li><b>{'★ ' if p.get('pick') else ''}{esc(p['name'])}</b>{tel(p)}<br>"
-            f"{esc(p.get('hours_note') or 'Hours not published.')}</li>"
+            f"{esc(p.get('hours_note') or 'Hours not published.')}{posted(p)}</li>"
             for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
     if closed:
         parts.append(f"<p class=call><b>Closed {esc(label.lower() if label == 'Today' else label)}:</b> "
-                     + ", ".join(esc(p["name"]) for p in sorted(closed, key=lambda p: p["name"]))
+                     + ", ".join(_closed_name(p, weekday)
+                                 for p in sorted(closed, key=lambda p: p["name"]))
                      + ".</p>")
     read = restaurants.get("read")
     parts.append("<p class=muted>Hours as each place published them"

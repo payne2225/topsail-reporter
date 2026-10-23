@@ -25,6 +25,13 @@
   that there were none). Task "Topsail Reporter hours check" via
   `install_task.ps1`. `read_page` takes a `scrolls` limit (default 14,
   unchanged for the specials check).
+- Every restaurant shows its open days and hours (Nate: "i want all the
+  restaurants (not just the fave list) to have their open hours and days"):
+  the whole posted week in each place's details and under Call first, and
+  the days each closed-today place opens ("Beach Shop & Grill (open
+  Thu–Sun)"). A place open only for breakfast says "no lunch or dinner"
+  instead of looking closed. The in-run note now gives the real check times
+  (about 11:15 AM and 4:15 PM, not 10:30 and 3:30).
 - `restaurants.json` hours re-synced to the restaurants' own sites: Beach
   Shop & Grill closed Mon-Wed with lunch Fri-Sat only, Breezeway Sunday
   5-8:30, Daddy Mac's no Sunday dinner this fall.
