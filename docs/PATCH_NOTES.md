@@ -18,6 +18,13 @@
   change); `spots.md` and `island.md` open-in-the-window lines (Bush Marina
   ramp closed from Nov 2, free parking in Topsail Beach and Surf City,
   turtle hospital no tours until Nov 27).
+- Hours check before the run (Nate asked for it after Breezeway's page
+  showed no closing notice): `local/fb_hours.py` reads the picks' Facebook
+  pages two weeks back and alerts Nate once, Thu Nov 5 at 11:15 AM ET,
+  with any post about closing, cut-back days or hours, or reopening (or
+  that there were none). Task "Topsail Reporter hours check" via
+  `install_task.ps1`. `read_page` takes a `scrolls` limit (default 14,
+  unchanged for the specials check).
 - `restaurants.json` hours re-synced to the restaurants' own sites: Beach
   Shop & Grill closed Mon-Wed with lunch Fri-Sat only, Breezeway Sunday
   5-8:30, Daddy Mac's no Sunday dinner this fall.

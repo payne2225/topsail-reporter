@@ -127,6 +127,16 @@ hidden scheduled task "Topsail Reporter specials" is installed by
 `local/install_task.ps1` (its `-Times` are the check times; the days the
 paper runs); its log is `specials.log` beside the clone.
 
+**Hours check before the run (home PC, once).** The specials check keeps
+only the day's posts, so a "closed for the season" post made before the run
+would reach no one. `local/fb_hours.py` reads the pages of the places marked
+`pick: true`, back two weeks (posts read as text, a photo with little text
+read by Opus 5.5 for a notice), has Opus 5.5 keep the posts about closing,
+cut-back days or hours, or reopening (keyword filter as stand-in), and sends
+one alert either way, with each page's newest post date. It writes nothing
+to the repo. `install_task.ps1` registers it as "Topsail Reporter hours
+check", once at `-HoursCheck` (Thu Nov 5, 11:15 AM ET); same log.
+
 ## 4. Data sources (all keyless, checked 2026-10-14)
 
 | Feed | Where | Note |

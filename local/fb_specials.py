@@ -311,7 +311,8 @@ def page_owner(url: str) -> str:
     return "" if first in ("", "home.php") else first
 
 
-def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int = 5) -> list[dict]:
+def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int = 5,
+              scrolls: int = 14) -> list[dict]:
     """The newest posts on one Page: [{text, when, url}]."""
     page.goto(url, wait_until="domcontentloaded", timeout=45000)
     page.wait_for_timeout(4000)
@@ -326,7 +327,7 @@ def read_page(page, url: str, now: dt.datetime, debug: bool = False, want: int =
     if not owner:
         raise RuntimeError("Facebook sent the check to the home feed")
     seen, out = set(), []
-    for _ in range(14):
+    for _ in range(scrolls):
         units = page.locator("div[aria-posinset]")
         for i in range(units.count()):
             unit = units.nth(i)
