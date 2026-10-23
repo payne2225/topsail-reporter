@@ -14,7 +14,13 @@
     tap-to-open details, then "Call first" (with numbers) and "Closed
     today".
   - The day's Facebook specials come from `specials/<date>.json` when it
-    exists; the job that writes it is being built.
+    exists.
+- `local/fb_specials.py`, `local/fb_login.py`, `local/fb_session.py`: the
+  home-PC job that reads each restaurant's Facebook page about 10:30 AM
+  and 3:30 PM ET, writes the day's specials, pushes, and alerts one
+  person (Nate: "just update the page. Maybe alert just me"). Facebook
+  URLs for 26 places added to `reference/restaurants.json`. Not scheduled
+  yet: it needs the one-time sign-in and an alert channel first.
 - The fishing page is fishing and the outdoors only (Nate: "maybe the
   fishing side of it is just fishing info and outdoor conditions"): Around
   the Island now shows on the Island Edition only.

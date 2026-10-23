@@ -13,7 +13,7 @@
     {
       "id": "daddy-macs", "name": "Daddy Mac's Beach Grille", "town": "Surf City",
       "address": "108 N Shore Dr, Surf City", "phone": "910-328-5577",
-      "website": "https://daddymacsbeachgrille.com/", "facebook": null,
+      "website": "https://daddymacsbeachgrille.com/", "facebook": "https://www.facebook.com/Daddymacsbeachgrille",
       "style": "Oceanfront seafood, crab cakes and steaks by the Surf City pier; full bar",
       "status": "open", "pick": false,
       "hours": {"Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"], "Thu": ["11:00-21:00"],
@@ -28,7 +28,7 @@
     {
       "id": "shaka-taco", "name": "Shaka Taco", "town": "Surf City",
       "address": "107 N Shore Dr, Surf City", "phone": "910-616-3118",
-      "website": "https://www.shakataconc.com/", "facebook": null,
+      "website": "https://www.shakataconc.com/", "facebook": "https://www.facebook.com/ShakaTacoNC",
       "style": "Beachside tacos, nachos, wings and quesadillas; dog-friendly patio",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-20:00"], "Tue": ["11:00-20:00"], "Wed": ["11:00-20:00"],
@@ -44,7 +44,7 @@
     {
       "id": "surfdog", "name": "SurfDog Bites & Brews", "town": "Surf City",
       "address": "204-A N New River Dr (Treasure Coast Square), Surf City", "phone": "910-541-2358",
-      "website": "http://www.ilovesurfdog.com/", "facebook": null,
+      "website": "http://www.ilovesurfdog.com/", "facebook": "https://www.facebook.com/196189790940828",
       "style": "Hot dogs, burgers, fish and chicken sandwiches, salads; rotating drafts",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-15:00"], "Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"],
@@ -80,7 +80,7 @@
     {
       "id": "maxs-pizza", "name": "Max's Pizza", "town": "Surf City",
       "address": "602 A Roland Ave, Surf City", "phone": "910-328-2158",
-      "website": "http://www.maxspizzatopsail.com/", "facebook": null,
+      "website": "http://www.maxspizzatopsail.com/", "facebook": "https://www.facebook.com/maxspizzatopsail",
       "style": "Family pizza, pasta, subs and burgers",
       "status": "open", "pick": false,
       "hours": {"Wed": ["11:00-20:00"], "Thu": ["11:00-20:00"], "Fri": ["11:00-21:00"],
@@ -95,7 +95,7 @@
     {
       "id": "coastal-wing", "name": "Coastal Wing & Spirits Co.", "town": "Surf City",
       "address": "108 Triton Ln, Surf City", "phone": "910-803-0324",
-      "website": "https://coastalwingco.com/", "facebook": null,
+      "website": "https://coastalwingco.com/", "facebook": "https://www.facebook.com/193181301403339",
       "style": "Wings, burgers and pub food; plenty of TVs, inside and out",
       "status": "open", "pick": false,
       "hours": {"Mon": ["16:00-22:00"], "Tue": ["16:00-22:00"], "Wed": ["11:30-22:00"],
@@ -126,7 +126,7 @@
     {
       "id": "patio-at-the-surf", "name": "The Patio at the Surf", "town": "Surf City",
       "address": "Charlie Medlin Dr, Surf City", "phone": "910-803-0020",
-      "website": "https://patioatsurf.com/", "facebook": null,
+      "website": "https://patioatsurf.com/", "facebook": "https://www.facebook.com/61588375706177",
       "style": "Brunch and lunch, craft cocktails; evening tapas Thursday to Sunday",
       "status": "open", "pick": false,
       "hours": {"Mon": ["07:00-15:00"], "Tue": ["07:00-15:00"], "Wed": ["07:00-15:00"],
@@ -157,7 +157,7 @@
     {
       "id": "scp-grill", "name": "Surf City Ocean Pier Grill", "town": "Surf City",
       "address": "112 S Shore Dr, Surf City (on the pier)", "phone": "910-328-3521",
-      "website": "https://www.surfcityoceanpier.com/", "facebook": null,
+      "website": "https://www.surfcityoceanpier.com/", "facebook": "https://www.facebook.com/surfcitypier",
       "style": "Casual grill and ice cream on the fishing pier",
       "status": "open", "pick": false,
       "hours": {"Mon": ["07:00-22:00"], "Tue": ["07:00-22:00"], "Wed": ["07:00-22:00"],
@@ -171,7 +171,7 @@
     {
       "id": "topsail-steamer", "name": "Topsail Steamer Seafood", "town": "Surf City",
       "address": "302 S Topsail Dr, Surf City", "phone": "910-328-2645",
-      "website": "https://topsailsteamer.com/", "facebook": null,
+      "website": "https://topsailsteamer.com/", "facebook": "https://www.facebook.com/TopsailSteamer",
       "style": "Seafood steam pots to pick up and cook at the house",
       "status": "open", "pick": false, "meals": ["dinner"],
       "hours": {"Mon": ["12:00-19:00"], "Tue": ["12:00-19:00"], "Wed": ["12:00-19:00"],
@@ -187,7 +187,7 @@
     {
       "id": "shuckin-shack", "name": "Shuckin' Shack Oyster Bar", "town": "Surf City",
       "address": "13460 NC-50 #101, Surf City", "phone": "910-803-2037",
-      "website": "https://surfcity.theshuckinshack.com/", "facebook": null,
+      "website": "https://surfcity.theshuckinshack.com/", "facebook": "https://www.facebook.com/shuckinshacksurfcitync",
       "style": "Oyster bar and casual seafood; outdoor family seating",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-21:00"], "Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"],
@@ -203,7 +203,7 @@
     {
       "id": "margaritas", "name": "Margaritas Mexican Grill & Cantina", "town": "Surf City",
       "address": "204 N New River Dr, Surf City", "phone": "910-541-0167",
-      "website": null, "facebook": null,
+      "website": null, "facebook": "https://www.facebook.com/100069535167139",
       "style": "Mexican grill and cantina",
       "status": "open", "pick": false,
       "hours": {"Mon": "?", "Tue": "?", "Wed": ["11:00-22:00"], "Thu": ["11:00-22:00"],
@@ -234,7 +234,7 @@
     {
       "id": "santorini", "name": "Santorini Greek & Italian Bistro", "town": "Surf City",
       "address": "205 S Topsail Dr, Surf City", "phone": "910-541-2759",
-      "website": "https://www.santorinisurfcity.com/", "facebook": null,
+      "website": "https://www.santorinisurfcity.com/", "facebook": "https://www.facebook.com/1682208722069424",
       "style": "Greek and Italian, steaks and gyros; full bar",
       "status": "open", "pick": false,
       "hours": {"Tue": ["16:00-21:00"], "Wed": ["16:00-21:00"], "Thu": ["16:00-21:00"],
@@ -249,7 +249,7 @@
     {
       "id": "low-tide", "name": "Low Tide Steakhouse & SandBar", "town": "Surf City",
       "address": "13741 NC-50 Suite E, Surf City", "phone": "910-803-0738",
-      "website": "https://lowtidesteakhouse.com/", "facebook": null,
+      "website": "https://lowtidesteakhouse.com/", "facebook": "https://www.facebook.com/113862950462186",
       "style": "Steakhouse and seafood with a salad bar; takes reservations",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:30-21:00"], "Tue": ["11:30-21:00"], "Wed": ["11:30-21:00"],
@@ -265,7 +265,7 @@
     {
       "id": "maine-lobstah", "name": "Maine Lobstah Shack", "town": "Surf City",
       "address": "411 Roland Ave, Surf City", "phone": "910-548-6789",
-      "website": "https://mainelobstahshack.com/", "facebook": null,
+      "website": "https://mainelobstahshack.com/", "facebook": "https://www.facebook.com/110269074952794",
       "style": "Maine-style lobster shack; outdoor seats with sunset over the bridge",
       "status": "open", "pick": false,
       "hours": {"Thu": ["11:30-19:00"], "Fri": ["11:30-19:30"], "Sat": ["11:30-19:30"],
@@ -280,7 +280,7 @@
     {
       "id": "surf-city-smash", "name": "Surf City Smash", "town": "Surf City",
       "address": "100 Charlie Medlin Dr Ste B, Surf City", "phone": null,
-      "website": "https://www.surfcitysmash.com/", "facebook": null,
+      "website": "https://www.surfcitysmash.com/", "facebook": "https://www.facebook.com/profile.php?id=61553536557423",
       "style": "Smash burgers and cheesesteaks",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-21:00"], "Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"],
@@ -311,7 +311,7 @@
     {
       "id": "beach-shop-grill", "name": "Beach Shop & Grill", "town": "Topsail Beach",
       "address": "701 S Anderson Blvd, Topsail Beach", "phone": "910-328-6501",
-      "website": "https://beachshopandgrill.com/", "facebook": null,
+      "website": "https://beachshopandgrill.com/", "facebook": "https://www.facebook.com/beachshopandgrill",
       "style": "Southern coastal seafood, beachy-upscale; wine list, patio, dogs welcome",
       "status": "open", "pick": false,
       "hours": {"Wed": ["11:00-15:00", "17:00-21:00"], "Thu": ["11:00-15:00", "17:00-21:00"],
@@ -327,7 +327,7 @@
     {
       "id": "breezeway", "name": "Breezeway Restaurant", "town": "Topsail Beach",
       "address": "634 Channel Blvd, Topsail Beach (on the sound)", "phone": "910-328-4302",
-      "website": "https://thebreezewaytopsail.com/", "facebook": null,
+      "website": "https://thebreezewaytopsail.com/", "facebook": "https://www.facebook.com/TheBreezewayMotelandRestaurant",
       "style": "Old-school soundside seafood with sunset views",
       "status": "call", "pick": false,
       "hours": {"Mon": ["17:00-21:00"], "Thu": ["17:00-21:00"], "Fri": ["17:00-21:00"],
@@ -342,7 +342,7 @@
     {
       "id": "coras", "name": "Cora's Isle-End Deli", "town": "Topsail Beach",
       "address": "712 S Anderson Blvd, Topsail Beach", "phone": "910-541-2007",
-      "website": "https://corasdeli.net/", "facebook": null,
+      "website": "https://corasdeli.net/", "facebook": "https://www.facebook.com/profile.php?id=100066430102623",
       "style": "Creative deli: sandwiches, wraps, subs, salads, soups",
       "status": "open", "pick": false,
       "hours": {"Mon": ["10:30-15:00"], "Wed": ["10:30-15:00"], "Thu": ["10:30-15:00"],
@@ -357,7 +357,7 @@
     {
       "id": "jolly-roger-grill", "name": "Jolly Roger Pier Grill", "town": "Topsail Beach",
       "address": "803 Ocean Blvd, Topsail Beach (on the pier)", "phone": "910-328-4616",
-      "website": "https://www.thejollyroger.com/index.php?c=grill", "facebook": null,
+      "website": "https://www.thejollyroger.com/index.php?c=grill", "facebook": "https://www.facebook.com/JollyRogerInnandPier",
       "style": "Pier grill: breakfast and lunch sandwiches over the ocean",
       "status": "open", "pick": false,
       "hours": {"Fri": ["07:00-14:00"], "Sat": ["07:00-14:00"], "Sun": ["07:00-14:00"]},
@@ -370,7 +370,7 @@
     {
       "id": "beach-bums", "name": "Beach Bum's Pizza Bar & Grill", "town": "North Topsail Beach",
       "address": "4021 Island Dr, North Topsail Beach", "phone": "910-328-1044",
-      "website": "https://www.beachbumstopsail.com/", "facebook": null,
+      "website": "https://www.beachbumstopsail.com/", "facebook": "https://www.facebook.com/beachbumsntb",
       "style": "Pizza, bar and grill with a patio; trivia, karaoke, weekend music",
       "status": "open", "pick": false,
       "hours": {"Mon": ["10:30-22:00"], "Tue": ["10:30-22:00"], "Wed": ["10:30-22:00"],
@@ -386,7 +386,7 @@
     {
       "id": "splash", "name": "Splash by the Sea", "town": "North Topsail Beach",
       "address": "790 New River Inlet Rd, North Topsail Beach", "phone": "910-328-3044",
-      "website": "https://www.splashbythesea.com/", "facebook": null,
+      "website": "https://www.splashbythesea.com/", "facebook": "https://www.facebook.com/SplashByTheSea",
       "style": "Ocean-view restaurant and bar; gluten-friendly options",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:30-21:00"], "Tue": ["11:30-21:00"], "Wed": ["11:30-21:00"],
@@ -432,7 +432,7 @@
     {
       "id": "riverview", "name": "Riverview Cafe", "town": "Sneads Ferry",
       "address": "119 Hall Point Rd, Sneads Ferry", "phone": "910-327-2011",
-      "website": null, "facebook": null,
+      "website": null, "facebook": "https://www.facebook.com/riverviewcafe1946",
       "style": "Southern seafood house on the water; riverside picnic tables",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-20:30"], "Tue": ["11:00-20:30"], "Wed": ["11:00-20:30"],
@@ -448,7 +448,7 @@
     {
       "id": "spiaggia", "name": "Spiaggia Ristobar", "town": "Sneads Ferry",
       "address": "1068 NC-210, Sneads Ferry", "phone": "910-741-0179",
-      "website": "https://spiaggiaristobar.com/", "facebook": null,
+      "website": "https://spiaggiaristobar.com/", "facebook": "https://www.facebook.com/279386501916437",
       "style": "Italian restaurant and bar",
       "status": "open", "pick": false,
       "hours": {"Mon": ["12:00-20:00"], "Tue": ["12:00-20:00"], "Wed": ["12:00-20:00"],
@@ -464,7 +464,7 @@
     {
       "id": "italian-bistro", "name": "Italian Bistro", "town": "Hampstead",
       "address": "201 Alston Blvd, Hampstead", "phone": "910-329-5500",
-      "website": "https://www.italianbistronc.com/hampstead-surf-city/", "facebook": null,
+      "website": "https://www.italianbistronc.com/hampstead-surf-city/", "facebook": "https://www.facebook.com/ItalianBistroNC",
       "style": "Italian-American pizza and pasta; family spot",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-20:00"], "Tue": ["11:00-20:00"], "Wed": ["11:00-20:00"],
@@ -483,7 +483,7 @@
     {
       "id": "burrito-shak", "name": "Burrito Shak", "town": "Hampstead",
       "address": "2761 NC-210 E, Unit A (Publix center), Hampstead", "phone": "910-803-2382",
-      "website": "https://www.burritoshak.com/location/surf-city-nc/", "facebook": null,
+      "website": "https://www.burritoshak.com/location/surf-city-nc/", "facebook": "https://www.facebook.com/burritoshak",
       "style": "Quick burritos, tacos, bowls and nachos",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-21:00"], "Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"],
@@ -499,7 +499,7 @@
     {
       "id": "smoky-tonys", "name": "Smoky Tony's BBQ", "town": "Holly Ridge",
       "address": "511 N US Hwy 17, Holly Ridge", "phone": "910-803-0783",
-      "website": "https://www.smokytonysbbq.com/", "facebook": null,
+      "website": "https://www.smokytonysbbq.com/", "facebook": "https://www.facebook.com/smokytonysbbq",
       "style": "Full-service barbecue; house-made banana pudding",
       "status": "open", "pick": false,
       "hours": {"Mon": ["11:00-20:00"], "Tue": ["11:00-20:00"], "Wed": ["11:00-20:00"],
