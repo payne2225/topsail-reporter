@@ -25,6 +25,11 @@
   that there were none). Task "Topsail Reporter hours check" via
   `install_task.ps1`. `read_page` takes a `scrolls` limit (default 14,
   unchanged for the specials check).
+- 2026-10-24: the three jobs back on (Nate: "Yes to both"). The 13 items
+  the interrupted run found are on the site (`reference/fb_news.json`).
+  New status `season` for a place that has said it is closed for the
+  season (Island Delights, last day Oct 25): one "Closed for the season"
+  line, not Call first. Coastal Wing's hours from its own Oct 19 post.
 - FIX (alert flood, 2026-10-23 evening): the first live news run ran the
   tests in the job's clone; one test called the specials check expecting it
   to refuse a working copy, but in the clone it ran live, which ran the
