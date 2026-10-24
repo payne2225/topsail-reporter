@@ -1161,8 +1161,11 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     places = [p for p in restaurants.get("places", []) if p.get("status") != "closed"]
     by_id = {p["id"]: p for p in places}
 
-    open_today, call, closed = [], [], []
+    open_today, call, closed, season = [], [], [], []
     for p in places:
+        if p.get("status") == "season":             # closed until spring: one line, no hours
+            season.append(p)
+            continue
         meals = meals_open(p, weekday) if p.get("status") == "open" else None
         if p.get("status") == "call" or meals is None:
             call.append(p)
@@ -1248,6 +1251,10 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                      + ", ".join(_closed_name(p, weekday)
                                  for p in sorted(closed, key=lambda p: p["name"]))
                      + ".</p>")
+    if season:
+        parts.append("<p class=call><b>Closed for the season:</b> "
+                     + ", ".join(f"{'★ ' if p.get('pick') else ''}{esc(p['name'])}"
+                                 for p in sorted(season, key=lambda p: p["name"])) + ".</p>")
     read = restaurants.get("read")
     parts.append("<p class=muted>Hours as each place published them"
                  + (f" (read {esc(_short_day(read))})" if read else "")

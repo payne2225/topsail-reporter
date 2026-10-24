@@ -401,7 +401,10 @@ def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data)
         _place("c", "Charlie Pizza", {"Thu": ["11:00-21:00"]}),
         _place("d", "Delta Diner", {"Wed": ["11:00-15:00"]}, status="call",
                hours_note="Closes for the winter."),
-        _place("e", "Echo BBQ", {"Wed": ["11:00-20:00"]}, status="closed")))
+        _place("e", "Echo BBQ", {"Wed": ["11:00-20:00"]}, status="closed"),
+        _place("f", "Foxtrot Fry", {"Wed": ["11:00-20:00"]}, status="season", pick=True)))
+    assert "<b>Closed for the season:</b> ★ Foxtrot Fry.</p>" in eats
+    assert eats.count("Foxtrot Fry") == 1                     # not under Call first, no hours
     assert eats.index("Bravo Fish") < eats.index("Our picks") + 400 < eats.index("Alpha Grill")
     assert "<h3>Our picks</h3>" in eats and "<h3>Also worth trying</h3>" in eats
     assert "<b>Closed today:</b> Charlie Pizza (open Thu)." in eats
@@ -434,7 +437,7 @@ def test_the_real_restaurant_list_loads_and_every_place_is_well_formed():
     places = render.load_restaurants()["places"]
     assert len(places) >= 30
     for p in places:
-        assert p["status"] in ("open", "call", "closed"), p["id"]
+        assert p["status"] in ("open", "call", "season", "closed"), p["id"]
         for day, spans in p["hours"].items():
             assert day in render.WEEKDAYS, (p["id"], day)
             assert spans == "?" or all(render._hm(a) < render._hm(b)

@@ -1,0 +1,123 @@
+{
+ "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
+ "checked": "Oct 23, 7:28 PM ET",
+ "news": [
+  {
+   "key": "island-delights@2026-10-23T12:29",
+   "id": "island-delights",
+   "date": "2026-10-23",
+   "kind": "hours",
+   "line": "Last weekend open for the year: Friday, Oct 23 11–3, Saturday, Oct 24 11–7, last day Sunday, Oct 25 11–3.",
+   "until": null,
+   "url": "https://www.facebook.com/IslandDelights/posts/pfbid02QjMnWmNpAvUrzv7xK8fezA3XA96dNLnjttUpfJFsMJfw5nUy9AfyiVygpRC2vyZyl"
+  },
+  {
+   "key": "daddy-macs@2026-10-23T10:30",
+   "id": "daddy-macs",
+   "date": "2026-10-23",
+   "kind": "menu",
+   "line": "Off-season lunch specials begin Tuesday, Oct 27: a $12.99 lunch with a drink included, Tuesday through Friday.",
+   "until": null,
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0frs2pRa74BCSG1iuBGsqdBPbmT1GoeYCAWC9ZvXTnPyWTuaMzb4MEaMMo7mB5z4bl&id=100064759564276"
+  },
+  {
+   "key": "jolly-roger-grill@2026-10-22T15:57",
+   "id": "jolly-roger-grill",
+   "date": "2026-10-22",
+   "kind": "hours",
+   "line": "The Grill is open Friday, Saturday and Sunday, breakfast 7 AM to 2 PM and lunch 11 AM to 2 PM.",
+   "until": null,
+   "url": "https://www.facebook.com/JollyRogerInnandPier/posts/pfbid0CRzv4vi1eqMSrAZii3CyVreg7pn37c4xHV741HGT5stRFGyWbqsWH6cQuESQuWgUl"
+  },
+  {
+   "key": "beach-shop-grill@2026-10-22T09:10",
+   "id": "beach-shop-grill",
+   "date": "2026-10-22",
+   "kind": "hours",
+   "line": "Beach Shop & Grill will be closed Saturday evening, Oct 24, for a private event.",
+   "until": "2026-10-24",
+   "url": "https://www.facebook.com/beachshopandgrill/posts/pfbid0xsMiFtTDBH3fyZ1DtmxJFYS9fcxRPpdAb7PjwXeBWYnzqo3rc4FBTtTb7mxj5EZ5l"
+  },
+  {
+   "key": "maxs-pizza@2026-10-20T13:51",
+   "id": "maxs-pizza",
+   "date": "2026-10-20",
+   "kind": "hours",
+   "line": "Open Sunday, Wednesday and Thursday 11 a.m. to 8 p.m., and Friday and Saturday 11 a.m. to 9 p.m.",
+   "until": null,
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid026BCiMgDe27tPmhhZcCkyAQMHHSTyWGqgLqrXBiRmpgLhpmJVrmfzmCRaQECJowATl&id=100063795361702"
+  },
+  {
+   "key": "maine-lobstah@2026-10-20T11:02",
+   "id": "maine-lobstah",
+   "date": "2026-10-20",
+   "kind": "hours",
+   "line": "Maine Lobstah Shack is closed until Thursday, Oct 22.",
+   "until": "2026-10-21",
+   "url": "https://www.facebook.com/MaineLobstahShackSurfCityNC/posts/pfbid02qsrpSADri3YetE8vZoRKwM6nzDaD6zkzQavz3LfbHxWDmSVTJmNUyCZEGZ4Fuwdil"
+  },
+  {
+   "key": "surfdog@2026-10-19T10:58",
+   "id": "surfdog",
+   "date": "2026-10-19",
+   "kind": "hours",
+   "line": "Open 11 a.m. to 3 p.m. every Monday.",
+   "until": null,
+   "url": "https://www.facebook.com/surfdogbitesandbrews/posts/pfbid02dMcWDesgtcSZpan8LpgGeFWKZKBUC1Y86EtHpaWaQGHP5ETQmdAnFhb6U8bAc9fml"
+  },
+  {
+   "key": "maine-lobstah@2026-10-19T10:55",
+   "id": "maine-lobstah",
+   "date": "2026-10-19",
+   "kind": "hours",
+   "line": "Maine Lobstah Shack's off-season hours: closed Monday through Wednesday, open Thursday through Sunday.",
+   "until": null,
+   "url": "https://www.facebook.com/MaineLobstahShackSurfCityNC/posts/pfbid02iCHLbGuNxiutcyYimeWRaLbmwv7TLnTSGCD6kGg3rW4Cdjpy4JXsRXiD9hdJKmZzl"
+  },
+  {
+   "key": "coastal-wing@2026-10-19T10:30",
+   "id": "coastal-wing",
+   "date": "2026-10-19",
+   "kind": "hours",
+   "line": "Back open for lunch Mondays and Tuesdays at both locations; open 11:30AM–9PM Sunday–Thursday and 11:30AM–10PM Friday–Saturday.",
+   "until": null,
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid02zA4G4XRzbEBzFTY1uQ9E41a1QGC8BmqmezxrtqKka2SagKZkGJ5g5qLCExLRMV4vl"
+  },
+  {
+   "key": "splash@2026-10-18T08:50",
+   "id": "splash",
+   "date": "2026-10-18",
+   "kind": "hours",
+   "line": "Splash by the Sea says breakfast and lunch, 10am to 3pm, is back starting Sept 20.",
+   "until": null,
+   "url": "https://www.facebook.com/SplashByTheSea/posts/pfbid0KHdgrqhRr4J6BCzTLoewPYGRWQmGU7MXw5BxGf1qA5SnRJQDDuJ9NDkMjTyv5LPyl"
+  },
+  {
+   "key": "island-delights@2026-10-17T17:32",
+   "id": "island-delights",
+   "date": "2026-10-17",
+   "kind": "hours",
+   "line": "Closed the evening of Saturday, Oct 17 because of rain and slow business; open again Sunday, Oct 18, 11am to 3pm.",
+   "until": "2026-10-18",
+   "url": "https://www.facebook.com/IslandDelights/posts/pfbid0nJgvivPZ2KNjnafLjLepkNN5z2Sw5mxRQbKqgbbEUi5NVA7XdP3ssramBtN52uWpl"
+  },
+  {
+   "key": "maxs-pizza@2026-10-15T13:48",
+   "id": "maxs-pizza",
+   "date": "2026-10-15",
+   "kind": "hours",
+   "line": "Closed Thursday, Nov 26 for Thanksgiving, and closed Dec 13 through Dec 29 for Christmas break.",
+   "until": "2026-12-29",
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0ofYD7FJqJkWuXP81Er1phDYmqCRWFtvtCHWSZYvbZNhBYEUSbWfAGwUvWca9Lz2ol&id=100063795361702"
+  },
+  {
+   "key": "maine-lobstah@2026-10-15T09:55",
+   "id": "maine-lobstah",
+   "date": "2026-10-15",
+   "kind": "hours",
+   "line": "Maine Lobstah Shack is now closed Monday through Wednesday for the off-season.",
+   "until": null,
+   "url": "https://www.facebook.com/MaineLobstahShackSurfCityNC/posts/pfbid02M5bmpZJiDx3PLkP23i8tMHM2yVwZwqJeXNbHDHEqyVxHyh1a1scTfYxPpH25JbKwl"
+  }
+ ]
+}
