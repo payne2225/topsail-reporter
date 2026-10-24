@@ -1,0 +1,17 @@
+Topsail Reporter, Sat Oct 24
+
+⚠️ Coastal Flood Advisory until Sun 10:00a
+⚠️ Beach Hazards Statement until 8:00p
+⚠️ Small Craft Advisory until Mon 8:00p
+🌊 Sound tides
+Low 1:11a · High 7:18a
+Low 1:48p · High 7:38p
+☀️ Sunny, high 71°
+💨 Wind NE 18 mph
+🏖️ Surf 2-4 ft, rip risk moderate
+🌡️ Water 69°
+⛵ NE winds 20 to 25 kt with gusts up to 30 kt. Seas 6 to 8 ft.
+🌅 Sun up 7:23a, down 6:25p
+🌔 Waxing gibbous moon
+
+Full report: https://payne2225.github.io/topsail-reporter/2026-10-24/

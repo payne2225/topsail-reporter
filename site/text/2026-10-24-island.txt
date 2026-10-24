@@ -1,0 +1,13 @@
+Topsail Reporter, Island Edition, Sat Oct 24
+
+⚠️ Coastal Flood Advisory until Sun 10:00a
+⚠️ Beach Hazards Statement until 8:00p
+☀️ Sunny, high 71°
+🌙 Tonight mostly clear, low 58°
+💨 Wind NE 18 mph
+🏖️ Surf 2-4 ft, rip risk moderate
+🌡️ Water 69°
+🐚 Beach low tide 12:00a, 12:37p
+🌅 Sun up 7:23a, down 6:25p
+
+Full report: https://payne2225.github.io/topsail-reporter/2026-10-24/island/
