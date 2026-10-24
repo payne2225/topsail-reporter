@@ -73,9 +73,22 @@ def test_the_alert_names_each_new_post_and_links_the_page():
         "https://payne2225.github.io/topsail-reporter/2026-11-03/island/"]
 
 
-def test_the_check_refuses_to_push_from_a_working_copy(capsys):
+def test_the_check_refuses_to_push_from_a_working_copy(capsys, monkeypatch, tmp_path):
+    monkeypatch.setattr(fb, "HERE", str(tmp_path))          # wherever the tests run from
     assert fb.main(["--ids", "none"]) == 2
     assert "use --no-push or --dry-run here" in capsys.readouterr().out
+
+
+def test_nothing_under_the_tests_runs_live_or_sends_an_alert(capsys, monkeypatch):
+    # Even in the job's own clone (2026-10-23: a live check under pytest ran
+    # pytest again, in a loop, each pass alerting).
+    from fb_session import STATE
+    import fb_news
+    monkeypatch.setattr(fb, "HERE", os.path.join(STATE, "repo"))
+    assert fb.main(["--ids", "none"]) == 2
+    assert fb_news.main(["--ids", "none"]) == 2
+    assert capsys.readouterr().out.count("No live check under the tests.") == 2
+    assert fb.send_alert("x") == "not sent: running under the tests"
 
 
 def test_a_board_photo_is_read_only_when_it_looks_like_one():

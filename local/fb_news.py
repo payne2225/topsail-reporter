@@ -201,12 +201,19 @@ def main(argv: list[str] | None = None) -> int:
 
     now = dt.datetime.now(fb.ET)
     today = now.date()
-    since = today - dt.timedelta(days=args.days)
+    seen_path = _state("news_seen.json")
+    days = args.days
+    if not os.path.exists(seen_path) and days < 14:
+        days = 14                                   # the first run looks two weeks back
+    since = today - dt.timedelta(days=days)
     checked = f"{now:%b} {now.day}, {now:%I:%M %p}".replace(" 0", " ") + " ET"
     live = not (args.dry_run or args.no_push)
     from fb_session import STATE
     if live and os.path.normcase(fb.HERE) != os.path.normcase(os.path.join(STATE, "repo")):
         print(f"A live check runs from {os.path.join(STATE, 'repo')}; use --no-push or --dry-run here.")
+        return 2
+    if live and fb.in_tests():
+        print("No live check under the tests.")
         return 2
     if live:
         fb._run("git", "fetch", "-q")
@@ -217,9 +224,8 @@ def main(argv: list[str] | None = None) -> int:
         wanted = set(args.ids.split(","))
         places = [p for p in places if p["id"] in wanted]
     names = {p["id"]: p["name"] for p in places}
-    seen_path = _state("news_seen.json")
     seen = set(_load(seen_path, []))
-    deep = args.days > 3
+    deep = days > 3
     from playwright.sync_api import sync_playwright
     from fb_session import open_context, signed_in
 

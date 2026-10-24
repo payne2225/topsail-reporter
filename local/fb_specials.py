@@ -386,12 +386,34 @@ def _run(*cmd: str, check: bool = True) -> subprocess.CompletedProcess:
                           creationflags=NO_WINDOW)
 
 
+ALERTS_PER_HOUR = 6                 # a runaway job can never flood the channel
+
+
+def in_tests() -> bool:
+    """True inside pytest (tests/conftest.py sets it): no live check, no alert."""
+    return bool(os.environ.get("TOPSAIL_IN_TESTS"))
+
+
 def send_alert(text: str) -> str:
-    """Send to the one channel in alert.json; until one is set, only log."""
+    """Send to the one channel in alert.json; until one is set, only log.
+    Never from a test, and never more than ALERTS_PER_HOUR in an hour."""
+    if in_tests():
+        return "not sent: running under the tests"
     from fb_session import STATE
     path = os.path.join(STATE, "alert.json")
     if not os.path.exists(path):
         return "no alert channel set (alert.json); logged only"
+    sent_path = os.path.join(STATE, "alerts_sent.json")
+    now = time.time()
+    try:
+        with open(sent_path, encoding="utf-8") as f:
+            sent = [t for t in json.load(f) if now - t < 3600]
+    except (OSError, ValueError):
+        sent = []
+    if len(sent) >= ALERTS_PER_HOUR:
+        return f"not sent: {len(sent)} alerts in the last hour already"
+    with open(sent_path, "w", encoding="utf-8") as f:
+        json.dump(sent + [now], f)
     with open(path, encoding="utf-8") as f:
         cfg = json.load(f)
     if cfg.get("ntfy"):
@@ -442,12 +464,6 @@ def main(argv: list[str] | None = None) -> int:
     now = dt.datetime.now(ET)
     day = args.date or now.date().isoformat()
     checked = now.strftime("%I:%M %p").lstrip("0")
-    with open(os.path.join(HERE, "reference", "restaurants.json"), encoding="utf-8") as f:
-        places = [p for p in json.load(f)["places"] if p.get("facebook") and p["status"] != "closed"]
-    if args.ids:
-        wanted = set(args.ids.split(","))
-        places = [p for p in places if p["id"] in wanted]
-    names = {p["id"]: p["name"] for p in places}
     live = not (args.dry_run or args.no_push)
     from fb_session import STATE
     if live and os.path.normcase(HERE) != os.path.normcase(os.path.join(STATE, "repo")):
@@ -455,6 +471,15 @@ def main(argv: list[str] | None = None) -> int:
         # runs in the job's own clone, never in a working copy.
         print(f"A live check runs from {os.path.join(STATE, 'repo')}; use --no-push or --dry-run here.")
         return 2
+    if live and in_tests():
+        print("No live check under the tests.")
+        return 2
+    with open(os.path.join(HERE, "reference", "restaurants.json"), encoding="utf-8") as f:
+        places = [p for p in json.load(f)["places"] if p.get("facebook") and p["status"] != "closed"]
+    if args.ids:
+        wanted = set(args.ids.split(","))
+        places = [p for p in places if p["id"] in wanted]
+    names = {p["id"]: p["name"] for p in places}
     from playwright.sync_api import sync_playwright
     from fb_session import open_context, signed_in
 

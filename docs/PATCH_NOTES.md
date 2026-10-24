@@ -25,6 +25,15 @@
   that there were none). Task "Topsail Reporter hours check" via
   `install_task.ps1`. `read_page` takes a `scrolls` limit (default 14,
   unchanged for the specials check).
+- FIX (alert flood, 2026-10-23 evening): the first live news run ran the
+  tests in the job's clone; one test called the specials check expecting it
+  to refuse a working copy, but in the clone it ran live, which ran the
+  tests again, in a loop, each level sending "the tests failed" to Nate's
+  channel. Stopped by hand; nothing was pushed. Now: tests/conftest.py sets
+  TOPSAIL_IN_TESTS, under which no check runs live and send_alert sends
+  nothing; the test points the check at a temp folder; send_alert sends at
+  most 6 alerts an hour whatever happens; the guards run before any file
+  is read. The news job's first run looks two weeks back by itself.
 - Restaurant news, daily until the last edition (Nate: "Start collecting
   data from the restaurants daily until the end of our trip because some
   places made off season menu postings today like Daddy Mac's"):

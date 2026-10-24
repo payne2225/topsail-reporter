@@ -11,6 +11,11 @@ import pytest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
+# Nothing a test calls may run a live check or send an alert: the local jobs
+# run these tests from their own clone, where a live check would run the
+# tests again (2026-10-23: a loop of "tests failed" alerts).
+os.environ["TOPSAIL_IN_TESTS"] = "1"
+
 import fetch  # noqa: E402
 
 FIXTURES = os.path.join(ROOT, "tests", "fixtures", "2026-10-14")
