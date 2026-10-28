@@ -1113,12 +1113,16 @@ NEWS_DAYS = 21                      # a place's Facebook news shows this long
 
 
 def place_news(place: dict, day: str, limit: int = 2) -> list[dict]:
-    """The place's newest hours or menu news from the NEWS_DAYS before day
-    (never a post dated after the edition, never one whose until has passed)."""
+    """The place's newest hours item and newest menu item from the NEWS_DAYS
+    before day (never a post dated after the edition, never one whose until
+    has passed). One of each kind: places repost the same hours weekly."""
     first = (dt.date.fromisoformat(day) - dt.timedelta(days=NEWS_DAYS)).isoformat()
     items = [n for n in place.get("news") or [] if first <= n.get("date", "") <= day
              and (n.get("until") or day) >= day]
-    return sorted(items, key=lambda n: n["date"], reverse=True)[:limit]
+    newest: dict[str, dict] = {}
+    for n in sorted(items, key=lambda n: n["date"], reverse=True):
+        newest.setdefault(n.get("kind", ""), n)
+    return sorted(newest.values(), key=lambda n: n["date"], reverse=True)[:limit]
 
 
 def _news_html(place: dict, day: str, tag: str = "p") -> str:

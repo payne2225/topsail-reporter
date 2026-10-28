@@ -383,6 +383,10 @@ def test_facebook_news_shows_on_the_place_for_three_weeks_and_never_early(data):
     assert "Closing for the season" not in eats                # dated after the edition
     assert "Summer hours" not in eats                          # more than 21 days old
     assert "Closed Saturday, Oct 10" not in eats               # that day has passed
+    weekly = [dict(key=f"w{d}", id="j", date=f"2026-10-{d:02d}", kind="hours",
+                   line=f"Open Friday to Sunday, 7 to 2 (posted the {d}th).", url="u") for d in (5, 12)]
+    one = render.eats_section(data, _places(_place("j", "Jolly Grill", {"Wed": ["11:00-21:00"]}, news=weekly)))
+    assert "posted the 12th" in one and "posted the 5th" not in one   # a weekly repost shows once
     assert "<br><span class=news><b>On Facebook, Oct 10:</b> Now open Wed-Sun only." in eats  # Call first
 
 
