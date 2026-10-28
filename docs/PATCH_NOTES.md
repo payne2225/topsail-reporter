@@ -1,5 +1,12 @@
 # Patch notes
 
+## 2026-10-28
+
+- Restaurant news shows one hours item and one menu item per place, the
+  newest of each (d574bb2). Jolly Roger reposts the same grill hours every
+  week (Oct 25 and Oct 26), which showed twice in its details. The 21-day
+  window and `until` rules are unchanged.
+
 ## 2026-10-23 (the run moves)
 
 - The run moved one week later (Nate: "we need to change the dates to 11/7
