@@ -145,8 +145,8 @@ def test_eastern_time_follows_the_us_rule(utc, offset):
 
 
 @pytest.mark.parametrize("date, kind", [
-    ("2026-11-04", None), ("2026-11-05", "preview"), ("2026-11-06", "preview"),
-    ("2026-11-07", "arrival"), ("2026-11-08", "daily"), ("2026-11-13", "daily"),
+    ("2026-11-04", None), ("2026-11-05", "preview"), ("2026-11-06", "arrival"),
+    ("2026-11-07", "daily"), ("2026-11-08", "daily"), ("2026-11-13", "daily"),
     ("2026-11-14", "departure"), ("2026-11-15", None), ("2026-10-14", "sample"),
     ("2026-10-29", None), ("2026-10-31", None),       # the old run, moved a week on 2026-10-23
 ])

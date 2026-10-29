@@ -226,14 +226,14 @@ the inlet, the surf, the piers. For each: what is around, what is working
 Say plainly when there is no fresh report. A younger fisherman is reading:
 one practical tip (a knot, a rig, how to read a slough) is welcome.
 
-**Previews** (the two mornings before the island): the weekend outlook for
-anyone headed to Topsail, never framed as anyone's trip. The fishing outlook
-for Saturday and the days after, what has been
+**Previews** (the morning before the island, Thu Nov 5): the weekend outlook
+for anyone headed to Topsail, never framed as anyone's trip. The fishing
+outlook for Friday, the first island day, and the days after, what has been
 reported lately, what bait and tackle to bring or buy, the licence note
 (`reference/regs.md`), the first island day's tides and forecast, and the
 weekend's events. The numbers block already shows the first island day.
 The Island Edition's preview: the weekend's weather, what to pack for it,
-the weekend's events, and what is open on Saturday evening.
+the weekend's events, and what is open on Friday evening.
 
 **Arrival day**: the afternoon and evening bite, settling-in information
 (bait shops and their hours, pier hours), and the evening's events. Island

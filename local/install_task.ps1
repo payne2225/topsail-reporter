@@ -15,7 +15,7 @@
 #   Unregister-ScheduledTask -TaskName "Topsail Reporter restaurant news" -Confirm:$false
 param(
     [string[]]$Times = @("11:15", "16:15"),
-    [string]$First = "2026-11-07",
+    [string]$First = "2026-11-06",
     [string]$Last = "2026-11-14",
     [string]$HoursCheck = "2026-11-05 11:15",
     [string]$NewsTime = "20:30",

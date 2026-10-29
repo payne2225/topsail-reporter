@@ -73,11 +73,13 @@ SOUND_TEMP_STATION = {"id": "8656483", "name": "Beaufort", "miles": 60,
 MARINE_MODEL_POINT = (34.35, -77.60)
 
 # ------------------------------------------------------------------ the run
-# Moved one week later on 2026-10-23 (was Oct 29 - Nov 7).
+# Moved one week later on 2026-10-23 (was Oct 29 - Nov 7). Arrival moved a
+# day earlier on 2026-10-29 (Nate: "We're driving down on Friday the 6th"),
+# so Fri Nov 6 is arrival day and Thu Nov 5 the one preview.
 FIRST_EDITION = "2026-11-05"
 LAST_EDITION = "2026-11-14"
-PREVIEW_DATES = ("2026-11-05", "2026-11-06")
-ARRIVAL_DATE = "2026-11-07"
+PREVIEW_DATES = ("2026-11-05",)
+ARRIVAL_DATE = "2026-11-06"
 DEPARTURE_DATE = "2026-11-14"
 
 # Rehearsal editions outside the run, built end to end like a real one so

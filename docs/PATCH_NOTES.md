@@ -1,5 +1,15 @@
 # Patch notes
 
+## 2026-10-29
+
+- Arrival moved a day earlier (Nate: "We're driving down on Friday the
+  6th"): one preview Thu Nov 5, arrival day Fri Nov 6, daily Nov 7-13, last
+  morning Sat Nov 14 unchanged. `config.py` (`PREVIEW_DATES`,
+  `ARRIVAL_DATE`), the kind test, the preview wording in
+  `instructions/report.md` (Friday, not Saturday), and the specials task's
+  first day (`install_task.ps1 -First 2026-11-06`). The routine's cron and
+  the Nov 5 hours check are unchanged.
+
 ## 2026-10-28
 
 - Restaurant news shows one hours item and one menu item per place, the

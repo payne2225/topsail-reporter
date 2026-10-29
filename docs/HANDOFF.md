@@ -5,9 +5,11 @@ that changes how the Reporter works.
 
 ## 1. What it is
 
-A morning report on Topsail Island, NC. Ten mornings: previews Thu Nov 5
-and Fri Nov 6, arrival day Sat Nov 7, daily Nov 8-13, last morning Sat
-Nov 14 (2026; moved one week later on 2026-10-23, from Oct 29 - Nov 7).
+A morning report on Topsail Island, NC. Ten mornings: a preview Thu Nov 5,
+arrival day Fri Nov 6, daily Nov 7-13, last morning Sat Nov 14 (2026;
+moved one week later on 2026-10-23, from Oct 29 - Nov 7; arrival moved a
+day earlier on 2026-10-29, from Sat Nov 7, so Fri Nov 6 is no longer a
+preview).
 Clean voice, light humor.
 
 Two editions a morning from one report file (since 2026-10-16, Nate: "the
@@ -129,8 +131,9 @@ main first, so it never conflicts with the routine, and it refuses to push
 from any other checkout. A lapsed sign-in or a failed push sends an alert
 instead. A post kept at an earlier check is reused, not re-read. The
 hidden scheduled task "Topsail Reporter specials" is installed by
-`local/install_task.ps1` (its `-Times` are the check times; the days the
-paper runs); its log is `specials.log` beside the clone.
+`local/install_task.ps1` (its `-Times` are the check times; `-First` to
+`-Last` are the island days, Fri Nov 6 to Sat Nov 14); its log is
+`specials.log` beside the clone.
 
 **Hours check before the run (home PC, once).** The specials check keeps
 only the day's posts, so a "closed for the season" post made before the run
