@@ -1,7 +1,16 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Oct 27, 8:30 PM ET",
+ "checked": "Oct 30, 8:30 PM ET",
  "news": [
+  {
+   "key": "jolly-roger-grill@2026-10-30T16:33",
+   "id": "jolly-roger-grill",
+   "date": "2026-10-30",
+   "kind": "hours",
+   "line": "The Jolly Roger Grill is open Friday, Saturday and Sunday, with breakfast 7 AM to 2 PM and lunch 11 AM to 2 PM.",
+   "until": null,
+   "url": "https://www.facebook.com/JollyRogerInnandPier/posts/pfbid04h9f6K9JT3XMK1uuXkkddwpqekCfEH8gfHh2WFLH2jTNAX4grAGUvemXEocAt56ol"
+  },
   {
    "key": "santorini@2026-10-27T19:44",
    "id": "santorini",
