@@ -1,7 +1,34 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Oct 30, 8:30 PM ET",
+ "checked": "Oct 31, 8:30 PM ET",
  "news": [
+  {
+   "key": "smoky-tonys@2026-10-31T10:51",
+   "id": "smoky-tonys",
+   "date": "2026-10-31",
+   "kind": "hours",
+   "line": "Closes early at 4 PM on Halloween, Saturday, Oct 31.",
+   "until": "2026-10-31",
+   "url": "https://www.facebook.com/smokytonysbbq"
+  },
+  {
+   "key": "maxs-pizza@2026-10-31T10:31",
+   "id": "maxs-pizza",
+   "date": "2026-10-31",
+   "kind": "hours",
+   "line": "Max's Pizza is open 11 a.m. to 8 p.m., Wednesday through Sunday.",
+   "until": null,
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid02DaBeN7DP3moABc2Fo29uJuJfHRXzjLqnPcfWMnhmyjw4h584isQm7ADpAc98ypsMl&id=100063795361702"
+  },
+  {
+   "key": "breezeway@2026-10-31T08:53",
+   "id": "breezeway",
+   "date": "2026-10-31",
+   "kind": "hours",
+   "line": "Breezeway Restaurant is closed for dinner on Saturday, Oct 31.",
+   "until": "2026-10-31",
+   "url": "https://www.facebook.com/TheBreezewayMotelandRestaurant/posts/pfbid0sVnYuGEJmsDWLRdYpozfFJyVkXmg69WZibhCW7UF7hmsuzKMY587zpKokRuW8djKl"
+  },
   {
    "key": "jolly-roger-grill@2026-10-30T16:33",
    "id": "jolly-roger-grill",
