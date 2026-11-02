@@ -1,7 +1,25 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Oct 31, 8:30 PM ET",
+ "checked": "Nov 1, 7:30 PM ET",
  "news": [
+  {
+   "key": "splash@2026-11-01T11:31",
+   "id": "splash",
+   "date": "2026-11-01",
+   "kind": "hours",
+   "line": "Closing at 2 PM Sunday, Nov 1, for an unplanned equipment repair; Monday's opening schedule will be posted later.",
+   "until": "2026-11-01",
+   "url": "https://www.facebook.com/SplashByTheSea/posts/pfbid07T2ypizf6q4bX9BLZUEq15r5Bd6ExWZGhDenqEKWHK5B4T84mDfHff2mGgHC3uZQl"
+  },
+  {
+   "key": "fancy-sushi@2026-11-01T12:53",
+   "id": "fancy-sushi",
+   "date": "2026-11-01",
+   "kind": "menu",
+   "line": "All-you-can-eat sushi at lunch only starts Monday, Nov 2.",
+   "until": null,
+   "url": "https://www.facebook.com/fancysushi124/posts/pfbid05G8dZzMSVmMxZUaytHVUTHS8zbTySz7FnCW2YGwVyKkqTannW8ggru414N38QSVJl"
+  },
   {
    "key": "smoky-tonys@2026-10-31T10:51",
    "id": "smoky-tonys",
