@@ -1,7 +1,25 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Nov 1, 7:30 PM ET",
+ "checked": "Nov 2, 7:30 PM ET",
  "news": [
+  {
+   "key": "smoky-tonys@2026-11-02T16:47",
+   "id": "smoky-tonys",
+   "date": "2026-11-02",
+   "kind": "hours",
+   "line": "Open for Thanksgiving dinner service 4pm-8pm on Thanksgiving Day, Thursday, Nov 26.",
+   "until": "2026-11-26",
+   "url": "https://www.facebook.com/smokytonysbbq/posts/pfbid02rFNzwNrsMFmVQtYyX4spTSyvVLNsERyzEDYsjuzyf8KJ4G5qyW5G53nyr8qJZKpfl"
+  },
+  {
+   "key": "patio-at-the-surf@2026-11-02T19:24",
+   "id": "patio-at-the-surf",
+   "date": "2026-11-02",
+   "kind": "hours",
+   "line": "Opening hours now start at 8 a.m. to prepare for winter.",
+   "until": null,
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid02ZB4bfavYtqErezRR6QA8mm7SmT4v7cKahCWVXrFw43dWUqXYfKsPwTbtEamAbrUnl&id=61588375706177"
+  },
   {
    "key": "splash@2026-11-01T11:31",
    "id": "splash",
