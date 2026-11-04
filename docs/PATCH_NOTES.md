@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- Lunch & Dinner opens on Lunch until 3 PM and on Dinner from 3 PM
+  (Nate), now by island time instead of the phone's own clock, so a phone
+  set to Central switches at 3 PM Eastern too.
 - Max's Pizza joins Our favorites (Nate: "so we have an even number"):
   six now, Riverview, Low Tide, Daddy Mac's, Sears Landing, Max's and
   Breezeway.

@@ -214,7 +214,7 @@ fig.addEventListener('keydown',function(ev){if(ev.key!=='ArrowLeft'&&ev.key!=='A
 fig.addEventListener('blur',hide);
 });
 })();
-(function(){var d=document.getElementById('meal-d');if(d&&new Date().getHours()>=15){d.checked=true;}})();
+(function(){var d=document.getElementById('meal-d'),h=new Date().getHours();try{h=+new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'2-digit',hourCycle:'h23'}).format(new Date())%24;}catch(e){}if(d&&h>=15){d.checked=true;}})();
 (function(){
 var box=document.querySelector('.eats .sort');if(!box)return;
 var msg=document.querySelector('.eats .sortmsg'),KEY='tr-eats-sort';

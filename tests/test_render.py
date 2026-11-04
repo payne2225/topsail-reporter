@@ -513,6 +513,10 @@ def test_every_place_carries_its_week_for_the_live_pill(data):
     js = render.EATS_JS
     assert "timeZone:'America/New_York'" in js and "<=60" in js
     assert "'Open'" in js and "'Opening soon'" in js and "'Closed'" in js
+    # Lunch until 3 PM, Dinner from 3 PM, island time (Nate, 2026-11-04).
+    assert js.startswith("(function(){var d=document.getElementById('meal-d'),h=new Date().getHours();"
+                         "try{h=+new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York'")
+    assert "if(d&&h>=15){d.checked=true;}" in js
 
 
 def test_every_real_place_sits_around_topsail():

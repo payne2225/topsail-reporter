@@ -1482,9 +1482,12 @@ SORT_ROW = ("<div class=sort role=group aria-label='Sort the places' hidden><spa
             "<button type=button data-sort=near aria-pressed=false>Closest to me</button></div>"
             "<p class=sortmsg role=status hidden></p>")
 
-# Dinner is the likelier question after 3 PM; the page opens on that tab.
-EATS_JS = ("(function(){var d=document.getElementById('meal-d');"
-           "if(d&&new Date().getHours()>=15){d.checked=true;}})();") + r"""
+# The page opens on Lunch until 3 PM and on Dinner from 3 PM, island time
+# (Nate, 2026-11-04), whatever zone the phone is set to.
+EATS_JS = ("(function(){var d=document.getElementById('meal-d'),h=new Date().getHours();"
+           "try{h=+new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'2-digit',"
+           "hourCycle:'h23'}).format(new Date())%24;}catch(e){}"
+           "if(d&&h>=15){d.checked=true;}})();") + r"""
 (function(){
 var box=document.querySelector('.eats .sort');if(!box)return;
 var msg=document.querySelector('.eats .sortmsg'),KEY='tr-eats-sort';
