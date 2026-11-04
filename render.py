@@ -907,7 +907,9 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .tabs label{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;cursor:pointer;color:var(--muted)}
 #meal-l:checked~.tabs [for=meal-l],#meal-d:checked~.tabs [for=meal-d]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
 #meal-l:focus-visible~.tabs [for=meal-l],#meal-d:focus-visible~.tabs [for=meal-d]{outline:2px solid var(--sea);outline-offset:2px}
-#meal-l:checked~.places li:not(.l),#meal-d:checked~.places li:not(.d){display:none}
+.places .hd,.places .wk,.meals .cl{display:none}
+.days{display:flex;gap:2px;max-width:30rem;margin:10px 0 2px;padding:4px;background:var(--chip);border-radius:999px;font:600 .85rem/1 var(--sans)}
+.days label{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;min-height:40px;border-radius:999px;cursor:pointer;color:var(--muted)}
 .sort{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:10px 0 2px;font:600 .85rem/1 var(--sans)}
 .sort[hidden],.sortmsg[hidden]{display:none}
 .sort .k{color:var(--muted);margin-right:2px}
@@ -1151,20 +1153,34 @@ def _rating(place: dict) -> str:
     return " &middot; ".join(bits)
 
 
-def _place_item(place: dict, weekday: str, meals: set[str], special: str | None,
-                day: str = "") -> str:
-    cls = " ".join(["place"] + [m[0] for m in sorted(meals)] + (["pick"] if place.get("pick") else []))
+def _when(i: int, d: dt.date, ahead: bool) -> str:
+    """'today' for the edition's own day, else the weekday ('Thursday')."""
+    return "today" if i == 0 and not ahead else d.strftime("%A")
+
+
+def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, set[str]],
+                specials: dict[int, str], day: str = "", ahead: bool = False) -> str:
+    """One place, built once for the whole week: its classes say which days
+    (0 is the edition's own) it is open for lunch (l0..l6) and dinner
+    (d0..d6), and its hours and weekly special carry one span per day. The
+    Day row shows the chosen day's (Nate, 2026-11-04)."""
+    cls = " ".join(["place"] + [f"{m[0]}{i}" for i, _ in week for m in sorted(meals[i])]
+                   + (["pick"] if place.get("pick") else []))
     # Where it is, for "Closest to me" (the distance fills in on the reader's phone).
     where = (f" data-lat={place['lat']} data-lon={place['lon']}"
              if place.get("lat") is not None and place.get("lon") is not None else "")
+    hours = "".join(f"<span class='hd h{i}'>{esc(hours_today(place, d.strftime('%a')))}</span>"
+                    for i, d in week if meals[i])
     head = (f"<span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
-            f"<span class=pm>{esc(place['town'])} &middot; {esc(hours_today(place, weekday))}"
+            f"<span class=pm>{esc(place['town'])} &middot; {hours}"
             f"<span class=mi hidden></span></span>")
     rating = _rating(place)
     if rating:
         head += f"<span class=pr>{rating}</span>"
-    if special:
-        head += f"<span class=sp>Today: {esc(special)}</span>"
+    for i, d in week:
+        if specials.get(i):
+            head += (f"<span class='sp wk w{i}'>{esc(_when(i, d, ahead).capitalize())}: "
+                     f"{esc(specials[i])}</span>")
     # Hours news decides whether to go, so it shows without a tap.
     hours_news = [n for n in place_news(place, day, limit=5) if n["kind"] == "hours"][:1] if day else []
     for n in hours_news:
@@ -1225,7 +1241,7 @@ def _news_html(place: dict, day: str, tag: str = "p") -> str:
 
 def _closed_name(place: dict, weekday: str) -> str:
     """A name in the closed list, with the days it does open."""
-    name = esc(place["name"])
+    name = ("★ " if place.get("pick") else "") + esc(place["name"])
     if _spans(place, weekday):                     # open, but not at lunch or dinner time
         return f"{name} (no lunch or dinner)"
     days = open_days(place)
@@ -1244,17 +1260,23 @@ def _short_day(iso: str) -> str:
 
 
 def eats_section(data: dict, restaurants: dict, specials: dict | None = None) -> str:
-    """Lunch & Dinner: the day's specials, then everything open that day
-    (the paper's picks first), with a Lunch | Dinner switch. Hours, ratings
-    and weekly specials come from reference/restaurants.json; the day's
-    posted specials from specials/<date>.json."""
+    """Lunch & Dinner: the day's specials, then the places (the paper's
+    favorites first) with a Lunch | Dinner switch and a Day row for the week
+    ahead (Nate, 2026-11-04, from a reader: "the days they are open too since
+    it all changes in the fall"). Every place open some day this week is
+    built once; the chosen day and meal show the ones open then, in CSS.
+    Hours, ratings and weekly specials come from reference/restaurants.json;
+    the day's posted specials from specials/<date>.json."""
     day = numbers_date(data)
     ahead = day != data["date"]
-    weekday = dt.date.fromisoformat(day).strftime("%a")
+    start = dt.date.fromisoformat(day)
+    week = [(i, start + dt.timedelta(days=i)) for i in range(7)]
+    weekday = start.strftime("%a")
     places = [p for p in restaurants.get("places", []) if p.get("status") != "closed"]
     by_id = {p["id"]: p for p in places}
 
-    open_today, call, closed, season = [], [], [], []
+    known, call, season = [], [], []
+    meals_of: dict[str, dict[int, set[str]]] = {}
     for p in places:
         if p.get("status") == "season":             # closed until spring: one line, no hours
             season.append(p)
@@ -1262,14 +1284,16 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
         meals = meals_open(p, weekday) if p.get("status") == "open" else None
         if p.get("status") == "call" or meals is None:
             call.append(p)
-        elif meals:
-            open_today.append((p, meals))
-        else:
-            closed.append(p)
+            continue
+        known.append(p)
+        meals_of[p["id"]] = {i: meals_open(p, d.strftime("%a")) or set() for i, d in week}
+    listed = [p for p in known if any(meals_of[p["id"]].values())]
+    weekly_of = {p["id"]: {i: p["weekly"][d.strftime("%a")] for i, d in week
+                           if meals_of[p["id"]][i] and (p.get("weekly") or {}).get(d.strftime("%a"))}
+                 for p in listed}
 
     # Specials: the weekly ones for this weekday, then what was posted today.
-    weekly = {p["id"]: p["weekly"][weekday] for p, _ in open_today
-              if (p.get("weekly") or {}).get(weekday)}
+    weekly = {pid: w[0] for pid, w in weekly_of.items() if 0 in w}
     lines = [f"<li><b>{esc(by_id[i]['name'])}</b> {esc(text)} "
              f"<small>every {dt.date.fromisoformat(day).strftime('%A')}, from its "
              f"{'Facebook page' if 'facebook.com' in by_id[i].get('weekly_source', '') else 'own site'}"
@@ -1304,29 +1328,42 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                         "<p>None posted yet.</p>" if checked else "")
                      + (f"<p class=muted>{esc(status)}</p>" if status else "") + "</div>")
 
-    picks = _ranked([p for p, _ in open_today if p.get("pick")])
-    others = _ranked([p for p, _ in open_today if not p.get("pick")])
-    meals_of = {p["id"]: m for p, m in open_today}
+    picks = _ranked([p for p in listed if p.get("pick")])
+    others = _ranked([p for p in listed if not p.get("pick")])
 
     def group(title: str, group_places: list[dict], empty: str) -> str:
-        items = [_place_item(p, weekday, meals_of[p["id"]], weekly.get(p["id"]), day)
+        items = [_place_item(p, week, meals_of[p["id"]], weekly_of[p["id"]], day, ahead)
                  for p in group_places]
-        for meal in ("lunch", "dinner"):
-            if not any(meal in meals_of[p["id"]] for p in group_places):
-                items.append(f"<li class='none {meal[0]}'>{esc(empty.format(meal=meal))}</li>")
+        for i, d in week:
+            for meal in ("lunch", "dinner"):
+                if not any(meal in meals_of[p["id"]][i] for p in group_places):
+                    items.append(f"<li class='none {meal[0]}{i}'>"
+                                 f"{esc(empty.format(meal=meal, when=_when(i, d, ahead)))}</li>")
         return f"<h3>{esc(title)}</h3><ol class=places>{''.join(items)}</ol>"
 
-    label = "Today" if not ahead else dt.date.fromisoformat(day).strftime("%A")
-    parts.append("<div class=meals><input type=radio name=meal id=meal-l checked>"
+    days = "".join(f"<input type=radio name=day id=day-{i}{' checked' if i == 0 else ''}>"
+                   for i, _ in week)
+    chips = "".join(f"<label for=day-{i}>{'Today' if i == 0 and not ahead else d.strftime('%a')}</label>"
+                    for i, d in week)
+    parts.append(f"<div class=meals>{days}<input type=radio name=meal id=meal-l checked>"
                  "<input type=radio name=meal id=meal-d>"
                  "<div class=tabs role=group aria-label='Meal'><label for=meal-l>Lunch</label>"
-                 "<label for=meal-d>Dinner</label></div>" + SORT_ROW)
+                 "<label for=meal-d>Dinner</label></div>"
+                 f"<div class=days role=group aria-label='Day'>{chips}</div>"
+                 + SORT_ROW)
     if picks:
-        parts.append(group("Our picks", picks, "None of our picks is open for {meal} " + label.lower() + "."))
+        # "Our favorites" (Nate, 2026-11-04; it was "Our picks").
+        parts.append(group("Our favorites", picks, "None of our favorites is open for {meal} {when}."))
         parts.append(group("Also worth trying", others, "Nothing else open for {meal}."))
     else:
-        parts.append(group(f"Open {label.lower() if label == 'Today' else label}",
-                           others, "Nothing listed is open for {meal}."))
+        parts.append(group("The places", others, "Nothing listed is open for {meal} {when}."))
+    for i, d in week:
+        shut = [p for p in known if not meals_of[p["id"]][i]]
+        if shut:
+            parts.append(f"<p class='call cl c{i}'><b>Closed {esc(_when(i, d, ahead))}:</b> "
+                         + ", ".join(_closed_name(p, d.strftime("%a"))
+                                     for p in sorted(shut, key=lambda p: p["name"]))
+                         + ".</p>")
     parts.append("</div>")
     if call:
         def tel(p: dict) -> str:
@@ -1339,11 +1376,6 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
             f"{esc(p.get('hours_note') or 'Hours not published.')}{posted(p)}"
             f"{_news_html(p, day, tag='span')}</li>"
             for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
-    if closed:
-        parts.append(f"<p class=call><b>Closed {esc(label.lower() if label == 'Today' else label)}:</b> "
-                     + ", ".join(_closed_name(p, weekday)
-                                 for p in sorted(closed, key=lambda p: p["name"]))
-                     + ".</p>")
     if season:
         parts.append("<p class=call><b>Closed for the season:</b> "
                      + ", ".join(f"{'★ ' if p.get('pick') else ''}{esc(p['name'])}"
@@ -1355,6 +1387,19 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                    "as Wanderlog shows them (Topsail Guide's Google figure where Wanderlog has "
                    "none). Tap a place for what reviewers say.</p></section>")
     return "".join(parts)
+
+
+# The Day row and the Lunch | Dinner switch, one set of rules per day of the
+# week ahead: a place shows when it carries the chosen day's meal class, and
+# so do its hours, its weekly special and that day's closed list.
+DAY_CSS = "".join(
+    f"#day-{i}:checked~#meal-l:checked~.places>li:not(.l{i}),"
+    f"#day-{i}:checked~#meal-d:checked~.places>li:not(.d{i}){{display:none}}"
+    f"#day-{i}:checked~.places .h{i},#day-{i}:checked~.places .w{i}{{display:inline}}"
+    f"#day-{i}:checked~.c{i}{{display:block}}"
+    f"#day-{i}:checked~.days [for=day-{i}]{{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}}"
+    f"#day-{i}:focus-visible~.days [for=day-{i}]{{outline:2px solid var(--sea);outline-offset:2px}}"
+    for i in range(7))
 
 
 def load_quotes(root: str = HERE) -> list[dict]:
@@ -1559,7 +1604,7 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
     return (f"<!doctype html><html lang=en><head><meta charset=utf-8>"
             f"<meta name=viewport content='width=device-width,initial-scale=1'>"
             f"<title>{esc(title)}</title><meta name=description content='{esc(headline)}'>"
-            f"<style>{CSS}</style></head><body><main class=wrap>{mast}"
+            f"<style>{CSS}{DAY_CSS}</style></head><body><main class=wrap>{mast}"
             f"<div class={pg_class}><div class=col-main><div class=top>{''.join(top)}</div>\n"
             f"{nav}\n<div class=body>{body}</div>\n{week}\n{sources}</div>\n"
             f"<aside class=col-side>{side}</aside></div>\n"

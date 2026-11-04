@@ -409,8 +409,9 @@ def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data)
         _place("f", "Foxtrot Fry", {"Wed": ["11:00-20:00"]}, status="season", pick=True)))
     assert "<b>Closed for the season:</b> ★ Foxtrot Fry.</p>" in eats
     assert eats.count("Foxtrot Fry") == 1                     # not under Call first, no hours
-    assert eats.index("Bravo Fish") < eats.index("Our picks") + 400 < eats.index("Alpha Grill")
-    assert "<h3>Our picks</h3>" in eats and "<h3>Also worth trying</h3>" in eats
+    assert eats.index("Our favorites") < eats.index("Bravo Fish") < eats.index("Also worth trying") \
+        < eats.index("Alpha Grill")
+    assert "<h3>Our favorites</h3>" in eats and "<h3>Also worth trying</h3>" in eats
     assert "<b>Closed today:</b> Charlie Pizza (open Thu)." in eats
     assert ("<b>Call first</b><ul><li><b>Delta Diner</b> <a href='tel:9105550100'>910-555-0100</a>"
             "<br>Closes for the winter.<br>Posted hours: <span class=nw>Mon–Tue closed</span> · "
@@ -460,11 +461,38 @@ def test_the_places_can_be_sorted_top_rated_a_to_z_or_closest(data):
         _place("z", "Zulu Cafe", {"Wed": ["11:00-21:00"]}, google=[4.9, 50])))
     assert "<div class=sort role=group aria-label='Sort the places' hidden>" in eats
     assert eats.index("Top rated") < eats.index("A–Z") < eats.index("Closest to me")
-    assert "<li class='place d l' data-lat=34.42589 data-lon=-77.5442>" in eats
-    assert "<li class='place d l'><details>" in eats                  # Zulu: no lat / lon
+    assert "<li class='place d0 l0' data-lat=34.42589 data-lon=-77.5442>" in eats
+    assert "<li class='place d0 l0'><details>" in eats                # Zulu: no lat / lon
     assert eats.index("Zulu Cafe") < eats.index("Alpha Grill")       # built top rated
     assert eats.count("<span class=mi hidden></span>") == 2
     assert "tr-eats-sort" in render.EATS_JS and "getCurrentPosition" in render.EATS_JS
+
+
+def test_the_day_row_shows_the_week_ahead(data):
+    # Nate, 2026-11-04, from a reader: "the days they are open too since it
+    # all changes in the fall". 2026-10-14 is a Wednesday, so day 1 is Thursday.
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-15:00"], "Fri": ["17:00-21:00"]},
+               weekly={"Fri": "Fish fry"}),
+        _place("b", "Breezeway", {"Thu": ["17:00-21:00"], "Mon": ["17:00-21:00"]}, pick=True),
+        _place("c", "Closed Cafe", {})))
+    assert eats.count("<input type=radio name=day id=day-") == 7
+    assert "<input type=radio name=day id=day-0 checked>" in eats
+    assert ("<div class=days role=group aria-label='Day'>"
+            "<label for=day-0>Today</label><label for=day-1>Thu</label>") in eats
+    # Built once, with a class per day and meal: Wed lunch, Fri dinner; Thu and Mon dinner.
+    assert "<li class='place l0 d2'>" in eats and "<li class='place d1 d5 pick'>" in eats
+    assert ("<span class='hd h0'>11 AM–3 PM</span><span class='hd h2'>5 PM–9 PM</span>") in eats
+    assert "<span class='sp wk w2'>Friday: Fish fry</span>" in eats
+    # A favorite closed today waits in the list for its days, starred in the closed line.
+    assert "<li class='none d0'>None of our favorites is open for dinner today.</li>" in eats
+    assert "<li class='none l1'>None of our favorites is open for lunch Thursday.</li>" in eats
+    assert ("<p class='call cl c0'><b>Closed today:</b> ★ Breezeway (open Thu, Mon), "
+            "Closed Cafe.</p>") in eats
+    assert "<p class='call cl c1'><b>Closed Thursday:</b> Alpha Grill (open Wed, Fri), Closed Cafe.</p>" in eats
+    assert eats.count("Closed Cafe") == 7                      # never in the list itself
+    assert "#day-6:checked~#meal-d:checked~.places>li:not(.d6){display:none}" in render.DAY_CSS
+    assert "#day-1:checked~.c1{display:block}" in render.DAY_CSS
 
 
 def test_every_real_place_sits_around_topsail():

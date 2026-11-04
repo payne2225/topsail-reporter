@@ -2,6 +2,14 @@
 
 ## 2026-11-04
 
+- Lunch & Dinner gets a Day row (Nate, passing on a reader's idea: "the
+  days they are open too since it all changes in the fall"): Today and the
+  next six days, as a switch under Lunch | Dinner. Each place is built once
+  with its days and meals as classes, its hours and weekly special per day,
+  and a closed line per day; CSS shows the chosen day's, no script. "Our
+  picks" is now "Our favorites"; a favorite closed today is starred in the
+  closed line. Breezeway and Daddy Mac's were favorites already: Breezeway
+  shows on its open nights, Thu to Mon.
 - On Nate's next pass: the Editions at the foot of both pages are a
   dropdown, newest first ("should look cleaner like that"). The island
   sidebar loses its Weather and The beach cards ("they're redundant"; the

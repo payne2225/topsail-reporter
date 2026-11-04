@@ -94,7 +94,8 @@ when it is open across 12:30-1:30 and for dinner when it is open at 6:30
 and stays open to 7; a `meals` list overrides that. The page opens on
 Dinner after 3 PM. Places with unknown hours or a `call` status are listed
 under "Call first" with their number; a `season` place (it has said it is
-closed for the season) shows only in one "Closed for the season" line; picks sort first, then by Google
+closed for the season) shows only in one "Closed for the season" line; picks sort first, under
+"Our favorites" (Nate's name since 2026-11-04; it was "Our picks"), then by Google
 rating. Every place shows its whole posted week (Monday first, days with the
 same hours run together: "Mon closed · Tue–Sat 11 AM–9 PM · Sun 10 AM–3 PM")
 in its tap-open details and under Call first, and the "Closed today" list
@@ -112,6 +113,17 @@ it sorts last). No starting point is ever published (public repo), so the
 distance is from wherever the reader is. The choice is remembered on that
 phone; Closest re-sorts itself on the next visit only if location is already
 allowed. The row stays hidden without the script.
+
+**Day row (since 2026-11-04**, Nate, from a reader: "the days they are open
+too since it all changes in the fall"): between Lunch | Dinner and Sort, a
+switch for the week ahead, Today then the next six weekdays. Each place open
+some day that week is built once, with a class per day and meal (`l0`..`l6`,
+`d0`..`d6`, 0 being the edition's day), an hours span per day (`.h0`..) and
+its weekly special per day (`.w0`..); `render.DAY_CSS` shows the chosen
+day's, and the closed line for each day (`.c0`..) sits inside `.meals` so
+the radios reach it. No script. A favorite closed today (Breezeway on a
+Wednesday) is starred in "Closed today" and shows under Our favorites on its
+open days.
 
 ## 2. Hard rules
 

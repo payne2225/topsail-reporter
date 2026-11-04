@@ -4,7 +4,7 @@
     "Researched 2026-10-21 (scratch research, every value read that day from the source named). Ratings: Wanderlog's Google and Tripadvisor figures unless ratings_source says Topsail Guide.",
     "hours: weekday -> list of 'HH:MM-HH:MM' spans (24h, Eastern). A missing weekday is closed. '?' means the hours could not be read: the page says call first.",
     "status: open | call (may be closed for the season, or temporarily closed: listed under Call first, never recommended) | season (closed for the season, the place says so: one 'Closed for the season' line) | closed (gone for good: never shown).",
-    "pick: true for the paper's own picks (listed first). weekly: a special that runs every week on that weekday, with weekly_source.",
+    "pick: true for the paper's own picks, listed first as \"Our favorites\". weekly: a special that runs every week on that weekday, with weekly_source.",
     "facebook: the page local/fb_specials.py reads for the day's posts.",
     "Public repo: business details only. No reader names.",
     "lat / lon: ArcGIS World Geocoder address points, read 2026-11-04, cross-checked against the US Census geocoder (within 0.15 mi everywhere but Burrito Shak, where the Census match was 12 mi off). The Patio at the Surf has no street number, so it sits mid Charlie Medlin Dr. Used only to sort the Island page by distance from the reader's own phone."
