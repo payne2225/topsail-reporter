@@ -1,5 +1,14 @@
 # Patch notes
 
+## 2026-11-04
+
+- A sample edition today, Wed Nov 4, for Nate to test the Shortcuts the
+  day before the first preview ("make a preview today that I can test
+  out"). `config.SAMPLE_DATES` gains 2026-11-04 and the routine is run by
+  hand; like the earlier samples it is written like a daily morning and
+  drops out of the archive once the Nov 5 preview exists. The cron and the
+  run's dates are unchanged.
+
 ## 2026-10-29
 
 - Arrival moved a day earlier (Nate: "We're driving down on Friday the
