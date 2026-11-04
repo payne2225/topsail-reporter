@@ -815,8 +815,8 @@ def outlook(data: dict) -> str:
 
 
 CSS = """
-:root{color-scheme:light dark;--bg:#f6f3ec;--ink:#1d2a33;--muted:#59666f;--card:#fffdf8;--line:#e2dccf;--chip:#ebe5d8;--sea:#0d5c75;--tide:#0b6e96;--night:rgba(29,42,51,.07);--hi:#0d5c75;--lo:#8a6d3b;--warn-bg:#fbe9df;--warn:#b4461c;--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--serif:Georgia,'Times New Roman',serif}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1a20;--ink:#e8eef1;--muted:#9aa9b1;--card:#16242c;--line:#263a44;--chip:#1d3039;--sea:#6cc3dc;--tide:#2f9ccc;--night:rgba(0,0,0,.32);--hi:#2a85a8;--lo:#9a7a44;--warn-bg:#3a2119;--warn:#f08a5d}}
+:root{color-scheme:light dark;--bg:#f6f3ec;--ink:#1d2a33;--muted:#59666f;--card:#fffdf8;--line:#e2dccf;--chip:#ebe5d8;--sea:#0d5c75;--tide:#0b6e96;--night:rgba(29,42,51,.07);--hi:#0d5c75;--lo:#8a6d3b;--warn-bg:#fbe9df;--warn:#b4461c;--open:#1e7b46;--soon:#8a5a00;--shut:#b42318;--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--serif:Georgia,'Times New Roman',serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a20;--ink:#e8eef1;--muted:#9aa9b1;--card:#16242c;--line:#263a44;--chip:#1d3039;--sea:#6cc3dc;--tide:#2f9ccc;--night:rgba(0,0,0,.32);--hi:#2a85a8;--lo:#9a7a44;--warn-bg:#3a2119;--warn:#f08a5d;--open:#6fd59a;--soon:#f2c45a;--shut:#ff8f84}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 var(--serif)}
 .wrap{max-width:760px;margin:0 auto;padding:18px 16px 40px}
@@ -922,6 +922,13 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .places summary{display:flex;flex-direction:column;gap:1px;padding:11px 0;cursor:pointer;list-style:none}
 .places summary::-webkit-details-marker{display:none}
 .places .pn{font-weight:700;font-size:1.02rem}
+.places .ph{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.st{display:none;align-items:center;min-height:22px;padding:0 9px;border-radius:999px;font:700 .7rem/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.meals.live .st.lv:not([hidden]){display:inline-flex}.meals.live .st.cx{display:none!important}
+.st.o{color:var(--open);background:color-mix(in srgb,var(--open) 16%,transparent)}
+.st.s{color:var(--soon);background:color-mix(in srgb,var(--soon) 18%,transparent)}
+.st.c,.st.cx{color:var(--shut);background:color-mix(in srgb,var(--shut) 14%,transparent)}
+.cl ul{margin:4px 0 0;padding-left:1.2em}.cl li{margin:2px 0}
 .pill{display:inline-flex;align-items:center;align-self:flex-start;min-height:30px;padding:0 13px;border-radius:999px;background:var(--chip);color:var(--sea);font:700 .8rem/1 var(--sans);white-space:nowrap}
 .pill .pc,details[open]>summary .pill .po{display:none}details[open]>summary .pill .pc{display:inline}
 .places .pill{margin-top:7px}.places .sx{display:none}
@@ -1163,6 +1170,15 @@ def _when(i: int, d: dt.date, ahead: bool) -> str:
     return "today" if i == 0 and not ahead else d.strftime("%A")
 
 
+def _dl(i: int, d: dt.date, ahead: bool, cap: bool = False) -> str:
+    """A day word ('today' or 'Thursday') the script re-reads against the
+    reader's own day, so an edition opened a day late still says 'today'
+    of the right day."""
+    word = _when(i, d, ahead)
+    return (f"<span class=dl data-i={i} data-day={d.strftime('%A')}{' data-cap' if cap else ''}>"
+            f"{word.capitalize() if cap else word}</span>")
+
+
 def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, set[str]],
                 specials: dict[int, str], day: str = "", ahead: bool = False) -> str:
     """One place, built once for the whole week: its classes say which days
@@ -1174,17 +1190,26 @@ def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, s
     # Where it is, for "Closest to me" (the distance fills in on the reader's phone).
     where = (f" data-lat={place['lat']} data-lon={place['lon']}"
              if place.get("lat") is not None and place.get("lon") is not None else "")
-    hours = "".join(f"<span class='hd h{i}'>{esc(hours_today(place, d.strftime('%a')))}</span>"
-                    for i, d in week if meals[i])
-    head = (f"<span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
-            f"<span class=pm>{esc(place['town'])} &middot; {hours}"
+    # The week in minutes, for the live Open / Opening soon / Closed pill
+    # (null where the hours are unknown, [] where it is closed).
+    week_spans = json.dumps({wd: _spans(place, wd) for wd in WEEKDAYS}, separators=(",", ":"))
+    hours = []
+    for i, d in week:
+        if _spans(place, d.strftime("%a")):
+            hours.append(f"<span class='hd h{i}'>{esc(hours_today(place, d.strftime('%a')))}</span>")
+        elif place.get("pick") and open_days(place):    # a favorite stays listed on its closed days
+            hours.append(f"<span class='hd h{i}'>open {esc(open_days(place))}</span>")
+    head = (f"<span class=ph><span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
+            f"<span class='st lv' hidden></span>"
+            + ("<span class='st cx'>Closed</span>" if place.get("pick") else "") + "</span>"
+            f"<span class=pm>{esc(place['town'])} &middot; {''.join(hours)}"
             f"<span class=mi hidden></span></span>")
     rating = _rating(place)
     if rating:
         head += f"<span class=pr>{rating}</span>"
     for i, d in week:
         if specials.get(i):
-            head += (f"<span class='sp wk w{i}'>{esc(_when(i, d, ahead).capitalize())}: "
+            head += (f"<span class='sp wk w{i}'>{_dl(i, d, ahead, cap=True)}: "
                      f"{esc(specials[i])}</span>")
     # Hours news decides whether to go, so it shows without a tap.
     hours_news = [n for n in place_news(place, day, limit=5) if n["kind"] == "hours"][:1] if day else []
@@ -1209,7 +1234,7 @@ def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, s
     detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
     if place.get("hours_note"):
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
-    return (f"<li class='{cls}'{where}><details><summary>{head}<span class=sx></span>{DETAILS_PILL}</summary>"
+    return (f"<li class='{cls}'{where} data-hours='{esc(week_spans)}'><details><summary>{head}<span class=sx></span>{DETAILS_PILL}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
 
 
@@ -1333,7 +1358,10 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                         "<p>None posted yet.</p>" if checked else "")
                      + (f"<p class=muted>{esc(status)}</p>" if status else "") + "</div>")
 
-    picks = _ranked([p for p in listed if p.get("pick")])
+    # The favorites are always listed, open or not, with a pill to say which
+    # (Nate, 2026-11-04: "keep restaurants in the our favorites sections even
+    # when closed, just give it a closed pill").
+    picks = _ranked([p for p in known if p.get("pick")])
     others = _ranked([p for p in listed if not p.get("pick")])
 
     def group(title: str, group_places: list[dict], empty: str) -> str:
@@ -1341,13 +1369,15 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                  for p in group_places]
         for i, d in week:
             for meal in ("lunch", "dinner"):
-                if not any(meal in meals_of[p["id"]][i] for p in group_places):
+                if empty and not any(meal in meals_of[p["id"]][i] for p in group_places):
                     items.append(f"<li class='none {meal[0]}{i}'>"
-                                 f"{esc(empty.format(meal=meal, when=_when(i, d, ahead)))}</li>")
+                                 + esc(empty.format(meal=meal, when="\0")).replace("\0", _dl(i, d, ahead))
+                                 + "</li>")
         return f"<h3>{esc(title)}</h3><ol class=places>{''.join(items)}</ol>"
 
-    days = "".join(f"<input type=radio name=day id=day-{i}{' checked' if i == 0 else ''}>"
-                   for i, _ in week)
+    days = "".join(f"<input type=radio name=day id=day-{i} data-date={d.isoformat()} "
+                   f"data-short={d.strftime('%a')}{' checked' if i == 0 else ''}>"
+                   for i, d in week)
     chips = "".join(f"<label for=day-{i}>{'Today' if i == 0 and not ahead else d.strftime('%a')}</label>"
                     for i, d in week)
     parts.append(f"<div class=meals>{days}<input type=radio name=meal id=meal-l checked>"
@@ -1358,17 +1388,19 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                  + SORT_ROW)
     if picks:
         # "Our favorites" (Nate, 2026-11-04; it was "Our picks").
-        parts.append(group("Our favorites", picks, "None of our favorites is open for {meal} {when}."))
+        parts.append(group("Our favorites", picks, ""))
         parts.append(group("Also worth trying", others, "Nothing else open for {meal}."))
     else:
         parts.append(group("The places", others, "Nothing listed is open for {meal} {when}."))
+    # Each day's closed list, as a list (Nate, 2026-11-04); the favorites
+    # are not on it, they stay in their own list with a Closed pill.
     for i, d in week:
-        shut = [p for p in known if not meals_of[p["id"]][i]]
+        shut = [p for p in known if not p.get("pick") and not meals_of[p["id"]][i]]
         if shut:
-            parts.append(f"<p class='call cl c{i}'><b>Closed {esc(_when(i, d, ahead))}:</b> "
-                         + ", ".join(_closed_name(p, d.strftime("%a"))
-                                     for p in sorted(shut, key=lambda p: p["name"]))
-                         + ".</p>")
+            parts.append(f"<div class='call cl c{i}'><b>Closed {_dl(i, d, ahead)}</b><ul>"
+                         + "".join(f"<li>{_closed_name(p, d.strftime('%a'))}</li>"
+                                   for p in sorted(shut, key=lambda p: p["name"]))
+                         + "</ul></div>")
     parts.append("</div>")
     if call:
         def tel(p: dict) -> str:
@@ -1395,11 +1427,14 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
 
 
 # The Day row and the Lunch | Dinner switch, one set of rules per day of the
-# week ahead: a place shows when it carries the chosen day's meal class, and
-# so do its hours, its weekly special and that day's closed list.
+# week ahead: a place shows when it carries the chosen day's meal class (a
+# favorite always shows, with a Closed pill when it does not), and so do its
+# hours, its weekly special and that day's closed list.
 DAY_CSS = "".join(
-    f"#day-{i}:checked~#meal-l:checked~.places>li:not(.l{i}),"
-    f"#day-{i}:checked~#meal-d:checked~.places>li:not(.d{i}){{display:none}}"
+    f"#day-{i}:checked~#meal-l:checked~.places>li:not(.l{i}):not(.pick),"
+    f"#day-{i}:checked~#meal-d:checked~.places>li:not(.d{i}):not(.pick){{display:none}}"
+    f"#day-{i}:checked~#meal-l:checked~.places>li.pick:not(.l{i}) .cx,"
+    f"#day-{i}:checked~#meal-d:checked~.places>li.pick:not(.d{i}) .cx{{display:inline-flex}}"
     f"#day-{i}:checked~.places .h{i},#day-{i}:checked~.places .w{i}{{display:inline}}"
     f"#day-{i}:checked~.c{i}{{display:block}}"
     f"#day-{i}:checked~.days [for=day-{i}]{{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}}"
@@ -1491,6 +1526,33 @@ var saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
 if(saved==='az'){order('az');press('az');}
 else if(saved==='near'&&navigator.permissions&&navigator.permissions.query){
  navigator.permissions.query({name:'geolocation'}).then(function(p){if(p.state==='granted')near();}).catch(function(){});}
+})();
+""" + r"""
+(function(){
+var box=document.querySelector('.eats .meals');if(!box)return;
+var f={};
+try{new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',year:'numeric',
+ month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})
+ .formatToParts(new Date()).forEach(function(p){f[p.type]=p.value;});}catch(e){return;}
+var iso=f.year+'-'+f.month+'-'+f.day,wd=f.weekday,now=(+f.hour%24)*60+(+f.minute);
+var radios=[].slice.call(box.querySelectorAll('input[name=day]')),t=-1;
+radios.forEach(function(r,i){if(r.getAttribute('data-date')===iso)t=i;});
+if(t<0)return;
+radios.forEach(function(r,i){var l=box.querySelector('label[for='+r.id+']');
+ if(l)l.textContent=i===t?'Today':r.getAttribute('data-short');});
+[].forEach.call(box.querySelectorAll('.dl'),function(s){var i=+s.getAttribute('data-i');
+ s.textContent=i===t?(s.hasAttribute('data-cap')?'Today':'today'):s.getAttribute('data-day');});
+if(radios[0].checked)radios[t].checked=true;
+[].forEach.call(box.querySelectorAll('li.place[data-hours]'),function(li){
+ var h,s=li.querySelector('.st.lv');try{h=JSON.parse(li.getAttribute('data-hours'))[wd];}catch(e){return;}
+ if(!s||!h)return;
+ var k='c',txt='Closed';
+ for(var j=0;j<h.length;j++){
+  if(h[j][0]<=now&&now<h[j][1]){k='o';txt='Open';break;}
+  if(h[j][0]>now&&h[j][0]-now<=60){k='s';txt='Opening soon';}}
+ s.className='st lv '+k;s.textContent=txt;s.hidden=false;});
+function live(){box.classList.toggle('live',radios[t].checked);}
+radios.forEach(function(r){r.addEventListener('change',live);});live();
 })();
 """
 

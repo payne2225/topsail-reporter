@@ -2,6 +2,13 @@
 
 ## 2026-11-04
 
+- Lunch & Dinner, on Nate's next pass: "Closed today" is a list; the
+  favorites stay in Our favorites even when closed, with a red Closed
+  pill; and every place gets a live pill worked out on the device at
+  load, in Eastern time: green Open, yellow Opening soon (within the
+  hour), red Closed. An edition opened later in its week moves "Today"
+  to the real day. Checked in a browser on a Central-time clock at 8:30,
+  10:15 and 11:15 AM Wed and 4:20 PM Thu (ET).
 - Desktop restaurants ("doesnt look very clean on the desktop version.
   lots of gaps and spaces"): from 1360px each place is a card, two to a
   row, the two in a row the same height, with "Click for details" pinned

@@ -121,9 +121,22 @@ some day that week is built once, with a class per day and meal (`l0`..`l6`,
 `d0`..`d6`, 0 being the edition's day), an hours span per day (`.h0`..) and
 its weekly special per day (`.w0`..); `render.DAY_CSS` shows the chosen
 day's, and the closed line for each day (`.c0`..) sits inside `.meals` so
-the radios reach it. No script. A favorite closed today (Breezeway on a
-Wednesday) is starred in "Closed today" and shows under Our favorites on its
-open days.
+the radios reach it.
+
+**Favorites always listed, live pills (Nate, 2026-11-04):** the favorites
+stay in Our favorites on every day and meal ("keep restaurants in the our
+favorites sections even when closed, just give it a closed pill"), with a
+static red Closed pill (`.st.cx`, CSS) when they are not open for the chosen
+day and meal, and "open Thu–Mon" in place of hours on their closed days.
+They are never on the closed lists, which are lists now, not a sentence.
+Every place carries its week in minutes (`data-hours`, null = unknown), and
+the script, at load, works out Eastern time on the reader's device whatever
+its time zone: green Open, yellow Opening soon (opens within the hour), red
+Closed (`.st.lv`). It also moves "Today" to the reader's real day when the
+edition is from earlier in that week (chips, the closed-list heading and
+the weekly specials' day words, the `.dl` spans) and selects it. The live
+pills show only while that day is chosen (`.meals.live`); another day shows
+the static pills. An edition whose week has passed gets no live pills.
 
 ## 2. Hard rules
 
