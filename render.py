@@ -34,7 +34,7 @@ import config
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather", "Around the Island",
-            "Regs Corner", "Parting Shot", "Island Text", "Island Lead",
+            "Regs Corner", "The Last Cast", "Island Text", "Island Lead",
             "Things To Do", "Sources"]
 REQUIRED_SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather",
                      "Around the Island", "Island Text", "Island Lead",
@@ -42,16 +42,20 @@ REQUIRED_SECTIONS = ["Text", "Lead", "The Bite", "Beach & Weather",
 # The fishing page is fishing and the outdoors only (Nate, 2026-10-21: "maybe
 # the fishing side of it is just fishing info and outdoor conditions");
 # Around the Island lives on the Island Edition.
-PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Regs Corner", "Parting Shot"]
+PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Regs Corner", "The Last Cast"]
+# The fishing page's closing line was the Parting Shot until 2026-11-04 (Nate:
+# call it "The Last Cast"); the old heading still reads as the new one, so
+# the editions before then and a run that slips both show it.
+OLD_NAMES = {"Parting Shot": "The Last Cast"}
 # The Island Edition shares Beach & Weather with the fishing page and has its
 # own lead and picks. Since 2026-11-04 (Nate) it runs Beach & Weather, Things
 # To Do, Around the Island, then Lunch & Dinner, and closes on a Quote of the
-# Day instead of the fishing page's Parting Shot ("shouldnt be about fishing").
+# Day instead of the fishing page's Last Cast ("shouldnt be about fishing").
 ISLAND_PAGE_SECTIONS = ["Beach & Weather", "Things To Do", "Around the Island"]
 # Each page section's anchor, and its chip in the sticky row of section links
 # (None: no chip). Since 2026-11-04.
 SECTION_IDS = {"The Bite": ("bite", "The Bite"), "Beach & Weather": ("beach", "Beach"),
-               "Regs Corner": ("regs", "Regs"), "Parting Shot": ("shot", None),
+               "Regs Corner": ("regs", "Regs"), "The Last Cast": ("shot", None),
                "Things To Do": ("todo", "To Do"), "Around the Island": ("around", "Around")}
 KIND_LABEL = {"preview": "Preview", "arrival": "Arrival day", "daily": "Daily",
               "departure": "Last morning", "sample": "Sample"}
@@ -81,6 +85,7 @@ def parse_report(text: str) -> dict:
         h = re.match(r"^## (.+?)\s*$", line)
         if h:
             current = h.group(1).strip()
+            current = OLD_NAMES.get(current, current)
             sections[current] = []
         elif current:
             sections[current].append(line)
@@ -766,40 +771,13 @@ def numbers_panel(data: dict) -> tuple[str, str]:
 
 
 def island_numbers_panel(data: dict) -> tuple[str, str]:
-    """The Island Edition's cards: (the beach-side tides; weather day and
-    night, and the beach)."""
-    day = numbers_date(data)
-    ahead = day != data["date"]
-    cards = []
-
-    weather = []
-    for label, p in (("Day", day_forecast(data, day)), ("Night", night_forecast(data, day))):
-        if p:
-            weather.append(f"<li><b>{esc(p['name'] if not ahead else label)}:</b> "
-                           f"{esc(p['detailed'])}</li>")
-    cards.append("<div class='card wide'><h3>Weather</h3><ul>"
-                 + ("".join(weather) or "<li class=muted>no reading</li>") + "</ul></div>")
-
-    tides = tides_card(data, day, ("ocean",), "Beach tides",
+    """The Island Edition's cards: (the beach-side tides; nothing else). The
+    day and night forecast and the beach card are gone since 2026-11-04 (Nate:
+    "they're redundant"): the tiles, the Outlook and Beach & Weather carry
+    them, and the Surf tile shows the rip risk whenever NWS rates one."""
+    tides = tides_card(data, numbers_date(data), ("ocean",), "Beach tides",
                        f"Low tide uncovers the most beach. {TIDE_CURVE_NOTE}")
-
-    beach = []
-    sp = surf_period(data, day)
-    if sp:
-        f = sp["fields"]
-        for key, label in (("surf_height", "Surf"), ("rip_current_risk", "Rip current risk"),
-                           ("uv_index", "UV")):
-            if f.get(key):
-                beach.append(f"<li><b>{label}:</b> {esc(f[key])}</li>")
-    buoy = data.get("buoy")
-    if buoy and buoy.get("water_temp_f") is not None and not ahead:
-        beach.append(f"<li><b>Ocean {buoy['water_temp_f']}&deg;F</b>, measured "
-                     f"{esc(buoy['observed_et'])} ET</li>")
-    elif sp and sp["fields"].get("water_temp"):
-        beach.append(f"<li><b>Ocean:</b> {esc(sp['fields']['water_temp'].lower())}</li>")
-    cards.append("<div class='card wide'><h3>The beach</h3><ul>"
-                 + ("".join(beach) or "<li class=muted>no reading</li>") + "</ul></div>")
-    return tides, "<div class=numbers>" + "".join(cards) + "</div>"
+    return tides, ""
 
 
 # ---- the week
@@ -860,6 +838,8 @@ h2.headline{font:700 1.8rem/1.2 var(--serif);margin:20px 0 12px;padding:0;border
 section,.side,.more{margin-top:34px}
 .page{display:flex;flex-direction:column}.col-main,.col-side{display:contents}
 .top{order:1}.side{order:3}.body{order:4}.more{order:5}.out{order:6}.src{order:7}
+.isl .body{display:contents}.isl .body>section{order:6}.isl #beach{order:4}.isl .out{order:5}
+.isl .out{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 12px;margin-top:18px}.isl .out>h2{border:0;padding:0}.isl .out>h2::before{content:"🗓️ "}
 .body ul{padding-left:1.25em}.body li{margin:.4em 0}
 .tiles{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tile{display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-family:var(--sans)}
@@ -908,10 +888,16 @@ section,.side,.more{margin-top:34px}
 .src summary{display:flex;align-items:center;gap:12px;padding-top:12px;border-top:2px solid var(--ink)}.src summary h2{border:0;padding:0}
 .src ul{padding-left:0}
 footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.85rem/1.55 var(--sans);color:var(--muted)}
-.archive{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
-.archive .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
-.archive a,.archive span[aria-current]{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--chip);color:var(--ink);text-decoration:none;font-weight:600}
-.archive span[aria-current]{background:var(--sea);color:var(--card)}
+.archive{margin-top:14px}
+.archive summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--chip);color:var(--ink);font-weight:600;cursor:pointer;list-style:none}
+.archive summary::-webkit-details-marker{display:none}
+.archive summary::after{content:"";width:.45em;height:.45em;margin-left:2px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-.15em) rotate(45deg)}
+.archive details[open] summary::after{transform:translateY(.12em) rotate(-135deg)}
+.archive .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.archive ul{list-style:none;margin:8px 0 0;padding:6px;width:max-content;min-width:14rem;max-width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.archive li a,.archive li span{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600}
+.archive li a:hover{background:var(--chip)}
+.archive li span[aria-current]{background:var(--sea);color:var(--card)}
 .eats h3{font:700 1rem/1.3 var(--sans);margin:20px 0 6px}
 .specials{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--tide);border-radius:12px;padding:12px 16px;font:.9375rem/1.5 var(--sans)}
 .specials h3{margin:0 0 4px}.specials p{margin:4px 0 0}
@@ -974,7 +960,7 @@ body{font-size:1.125rem}.wrap{padding:28px 28px 56px}
 html{font-size:clamp(16px,calc(8px + .55vw),21px)}
 .wrap{max-width:min(96rem,94vw);padding:2rem 2.5rem 4rem}
 .page{display:grid;grid-template-columns:minmax(0,1fr) clamp(360px,29vw,540px);column-gap:clamp(36px,3.5vw,80px);align-items:start}
-.col-main,.col-side{display:block}.side{margin-top:20px}.more{margin-top:12px}
+.isl .out>h2::before{content:none}.col-main,.col-side,.isl .body{display:block}.side{margin-top:20px}.more{margin-top:12px}
 .mast h1{font-size:clamp(2.8rem,3.4vw,4rem)}h2.headline{font-size:clamp(2.2rem,2.3vw,2.9rem);max-width:30em}
 .lead{font-size:1.15rem;max-width:46em}.switch{max-width:24rem}
 .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles .tile:last-child:nth-child(odd){grid-column:1/-1}
@@ -1452,7 +1438,7 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
     when = config.weekday_label(numbers_date(data))
     tides, more = panel
     side = (f"<div class=side id=numbers><h2>The numbers, {esc(when)}</h2>{glance(data, edition)}"
-            f"{tides}</div><div class=more>{more}</div>")
+            f"{tides}</div>" + (f"<div class=more>{more}</div>" if more else ""))
     body, jump = [], [("numbers", "Numbers")]
     for s in sections:
         if sec.get(s):
@@ -1466,21 +1452,27 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
         body.append(quote_section(date_iso))
     body = "".join(body)
     week = outlook(data)
-    if week:
-        jump.append(("week", "Week"))
-    if island:
-        # The week rides with the rest of the numbers (Nate, 2026-11-04).
+    if week and island:
+        # The week rides with the rest of the numbers on a wide screen, and on
+        # a phone it comes right after Beach & Weather (Nate, 2026-11-04; the
+        # .isl rules in CSS), so its chip follows Beach.
+        at = next((i + 1 for i, (sid, _) in enumerate(jump) if sid == "beach"), len(jump))
+        jump.insert(at, ("week", "Week"))
         side, week = side + week, ""
+    elif week:
+        jump.append(("week", "Week"))
     nav = ("<nav class=jump aria-label='Sections'>"
            + "".join(f"<a href='#{sid}'>{esc(chip)}</a>" for sid, chip in jump) + "</nav>")
     sources = (f"<section class=src><details><summary><h2>Sources</h2>"
                f"<span class=pill><span class=po>Show</span><span class=pc>Hide</span></span>"
                f"</summary>{block_md(sec['Sources'])}</details></section>"
                if sec.get("Sources") else "")
+    # The editions are a dropdown, newest first (Nate, 2026-11-04: "should
+    # look cleaner like that").
     archive = "".join(
-        f"<a href='{root}{config.page_path(d, edition)}'>{esc(config.weekday_label(d))}</a>"
-        if d != date_iso else f"<span aria-current=page>{esc(config.weekday_label(d))}</span>"
-        for d in editions)
+        f"<li><a href='{root}{config.page_path(d, edition)}'>{esc(config.weekday_label(d))}</a></li>"
+        if d != date_iso else f"<li><span aria-current=page>{esc(config.weekday_label(d))}</span></li>"
+        for d in reversed(editions))
     care = ("Hours change in the off-season: call ahead before you drive anywhere."
             if island else
             "Size and bag limits change by proclamation: check NC Division of Marine "
@@ -1490,16 +1482,19 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
         "Buoy: NDBC. Sun and model waves: Open-Meteo. Numbers fetched "
         f"{esc(data.get('generated_et'))}. All times Eastern.</p>"
         f"<p>{care} Swim near a lifeguard or not at all when the rip risk is up.</p>"
-        f"<nav class=archive aria-label='Editions'><span class=k>Editions</span>{archive}</nav>"
+        f"<nav class=archive aria-label='Editions'><details><summary><span class=k>Editions</span>"
+        f"<span class=cur>{esc(config.weekday_label(date_iso))}</span></summary>"
+        f"<ul>{archive}</ul></details></nav>"
         "</footer>")
     script = ((TIDE_JS if "class=tidechart" in side else "")
               + (EATS_JS if "class=eats" in body else ""))
     script = f"<script>{script}</script>" if script else ""
+    pg_class = "'page isl'" if island else "page"
     return (f"<!doctype html><html lang=en><head><meta charset=utf-8>"
             f"<meta name=viewport content='width=device-width,initial-scale=1'>"
             f"<title>{esc(title)}</title><meta name=description content='{esc(headline)}'>"
             f"<style>{CSS}</style></head><body><main class=wrap>{mast}"
-            f"<div class=page><div class=col-main><div class=top>{''.join(top)}</div>\n"
+            f"<div class={pg_class}><div class=col-main><div class=top>{''.join(top)}</div>\n"
             f"{nav}\n<div class=body>{body}</div>\n{week}\n{sources}</div>\n"
             f"<aside class=col-side>{side}</aside></div>\n"
             f"{footer}</main>{script}</body></html>\n")

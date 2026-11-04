@@ -42,21 +42,32 @@ Each write-up section is a card. The report's dialect (`render.block_md`):
 (one per water), `- **Label:** ...` is a fact row, `- **Title.** ...` is a
 pick card. `validate.py` caps the words per section (The Bite 300, Things
 To Do 240, Around the Island 200, Regs 120, Beach & Weather 110, the leads
-60, Parting Shot 30), every paragraph or bullet at 45, the bullets in
+60, The Last Cast 30), every paragraph or bullet at 45, the bullets in
 Things To Do (6) and Around the Island (7), and requires The Bite to open
 with its best bet. Restaurants open from a "Click for details" pill (Nate's
 words), which reads "Hide details" while open.
 
 **The Island Edition's order (Nate, 2026-11-04):** the Island Lead, Beach
 & Weather, Things To Do, Around the Island, Lunch & Dinner, then a **Quote
-of the Day** instead of the Parting Shot (which stays on the fishing page:
-the island's "shouldnt be about fishing"). The quote comes from
+of the Day** instead of The Last Cast (which stays on the fishing page:
+the island's "shouldnt be about fishing"). The Last Cast was the Parting
+Shot until 2026-11-04 (Nate); `render.OLD_NAMES` reads `## Parting Shot`
+as `## The Last Cast`, so the older editions show the new name. The quote comes from
 `reference/quotes.json` (19 hand-checked beach, sea and sailing lines with
 their authors), one a day in turn by date; the routine never writes or
 edits it. The island's Outlook rides with the rest of the numbers in the
 sidebar. Breezeway is `open` on its posted hours since 2026-11-04 (Nate:
 "we're going to just assume its open"), so it shows in the main list on
 the nights it opens (Thu to Mon dinner).
+
+**Island cards and the phone order (Nate, 2026-11-04):** the island
+sidebar is the tiles, the beach tides and the Outlook; the Weather and
+The beach cards are gone ("they're redundant": the tiles, the Outlook and
+Beach & Weather carry them, and the Surf tile shows the rip risk when NWS
+rates one). On a phone the island Outlook sits between Beach & Weather and
+Things To Do (`.page.isl` flattens `.body` and orders it in CSS), and its
+Week chip follows Beach. The Editions at the foot of both pages are a
+dropdown, newest first.
 
 **Desktop (since 2026-11-04**, Nate: "feels like a cheap non-scalable
 mobile version"): from 1080px the root type scales with the window

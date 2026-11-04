@@ -48,7 +48,7 @@ PLACEHOLDERS = re.compile(r"\b(TODO|TBD|TK|XX+|lorem ipsum)\b|\{\{|\}\}|<insert"
 # 1,700 words in The Bite alone.
 WORD_CAPS = {"Lead": 60, "Island Lead": 60, "The Bite": 300, "Beach & Weather": 110,
              "Around the Island": 200, "Regs Corner": 120, "Things To Do": 240,
-             "Parting Shot": 30}
+             "The Last Cast": 30}
 BLOCK_WORDS = 45                    # one paragraph, one bullet or the best-bet line
 LIST_CAPS = {"Things To Do": 6, "Around the Island": 7}
 

@@ -162,14 +162,14 @@ The page dialect, which `render.py` turns into cards:
   for Today / Tonight / Surf / Wear, and for species in Regs Corner.
 - `- **Walk a pier.** ...` (a bold title, then the words) is a pick card.
 
-Exactly this shape. Section names must match; Regs Corner and Parting Shot
+Exactly this shape. Section names must match; Regs Corner and The Last Cast
 are optional, the rest are required. The fishing page is fishing and the
-outdoors only: the Lead, The Bite, Beach & Weather, Regs Corner and the
-Parting Shot. The Island Edition's page shows the Island Lead, then Beach &
+outdoors only: the Lead, The Bite, Beach & Weather, Regs Corner and The
+Last Cast. The Island Edition's page shows the Island Lead, then Beach &
 Weather, Things To Do, Around the Island, Lunch & Dinner (built from data,
 see above) and a Quote of the Day (from `reference/quotes.json`, also built
 for you). So write Beach & Weather for both readers, Around the Island for
-the Island Edition's, and the Parting Shot for the fishing page only: it
+the Island Edition's, and The Last Cast for the fishing page only: it
 can be about fish.
 
 ```
@@ -220,7 +220,7 @@ island_headline: <one line, under 90 characters, the day on the island, no fishi
 ## Regs Corner
 - **Speckled trout:** <only the fish that matter today, and anything new from NCDMF>
 
-## Parting Shot
+## The Last Cast
 <optional: one light line for the fishing page, 30 words at most>
 
 ## Island Text
@@ -238,7 +238,7 @@ island_headline: <one line, under 90 characters, the day on the island, no fishi
 
 Word caps (the validator counts them): Lead and Island Lead 60, The Bite
 300, Beach & Weather 110, Around the Island 200, Regs Corner 120, Things
-To Do 240, Parting Shot 30. A section that will not fit is a section with
+To Do 240, The Last Cast 30. A section that will not fit is a section with
 too much in it: keep the freshest and the most useful, and cut the rest.
 
 **The Text** is what lands on phones. Two to four short sentences: the

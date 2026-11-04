@@ -2,6 +2,14 @@
 
 ## 2026-11-04
 
+- On Nate's next pass: the Editions at the foot of both pages are a
+  dropdown, newest first ("should look cleaner like that"). The island
+  sidebar loses its Weather and The beach cards ("they're redundant"; the
+  Surf tile still shows the rip risk whenever NWS rates one). On a phone
+  the island Outlook is a card between Beach & Weather and Things To Do,
+  and its Week chip follows Beach. The fishing page's Parting Shot is now
+  The Last Cast; `## Parting Shot` in an older report reads as the new
+  name.
 - The Island Edition, on Nate's review: Beach & Weather first, then Things
   To Do, Around the Island and Lunch & Dinner; the Outlook moves into the
   numbers sidebar; the fishing Parting Shot is off the island page, which

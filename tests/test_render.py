@@ -480,15 +480,15 @@ def test_the_page_has_section_links_and_each_section_its_anchor(data):
     assert "<a href='#bite'>The Bite</a>" in html and "<section id=bite><h2>The Bite</h2>" in html
     assert "<div class=side id=numbers>" in html and "<a href='#week'>Week</a>" in html
     island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
-    assert ("<a href='#numbers'>Numbers</a><a href='#beach'>Beach</a><a href='#todo'>To Do</a>"
-            "<a href='#around'>Around</a><a href='#eats'>Eat</a><a href='#week'>Week</a>") in island
+    assert ("<a href='#numbers'>Numbers</a><a href='#beach'>Beach</a><a href='#week'>Week</a>"
+            "<a href='#todo'>To Do</a><a href='#around'>Around</a><a href='#eats'>Eat</a>") in island
 
 
 def test_the_island_runs_beach_todo_around_eat_then_its_quote(data):
     # Nate, 2026-11-04: Beach & Weather first, then Things To Do, Around the
     # Island, Lunch & Dinner; a Quote of the Day instead of the fishing
-    # Parting Shot; the Outlook with the rest of the numbers.
-    report = render.parse_report(GOOD_REPORT + "\n## Parting Shot\nThe bait thieves win again.\n")
+    # Last Cast; the Outlook with the rest of the numbers.
+    report = render.parse_report(GOOD_REPORT + "\n## The Last Cast\nThe bait thieves win again.\n")
     island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
     order = [island.index(m) for m in ("<section id=beach>", "<section id=todo>",
                                        "<section id=around>", "<section class=eats id=eats>",
@@ -500,6 +500,35 @@ def test_the_island_runs_beach_todo_around_eat_then_its_quote(data):
     fishing = render.page(data, report, ["2026-10-14"], "2026-10-14")
     assert "bait thieves" in fishing and "Quote of the Day" not in fishing
     assert "<section class=out id=week>" not in fishing[fishing.index("<aside class=col-side>"):]
+    # The phone order (the Outlook after Beach & Weather) hangs on this class.
+    assert "<div class='page isl'>" in island and "<div class=page>" in fishing
+
+
+def test_the_last_cast_was_the_parting_shot(data):
+    # Nate, 2026-11-04: "instead of 'The Parting Shot' call it 'The Last Cast'".
+    old = render.parse_report(GOOD_REPORT + "\n## Parting Shot\nThe bait thieves win again.\n")
+    assert old["sections"]["The Last Cast"] == "The bait thieves win again."
+    html = render.page(data, old, ["2026-10-14"], "2026-10-14")
+    assert "<section id=shot><h2>The Last Cast</h2>" in html and "Parting Shot" not in html
+
+
+def test_the_island_sidebar_drops_the_weather_and_beach_cards(data):
+    # Nate, 2026-11-04: both "are redundant".
+    report = render.parse_report(GOOD_REPORT)
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "<h3>Weather</h3>" not in island and "<h3>The beach</h3>" not in island
+    assert "<div class=more>" not in island and "<h3>Beach tides</h3>" in island
+    assert "<div class=more>" in render.page(data, report, ["2026-10-14"], "2026-10-14")
+
+
+def test_the_editions_are_a_dropdown_newest_first(data):
+    html = render.page(data, None, ["2026-10-14", "2026-10-15", "2026-10-16"], "2026-10-15")
+    foot = html[html.index("<nav class=archive"):]
+    assert foot.startswith("<nav class=archive aria-label='Editions'><details><summary>")
+    assert "<span class=cur>Thu Oct 15</span></summary>" in foot
+    order = [foot.index(d) for d in ("Fri Oct 16", "<span aria-current=page>Thu Oct 15",
+                                     "Wed Oct 14")]
+    assert order == sorted(order) and "href='../2026-10-16/'" in foot
 
 
 def test_the_quote_turns_daily_and_is_escaped():
