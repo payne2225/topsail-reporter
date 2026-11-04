@@ -1389,7 +1389,8 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     if picks:
         # "Our favorites" (Nate, 2026-11-04; it was "Our picks").
         parts.append(group("Our favorites", picks, ""))
-        parts.append(group("Also worth trying", others, "Nothing else open for {meal}."))
+        # "Around the Topsail area" (Nate, 2026-11-04; it was "Also worth trying").
+        parts.append(group("Around the Topsail area", others, "Nothing else open for {meal}."))
     else:
         parts.append(group("The places", others, "Nothing listed is open for {meal} {when}."))
     # Each day's closed list, as a list (Nate, 2026-11-04); the favorites

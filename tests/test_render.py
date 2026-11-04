@@ -411,9 +411,9 @@ def test_the_section_sorts_picks_first_and_names_the_closed_and_the_unsure(data)
         _place("f", "Foxtrot Fry", {"Wed": ["11:00-20:00"]}, status="season", pick=True)))
     assert "<b>Closed for the season:</b> ★ Foxtrot Fry.</p>" in eats
     assert eats.count("Foxtrot Fry") == 1                     # not under Call first, no hours
-    assert eats.index("Our favorites") < eats.index("Bravo Fish") < eats.index("Also worth trying") \
+    assert eats.index("Our favorites") < eats.index("Bravo Fish") < eats.index("Around the Topsail area") \
         < eats.index("Alpha Grill")
-    assert "<h3>Our favorites</h3>" in eats and "<h3>Also worth trying</h3>" in eats
+    assert "<h3>Our favorites</h3>" in eats and "<h3>Around the Topsail area</h3>" in eats
     assert ("<div class='call cl c0'><b>Closed <span class=dl data-i=0 data-day=Wednesday>today</span>"
             "</b><ul><li>Charlie Pizza (open Thu)</li></ul></div>") in eats
     assert ("<b>Call first</b><ul><li><b>Delta Diner</b> <a href='tel:9105550100'>910-555-0100</a>"
