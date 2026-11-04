@@ -2,6 +2,11 @@
 
 ## 2026-11-04
 
+- Desktop restaurants ("doesnt look very clean on the desktop version.
+  lots of gaps and spaces"): from 1360px each place is a card, two to a
+  row, the two in a row the same height, with "Click for details" pinned
+  to the bottom so the pills line up. The 9bfe129 Pages deploy timed out
+  on GitHub's side (tests passed); this push deploys it.
 - Lunch & Dinner gets a Day row (Nate, passing on a reader's idea: "the
   days they are open too since it all changes in the fall"): Today and the
   next six days, as a switch under Lunch | Dinner. Each place is built once

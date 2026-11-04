@@ -924,7 +924,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .places .pn{font-weight:700;font-size:1.02rem}
 .pill{display:inline-flex;align-items:center;align-self:flex-start;min-height:30px;padding:0 13px;border-radius:999px;background:var(--chip);color:var(--sea);font:700 .8rem/1 var(--sans);white-space:nowrap}
 .pill .pc,details[open]>summary .pill .po{display:none}details[open]>summary .pill .pc{display:inline}
-.places .pill{margin-top:7px}
+.places .pill{margin-top:7px}.places .sx{display:none}
 .places .pm,.places .pr{font-size:.85rem;color:var(--muted)}
 .places .sp{align-self:flex-start;margin-top:5px;padding:4px 9px;border-radius:6px;font-size:.88rem;background:color-mix(in srgb,var(--tide) 14%,transparent)}
 .places .pd{padding:0 0 12px;font-size:.92rem;line-height:1.5}.places .pd p{margin:0 0 6px}
@@ -987,7 +987,12 @@ html{font-size:clamp(16px,calc(8px + .55vw),21px)}
 .body section>.list:has(>.fact)>li:nth-child(2),#around>.list>li:nth-child(2){border-top:0;padding-top:2px}
 .body section>.list>.fact,#bite .fact{display:flex}
 #todo>.list{gap:14px}#todo>.list>li{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
-.places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:2.25rem;align-items:start}
+.places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch;margin-top:4px}
+.places>li.place{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:0 14px}
+.places>li.place>details{flex:1;display:flex;flex-direction:column}
+.places>li.place summary{flex:1;padding:12px 0}
+.places>li.place .sx{display:block;flex:1;min-height:9px}.places>li.place .pill{margin-top:0}
+.places>li.none{grid-column:1/-1;border:0;padding:4px 0}
 }
 @media print{.switch,.tip{display:none}.src details>*{display:block}}
 """
@@ -1204,7 +1209,7 @@ def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, s
     detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
     if place.get("hours_note"):
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
-    return (f"<li class='{cls}'{where}><details><summary>{head}{DETAILS_PILL}</summary>"
+    return (f"<li class='{cls}'{where}><details><summary>{head}<span class=sx></span>{DETAILS_PILL}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
 
 
