@@ -458,3 +458,33 @@ def test_a_special_read_off_a_photo_says_so(data):
                            "url": "https://www.facebook.com/x", "from_photo": True}]}
     eats = render.eats_section(data, places, specials)
     assert "Ribeye plate $21 <small>read from the photo posted 10:12 AM on <a" in eats
+
+
+# ---- the page's dialect and its tap targets (2026-11-04) --------------------
+
+def test_the_dialect_renders_callouts_subheads_facts_and_items():
+    html = render.block_md("> **Best bet:** the sound\n\n### The sound\n- **When:** 10:14 AM\n"
+                           "- **Walk a pier.** Surf City\n- plain\n\n### The surf\nSmall.")
+    assert html.startswith("<div class=callout><strong>Best bet:</strong> the sound</div>")
+    assert "<div class=sub><h3>The sound</h3>" in html and html.endswith("<p>Small.</p>\n</div>")
+    assert "<li class=fact><span class=fk>When</span><span class=fv>10:14 AM</span></li>" in html
+    assert "<li class=item><b class=it>Walk a pier.</b> Surf City</li>" in html
+    assert "<li class=pl>plain</li>" in html
+    assert html.count("<div class=sub>") == html.count("</div>") - 1   # each block closed
+
+
+def test_the_page_has_section_links_and_each_section_its_anchor(data):
+    report = render.parse_report(GOOD_REPORT)
+    html = render.page(data, report, ["2026-10-14"], "2026-10-14")
+    assert "<nav class=jump aria-label='Sections'><a href='#numbers'>Numbers</a>" in html
+    assert "<a href='#bite'>The Bite</a>" in html and "<section id=bite><h2>The Bite</h2>" in html
+    assert "<div class=side id=numbers>" in html and "<a href='#week'>Week</a>" in html
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "<a href='#todo'>To Do</a><a href='#eats'>Eat</a>" in island
+
+
+def test_a_place_opens_from_a_click_for_details_pill(data):
+    report = render.parse_report(GOOD_REPORT)
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "<span class=po>Click for details</span><span class=pc>Hide details</span>" in island
+    assert '.pn::after' not in island

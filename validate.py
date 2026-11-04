@@ -18,7 +18,11 @@ What it holds the writer to:
     Lead may be a data time or one those two sections already carry (an
     event or an opening hour, sourced there),
   - at least two real source links,
-  - no placeholder left behind.
+  - no placeholder left behind,
+  - the page's sections stay short (Nate, 2026-11-04: "very long walls of
+    text" on a phone): a word cap per section, no paragraph or bullet over
+    BLOCK_WORDS, at most six picks in Things To Do and seven items in Around
+    the Island, and The Bite opening with its '> ' best-bet line.
 """
 
 from __future__ import annotations
@@ -40,6 +44,45 @@ EVENT_SECTIONS = ["Around the Island", "Things To Do"]
 TEXT_SECTIONS = ["Text", "Island Text"]
 CLOCK = re.compile(r"\b(\d{1,2}):(\d{2})\s*([AaPp])?\.?\s*(?:[Mm]\.?)?(?![\w:])")
 PLACEHOLDERS = re.compile(r"\b(TODO|TBD|TK|XX+|lorem ipsum)\b|\{\{|\}\}|<insert", re.I)
+# Words on the page, counted without markdown. The 2026-11-04 sample ran
+# 1,700 words in The Bite alone.
+WORD_CAPS = {"Lead": 60, "Island Lead": 60, "The Bite": 300, "Beach & Weather": 110,
+             "Around the Island": 200, "Regs Corner": 120, "Things To Do": 240,
+             "Parting Shot": 30}
+BLOCK_WORDS = 45                    # one paragraph, one bullet or the best-bet line
+LIST_CAPS = {"Things To Do": 6, "Around the Island": 7}
+
+
+def words(text: str) -> int:
+    """Words a reader sees: link text counts, markdown and URLs do not."""
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    return len(re.findall(r"\S*\w\S*", re.sub(r"[*#>]", " ", text)))
+
+
+def blocks(text: str) -> list[tuple[str, str]]:
+    """(kind, text) for each paragraph, bullet and '> ' callout, split the way
+    render.block_md splits them. Kind is 'para', 'bullet' or 'note'."""
+    out: list[list[str]] = []
+    kind = None
+    for line in text.split("\n"):
+        s = line.strip()
+        if not s or s.startswith("### "):
+            kind = None
+        elif s.startswith("- "):
+            out.append(["bullet", s[2:]])
+            kind = "bullet"
+        elif s.startswith(">"):
+            if kind == "note":
+                out[-1][1] += " " + s[1:].strip()
+            else:
+                out.append(["note", s[1:].strip()])
+                kind = "note"
+        elif (kind == "bullet" and line.startswith("  ")) or kind == "para":
+            out[-1][1] += " " + s
+        else:
+            out.append(["para", s])
+            kind = "para"
+    return [(k, t) for k, t in out]
 
 
 def _norm(h: str, m: str, ap: str | None) -> tuple[str, str | None]:
@@ -127,6 +170,24 @@ def check(date_iso: str, data: dict, report: dict | None) -> list[str]:
                 if not ok:
                     problems.append(f"'{mm.group(0).strip()}' in '## {name}' matches no tide, "
                                     f"sun or surf-forecast time in today's data {where}")
+
+    for name, cap in WORD_CAPS.items():
+        text = sec.get(name, "")
+        n = words(text)
+        if n > cap:
+            problems.append(f"'## {name}' is {n} words (max {cap}); cut it, the page is read on a phone")
+        for kind, block in blocks(text):
+            n = words(block)
+            if n > BLOCK_WORDS:
+                problems.append(f"a {kind} in '## {name}' is {n} words (max {BLOCK_WORDS}): "
+                                f"'{block[:50]}...'; split it or cut it")
+    for name, cap in LIST_CAPS.items():
+        n = sum(1 for kind, _ in blocks(sec.get(name, "")) if kind == "bullet")
+        if n > cap:
+            problems.append(f"'## {name}' has {n} bullets (max {cap})")
+    bite = blocks(sec.get("The Bite", ""))
+    if bite and bite[0][0] != "note":
+        problems.append("'## The Bite' must open with its '> **Best bet:** ...' line")
 
     links = re.findall(r"\]\((https?://[^)\s]+)\)", sec.get("Sources", ""))
     if len(links) < 2:

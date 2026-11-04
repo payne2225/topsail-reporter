@@ -141,6 +141,27 @@ either file. Breakfast and coffee stay yours (Things To Do, departure day).
 
 ## 4. Write `reports/<date>.md`
 
+**Short, and built to scan on a phone** (Nate, 2026-11-04: "very long walls
+of text ... lets try to be more concise"). The readers glance at this on a
+phone between casts. Say the useful thing and stop: no recap of the
+numbers block (the page shows every tide, wind and temperature), no
+"(read today)" or "(own site)" tags (the Sources list says what you read),
+and no street address or phone number unless someone needs it to get there
+or to call ahead. Name a fishing report's source and age once, short:
+"(Fisherman's Post, Nov 1)". `validate.py` holds the limits: the word caps
+below, no paragraph or bullet over 45 words, at most six Things To Do and
+seven Around the Island bullets, and The Bite opening with its best bet.
+
+The page dialect, which `render.py` turns into cards:
+
+- `> **Best bet:** ...` is the highlighted call at the top of The Bite.
+- `### The sound` starts a block inside a section (one per water in The
+  Bite).
+- `- **When:** ...` (a bold label, then a colon) is a fact row: label on
+  the left, the fact beside it. Use it for When / Where / Bait / Latest,
+  for Today / Tonight / Surf / Wear, and for species in Regs Corner.
+- `- **Walk a pier.** ...` (a bold title, then the words) is a pick card.
+
 Exactly this shape. Section names must match; Regs Corner and Parting Shot
 are optional, the rest are required. The fishing page is fishing and the
 outdoors only: the Lead, The Bite, Beach & Weather, Regs Corner and the
@@ -161,35 +182,62 @@ island_headline: <one line, under 90 characters, the day on the island, no fishi
 <the text message's words: 60 to 520 characters, plain sentences>
 
 ## Lead
-<two to four sentences: the day in short>
+<two sentences, 60 words at most: the day in short>
 
 ## The Bite
-<the fishing report: by water, with spots, baits, tide windows, and sources' dates>
+> **Best bet:** <where, when (tide stage and clock time) and with what, one sentence>
+
+### The sound
+- **When:** <the window: tide stage plus clock time from the data>
+- **Where:** <the spots>
+- **Bait:** <bait, lure, rig>
+- **Latest:** <what was reported, by whom and when, or "no fresh report">
+
+### The inlet
+<the same rows, only the ones that have something to say>
+
+### The surf
+
+### The piers
+
+### Tip
+<one practical tip for the younger fisherman, two sentences at most>
 
 ## Beach & Weather
-<surf, rip risk, wind through the day, temperature, what to wear>
+- **Today:** <sky, high, the wind through the day>
+- **Tonight:** <low, fog or rain>
+- **Surf:** <height, rip risk or that nobody is rating it, how to wade>
+- **Wear:** <what to wear>
 
 ## Around the Island
-<events, notices, news; event times are fine here>
+- **Today:** <an event or notice: what, where, when>
+- **Tomorrow:** <...>
+- **Weekend:** <...>
+- **Roads:** <only work that slows a drive>
 
 ## Regs Corner
-<only when something changed, is about to, or a common fish has a catch: size, bag, season>
+- **Speckled trout:** <only the fish that matter today, and anything new from NCDMF>
 
 ## Parting Shot
-<optional: one light closing line or a fun fact about the island or a fish>
+<optional: one light line, 30 words at most>
 
 ## Island Text
 <the Island Edition's text message: 60 to 520 characters, plain sentences>
 
 ## Island Lead
-<two to four sentences: the day on the island, for someone who will not fish>
+<two sentences, 60 words at most: the day on the island, for someone who will not fish>
 
 ## Things To Do
-<three to six picks for today, each with where, when it is open, and why>
+- **<The pick.>** <where, open when, why today, kids or not: 45 words at most>
 
 ## Sources
 - [What it is, with its date](https://the-url-you-read)
 ```
+
+Word caps (the validator counts them): Lead and Island Lead 60, The Bite
+300, Beach & Weather 110, Around the Island 200, Regs Corner 120, Things
+To Do 240, Parting Shot 30. A section that will not fit is a section with
+too much in it: keep the freshest and the most useful, and cut the rest.
 
 **The Text** is what lands on phones. Two to four short sentences: the
 fishing call (where and when to be), one beach or weather call, and room for
@@ -207,24 +255,27 @@ numbers (weather day and night, beach, water, beach low tide, sun) and link
 are added automatically.
 
 **Things To Do** is the Island Edition's heart: three to six picks for this
-day, as a short list. Mix them: something outside when the weather allows
+day, one bullet each in the pick-card form above. Mix them: something outside when the weather allows
 (a beach walk at low tide, a sunset spot, a pier walk, a bike ride),
 something to see (the museum, the turtle center if it is open to visitors),
 a breakfast, coffee or ice cream stop that is open today (lunch and dinner
 are the Lunch & Dinner section's job), and an indoor fallback
 when rain is in the forecast. Each pick says where it is, when it is open
-(as its own page says, with the day you checked), and why it suits today.
+today (checked on its own page, which goes in Sources), and why it suits
+today.
 A family with kids may be reading: say when a pick suits kids. Event times
 from Around the Island can be repeated here. A wind is named for where it
 comes FROM: a southwest wind is at your back walking northeast up the beach
 and in your face walking southwest. Get that right or leave it out.
 
-**The Bite** leads with the best bet. Organise it by water: the sound and
-marsh (the default play, north of the inlet up Banks Channel and the creeks),
-the inlet, the surf, the piers. For each: what is around, what is working
-(bait, lure, rig), and the window (tide stage plus clock time from the data).
-Say plainly when there is no fresh report. A younger fisherman is reading:
-one practical tip (a knot, a rig, how to read a slough) is welcome.
+**The Bite** leads with the best bet, then one `###` block per water: the
+sound and marsh (the default play, north of the inlet up Banks Channel and
+the creeks), the inlet, the surf, the piers. For each, the fact rows: the
+window (tide stage plus clock time from the data), where, what is working
+(bait, lure, rig), and the latest word with its date. Leave a row out
+rather than pad it, and say plainly when there is no fresh report. A
+younger fisherman is reading: the Tip block (a knot, a rig, how to read a
+slough) is welcome, two sentences at most.
 
 **Previews** (the morning before the island, Thu Nov 5): the weekend outlook
 for anyone headed to Topsail, never framed as anyone's trip. The fishing
@@ -233,7 +284,8 @@ reported lately, what bait and tackle to bring or buy, the licence note
 (`reference/regs.md`), the first island day's tides and forecast, and the
 weekend's events. The numbers block already shows the first island day.
 The Island Edition's preview: the weekend's weather, what to pack for it,
-the weekend's events, and what is open on Friday evening.
+the weekend's events, and what is open on Friday evening. A preview keeps
+the same word caps: pick what matters, the page has the numbers.
 
 **Arrival day**: the afternoon and evening bite, settling-in information
 (bait shops and their hours, pier hours), and the evening's events. Island

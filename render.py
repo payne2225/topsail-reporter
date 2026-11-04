@@ -47,6 +47,11 @@ PAGE_SECTIONS = ["The Bite", "Beach & Weather", "Regs Corner", "Parting Shot"]
 # Parting Shot with the fishing page, and has its own lead and picks.
 ISLAND_PAGE_SECTIONS = ["Things To Do", "Beach & Weather", "Around the Island",
                         "Parting Shot"]
+# Each page section's anchor, and its chip in the sticky row of section links
+# (None: no chip). Since 2026-11-04.
+SECTION_IDS = {"The Bite": ("bite", "The Bite"), "Beach & Weather": ("beach", "Beach"),
+               "Regs Corner": ("regs", "Regs"), "Parting Shot": ("shot", None),
+               "Things To Do": ("todo", "To Do"), "Around the Island": ("around", "Around")}
 KIND_LABEL = {"preview": "Preview", "arrival": "Arrival day", "daily": "Daily",
               "departure": "Last morning", "sample": "Sample"}
 
@@ -347,17 +352,44 @@ def inline_md(text: str) -> str:
     return out
 
 
+# A bullet that opens with a bold label and a colon is a fact row
+# ("**When:** 10:14 AM to 4:07 PM"); one that opens with a bold title is an
+# item card ("**Walk a pier.** Surf City Ocean Pier, ..."). Since 2026-11-04,
+# when Nate found the pages "very long walls of text" on a phone.
+FACT = re.compile(r"^\*\*([^*]{1,40}?):\*\*\s*(.*)$|^\*\*([^*]{1,40}?)\*\*:\s*(.*)$")
+TITLED = re.compile(r"^\*\*([^*]+?)\*\*\s*(.+)$")
+
+
+def _li(item: str) -> str:
+    m = FACT.match(item)
+    if m:
+        label, rest = (m.group(1), m.group(2)) if m.group(1) is not None else (m.group(3), m.group(4))
+        return (f"<li class=fact><span class=fk>{inline_md(label)}</span>"
+                f"<span class=fv>{inline_md(rest)}</span></li>")
+    m = TITLED.match(item)
+    if m:
+        return f"<li class=item><b class=it>{inline_md(m.group(1))}</b> {inline_md(m.group(2))}</li>"
+    return f"<li class=pl>{inline_md(item)}</li>"
+
+
 def block_md(text: str) -> str:
-    """Paragraphs, '- ' bullets and '### ' subheads; that is the whole dialect."""
-    out, para, items = [], [], []
+    """Paragraphs, '- ' bullets, '> ' callouts and '### ' subheads; that is the
+    whole dialect. Each subhead opens a block that runs to the next one."""
+    out, para, items, note = [], [], [], []
+    in_sub = False
 
     def flush():
         if para:
-            out.append(f"<p>{inline_md(' '.join(para))}</p>")
+            joined = " ".join(para)
+            cls = " class=li" if joined.startswith("**") else ""
+            out.append(f"<p{cls}>{inline_md(joined)}</p>")
             para.clear()
         if items:
-            out.append("<ul>" + "".join(f"<li>{inline_md(i)}</li>" for i in items) + "</ul>")
+            out.append("<ul class=list>" + "".join(_li(i) for i in items) + "</ul>")
             items.clear()
+        if note:
+            out.append(f"<div class=callout>{inline_md(' '.join(note))}</div>")
+            note.clear()
 
     for line in text.split("\n"):
         s = line.strip()
@@ -365,18 +397,27 @@ def block_md(text: str) -> str:
             flush()
         elif s.startswith("### "):
             flush()
-            out.append(f"<h3>{inline_md(s[4:])}</h3>")
+            if in_sub:
+                out.append("</div>")
+            out.append(f"<div class=sub><h3>{inline_md(s[4:])}</h3>")
+            in_sub = True
+        elif s.startswith(">"):
+            if para or items:
+                flush()
+            note.append(s[1:].strip())
         elif s.startswith("- "):
-            if para:
+            if para or note:
                 flush()
             items.append(s[2:])
         elif items and line.startswith("  "):
             items[-1] += " " + s
         else:
-            if items:
+            if items or note:
                 flush()
             para.append(s)
     flush()
+    if in_sub:
+        out.append("</div>")
     return "\n".join(out)
 
 
@@ -789,7 +830,7 @@ def outlook(data: dict) -> str:
                      f"<span class=wd>{esc(_range(p['wind']))}</span></li>")
     if not items:
         return ""
-    return ("<section class=out><h2>Outlook</h2><ol class=outlook>" + "".join(items)
+    return ("<section class=out id=week><h2>Outlook</h2><ol class=outlook>" + "".join(items)
             + "</ol><p class=muted>NWS Wilmington point forecast for Topsail Beach: "
               "the day's high, then the night's low.</p></section>")
 
@@ -817,7 +858,7 @@ h3{font:700 1.02rem/1.3 var(--sans);margin:1.3em 0 .4em}
 h2.headline{font:700 1.8rem/1.2 var(--serif);margin:20px 0 12px;padding:0;border:0;text-transform:none;letter-spacing:0;color:var(--ink);text-wrap:balance}
 section,.side,.more{margin-top:34px}
 .page{display:flex;flex-direction:column}.col-main,.col-side{display:contents}
-.top{order:1}.side{order:2}.body{order:3}.more{order:4}.out{order:5}.src{order:6}
+.top{order:1}.side{order:3}.body{order:4}.more{order:5}.out{order:6}.src{order:7}
 .body ul{padding-left:1.25em}.body li{margin:.4em 0}
 .tiles{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tile{display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-family:var(--sans)}
@@ -863,8 +904,8 @@ section,.side,.more{margin-top:34px}
 .out p.muted{margin-top:8px}
 .src details{font:14px/1.55 var(--sans)}
 .src summary{cursor:pointer;list-style:none}.src summary h2{margin:0}.src details[open] summary h2{margin-bottom:12px}.src summary::-webkit-details-marker{display:none}
-.src summary h2::after{content:"  +";letter-spacing:0}.src details[open] summary h2::after{content:"  \\2212"}
-.src ul{padding-left:1.2em}
+.src summary{display:flex;align-items:center;gap:12px;padding-top:12px;border-top:2px solid var(--ink)}.src summary h2{border:0;padding:0}
+.src ul{padding-left:0}
 footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.85rem/1.55 var(--sans);color:var(--muted)}
 .archive{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
 .archive .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
@@ -885,7 +926,9 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .places summary{display:flex;flex-direction:column;gap:1px;padding:11px 0;cursor:pointer;list-style:none}
 .places summary::-webkit-details-marker{display:none}
 .places .pn{font-weight:700;font-size:1.02rem}
-.places .pn::after{content:" +";color:var(--muted);font-weight:400}.places details[open] .pn::after{content:" \\2212"}
+.pill{display:inline-flex;align-items:center;align-self:flex-start;min-height:30px;padding:0 13px;border-radius:999px;background:var(--chip);color:var(--sea);font:700 .8rem/1 var(--sans);white-space:nowrap}
+.pill .pc,details[open]>summary .pill .po{display:none}details[open]>summary .pill .pc{display:inline}
+.places .pill{margin-top:7px}
 .places .pm,.places .pr{font-size:.85rem;color:var(--muted)}
 .places .sp{align-self:flex-start;margin-top:5px;padding:4px 9px;border-radius:6px;font-size:.88rem;background:color-mix(in srgb,var(--tide) 14%,transparent)}
 .places .pd{padding:0 0 12px;font-size:.92rem;line-height:1.5}.places .pd p{margin:0 0 6px}
@@ -893,6 +936,27 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .call{font:.9rem/1.5 var(--sans);color:var(--muted);margin:16px 0 0}.call b{color:var(--ink)}
 .nw{white-space:nowrap}.call ul{list-style:none;margin:6px 0 0;padding:0!important}.call li{margin:0 0 8px!important}
 .eats>p.muted:last-child{margin-top:16px;font-size:.85rem}
+.jump{order:2;position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:18px 0 0;padding:8px 0;background:var(--bg);border-bottom:1px solid var(--line);font:600 .9rem/1 var(--sans)}
+.jump::-webkit-scrollbar{display:none}
+.jump a{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:0 15px;border-radius:999px;background:var(--chip);color:var(--ink);text-decoration:none}
+section,.side,.more{scroll-margin-top:70px}
+.body section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 4px;margin-top:18px}
+.body section>h2{border:0;padding:0}
+#bite>h2::before{content:"🎣 "}#beach>h2::before{content:"🌤️ "}#regs>h2::before{content:"📏 "}
+#todo>h2::before{content:"📍 "}#eats>h2::before{content:"🍽️ "}#around>h2::before{content:"📰 "}
+.callout{background:color-mix(in srgb,var(--tide) 13%,var(--card));border-left:4px solid var(--tide);border-radius:10px;padding:11px 14px;margin:0 0 14px;font:600 1rem/1.45 var(--sans)}
+.callout strong{color:var(--sea)}
+.sub{border-top:1px solid var(--line);padding-top:12px;margin-top:4px}.sub>h3{margin:0 0 6px;font-size:1rem}
+.list{list-style:none;margin:0 0 12px;padding:0!important}
+.list>li{margin:0!important;padding:8px 0;border-top:1px solid var(--line)}.list>li:first-child{border-top:0;padding-top:2px}
+.fact{display:flex;flex-direction:column;gap:2px}
+.fk{font:700 .72rem/1.4 var(--sans);text-transform:uppercase;letter-spacing:.09em;color:var(--sea)}.fv::first-letter{text-transform:uppercase}
+.item .it{display:block;font:700 1rem/1.35 var(--sans);margin-bottom:2px}
+.list .pl{position:relative;padding-left:1.1em}.list .pl::before{content:"•";position:absolute;left:.15em;color:var(--sea)}
+p.li>strong:first-child{display:block;font:700 1rem/1.35 var(--sans);margin-bottom:2px}
+#shot{background:transparent;border:0;border-left:4px solid var(--sea);border-radius:0;padding:4px 0 2px 16px}
+#shot>h2{font-size:.72rem}#shot p{font:italic 1.12rem/1.5 var(--serif)}
+@media (min-width:520px){.fact{display:grid;grid-template-columns:7.5em minmax(0,1fr);column-gap:14px}.fk{padding-top:.25em}}
 @media (min-width:700px){
 body{font-size:18px}.wrap{padding:28px 28px 56px}
 .mast h1{font-size:2.6rem}h2.headline{font-size:2.2rem}
@@ -1105,8 +1169,14 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None,
     detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
     if place.get("hours_note"):
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
-    return (f"<li class='{cls}'><details><summary>{head}</summary>"
+    return (f"<li class='{cls}'><details><summary>{head}{DETAILS_PILL}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
+
+
+# The tap target that opens a place (Nate, 2026-11-04: "change the + to a pill
+# that says click for details"). It reads "Hide details" while open.
+DETAILS_PILL = ("<span class=pill><span class=po>Click for details</span>"
+                "<span class=pc>Hide details</span></span>")
 
 
 NEWS_DAYS = 21                      # a place's Facebook news shows this long
@@ -1208,7 +1278,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                   "day (checked about 11:15 AM and 4:15 PM).")
     else:
         status = ""
-    parts = ["<section class=eats><h2>Lunch &amp; Dinner</h2>"]
+    parts = ["<section class=eats id=eats><h2>Lunch &amp; Dinner</h2>"]
     if lines or status:
         parts.append("<div class=specials><h3>Specials today</h3>"
                      + (f"<ul>{''.join(lines)}</ul>" if lines else
@@ -1331,17 +1401,28 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
 
     when = config.weekday_label(numbers_date(data))
     tides, more = panel
-    side = (f"<div class=side><h2>The numbers, {esc(when)}</h2>{glance(data, edition)}"
+    side = (f"<div class=side id=numbers><h2>The numbers, {esc(when)}</h2>{glance(data, edition)}"
             f"{tides}</div><div class=more>{more}</div>")
-    body = []
+    body, jump = [], [("numbers", "Numbers")]
     for s in sections:
         if sec.get(s):
-            body.append(f"<section><h2>{esc(s)}</h2>{block_md(sec[s])}</section>")
+            sid, chip = SECTION_IDS[s]
+            body.append(f"<section id={sid}><h2>{esc(s)}</h2>{block_md(sec[s])}</section>")
+            if chip:
+                jump.append((sid, chip))
         if island and s == "Things To Do":
             body.append(eats_section(data, load_restaurants(), specials))
+            jump.append(("eats", "Eat"))
     body = "".join(body)
-    sources = (f"<section class=src><details><summary><h2>Sources</h2></summary>"
-               f"{block_md(sec['Sources'])}</details></section>" if sec.get("Sources") else "")
+    week = outlook(data)
+    if week:
+        jump.append(("week", "Week"))
+    nav = ("<nav class=jump aria-label='Sections'>"
+           + "".join(f"<a href='#{sid}'>{esc(chip)}</a>" for sid, chip in jump) + "</nav>")
+    sources = (f"<section class=src><details><summary><h2>Sources</h2>"
+               f"<span class=pill><span class=po>Show</span><span class=pc>Hide</span></span>"
+               f"</summary>{block_md(sec['Sources'])}</details></section>"
+               if sec.get("Sources") else "")
     archive = "".join(
         f"<a href='{root}{config.page_path(d, edition)}'>{esc(config.weekday_label(d))}</a>"
         if d != date_iso else f"<span aria-current=page>{esc(config.weekday_label(d))}</span>"
@@ -1365,7 +1446,7 @@ def page(data: dict, report: dict | None, editions: list[str], date_iso: str,
             f"<title>{esc(title)}</title><meta name=description content='{esc(headline)}'>"
             f"<style>{CSS}</style></head><body><main class=wrap>{mast}"
             f"<div class=page><div class=col-main><div class=top>{''.join(top)}</div>\n"
-            f"<div class=body>{body}</div>\n{outlook(data)}\n{sources}</div>\n"
+            f"{nav}\n<div class=body>{body}</div>\n{week}\n{sources}</div>\n"
             f"<aside class=col-side>{side}</aside></div>\n"
             f"{footer}</main>{script}</body></html>\n")
 

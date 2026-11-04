@@ -2,6 +2,22 @@
 
 ## 2026-11-04
 
+- Shorter pages, built to scan (Nate: "very long walls of text ... lets
+  try to be more concise" and "use styling to break up the continuous
+  text-heavy look"). The Nov 4 sample's report ran 5,300 words, The Bite
+  1,700 of them. Now each section is a card; a sticky row of section links
+  sits under the lead; The Bite opens with a highlighted best bet and runs
+  one block per water with When / Where / Bait / Latest rows; Beach &
+  Weather, Around the Island and Regs Corner are label rows; Things To Do
+  are pick cards; the Parting Shot is a pull quote. `instructions/report.md`
+  gives the dialect and the caps, and `validate.py` holds them (words per
+  section, 45 words per paragraph or bullet, bullet counts, the best bet
+  first). A phone-width mockup of today's facts in the new form ran 6,100
+  px tall against 12,900.
+- Restaurants open from a "Click for details" pill instead of the "+"
+  (Nate's words); it reads "Hide details" while open. Sources open from a
+  Show pill the same way.
+
 - A sample edition today, Wed Nov 4, for Nate to test the Shortcuts the
   day before the first preview ("make a preview today that I can test
   out"). `config.SAMPLE_DATES` gains 2026-11-04 and the routine is run by

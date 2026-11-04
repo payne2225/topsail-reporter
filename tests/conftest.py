@@ -47,7 +47,7 @@ Sound is the play this morning: fish the moving water around the 11:28 AM high. 
 A light southwest breeze and a 1 to 2 foot surf make for an easy morning on the water.
 
 ## The Bite
-Red drum have been working the oyster bars on the falling tide after the 11:28 AM high.
+> **Best bet:** red drum working the oyster bars on the falling tide after the 11:28 AM high.
 
 ## Beach & Weather
 Sunny and warm. Low rip risk.

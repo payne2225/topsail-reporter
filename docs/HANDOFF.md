@@ -27,11 +27,25 @@ with "Topsail Reporter", so the same begins-with check guards both.
 
 The pages (since 2026-10-20) are built for a phone first. Order on a phone
 or iPad: the Fishing | Island switch, any alert, the headline and lead,
-"The numbers" (six tiles, then a tide chart per station with every tide
-listed under it), the write-up, the detail cards (wind by the hour and the
-marine forecast, water, surf; the island's weather and beach), the week as
-day cards, and Sources folded shut. From 1080px wide the write-up runs on
-the left and all the numbers ride a sidebar. Every page is one
+a sticky row of section links (Numbers, The Bite, Beach, Regs, Week; on
+the island To Do, Eat, Beach, Around, Week), "The numbers" (six tiles,
+then a tide chart per station with every tide listed under it), the
+write-up, the detail cards (wind by the hour and the marine forecast,
+water, surf; the island's weather and beach), the week as day cards, and
+Sources folded shut behind a Show pill. From 1080px wide the write-up runs
+on the left and all the numbers ride a sidebar.
+
+**Short sections as cards (since 2026-11-04**, Nate: "very long walls of
+text ... lets try to be more concise"; the Nov 4 sample ran 5,300 words).
+Each write-up section is a card. The report's dialect (`render.block_md`):
+`> ` is a highlighted callout (The Bite's best bet), `### ` opens a block
+(one per water), `- **Label:** ...` is a fact row, `- **Title.** ...` is a
+pick card. `validate.py` caps the words per section (The Bite 300, Things
+To Do 240, Around the Island 200, Regs 120, Beach & Weather 110, the leads
+60, Parting Shot 30), every paragraph or bullet at 45, the bullets in
+Things To Do (6) and Around the Island (7), and requires The Bite to open
+with its best bet. Restaurants open from a "Click for details" pill (Nate's
+words), which reads "Hide details" while open. Every page is one
 self-contained file: inline CSS, inline SVG, and a small inline script for
 the chart's hover and tap readout (the page reads fine without it).
 Restyle by editing `CSS` in `render.py`; every number on the page still

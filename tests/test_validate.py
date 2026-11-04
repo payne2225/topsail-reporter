@@ -44,7 +44,7 @@ def test_the_text_rules(data):
 
 
 def test_structure_rules(data):
-    no_bite = GOOD_REPORT.replace("## The Bite\nRed drum", "## The Bight\nRed drum")
+    no_bite = GOOD_REPORT.replace("## The Bite\n>", "## The Bight\n>")
     out = problems(data, no_bite)
     assert any("'## The Bite' is missing" in p for p in out)
     assert any("unknown section '## The Bight'" in p for p in out)
@@ -95,3 +95,33 @@ def test_an_invented_beach_tide_in_the_island_text_is_caught(data):
 def test_a_things_to_do_time_does_not_excuse_the_fishing_text(data):
     out = problems(data, GOOD_REPORT.replace("around the 11:28 AM high", "around the 11:00 AM high"))
     assert len(out) == 1 and "'11:00 AM' in '## Text'" in out[0]
+
+
+# ---- short sections (Nate, 2026-11-04: "very long walls of text") ---------
+
+def test_a_long_section_or_block_is_caught(data):
+    long_bite = GOOD_REPORT.replace(
+        "after the 11:28 AM high.\n",
+        "after the 11:28 AM high.\n\n" + "\n\n".join(["- **Bait:** " + "shrimp " * 40] * 8) + "\n")
+    out = problems(data, long_bite)
+    assert any("'## The Bite' is" in p and "max 300" in p for p in out)
+    wall = GOOD_REPORT.replace("Sunny and warm.", "Sunny and warm " + "really " * 50 + ".")
+    assert any("a para in '## Beach & Weather'" in p for p in problems(data, wall))
+
+
+def test_the_bite_opens_with_its_best_bet(data):
+    out = problems(data, GOOD_REPORT.replace("> **Best bet:** red drum", "Red drum"))
+    assert out == ["'## The Bite' must open with its '> **Best bet:** ...' line"]
+
+
+def test_too_many_picks_are_caught(data):
+    many = GOOD_REPORT.replace(
+        "- The Missiles and More Museum opens at 11:00 AM, per its site.",
+        "- The Missiles and More Museum opens at 11:00 AM, per its site.\n" + "- A walk.\n" * 6)
+    assert any("'## Things To Do' has 7 bullets (max 6)" in p for p in problems(data, many))
+
+
+def test_words_skip_markdown_and_urls():
+    assert validate.words("**Best bet:** the [sound](https://x.example/a-b) at 10:14 AM") == 7
+    assert validate.blocks("> **Best bet:** a\n> b\n\n### The sound\n- **When:** c\n  d\ne") == [
+        ("note", "**Best bet:** a b"), ("bullet", "**When:** c d"), ("para", "e")]
