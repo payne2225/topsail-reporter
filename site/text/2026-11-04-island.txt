@@ -1,0 +1,10 @@
+Topsail Reporter, Island Edition, Wed Nov 4
+
+☀️ Sunny, high 76°
+🌙 Tonight partly cloudy then patchy fog, low 65°
+💨 Wind E 9 mph
+🌡️ Water 69°
+🐚 Beach low tide 9:16a, 9:42p
+🌅 Sun up 6:33a, down 5:14p
+
+Full report: https://payne2225.github.io/topsail-reporter/2026-11-04/island/
