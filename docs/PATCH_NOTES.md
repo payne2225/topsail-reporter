@@ -2,6 +2,19 @@
 
 ## 2026-11-04
 
+- The Island Edition, on Nate's review: Beach & Weather first, then Things
+  To Do, Around the Island and Lunch & Dinner; the Outlook moves into the
+  numbers sidebar; the fishing Parting Shot is off the island page, which
+  closes on a Quote of the Day from the new `reference/quotes.json` (19
+  hand-checked beach, sea and sailing lines with authors, one a day in
+  turn). Breezeway is `open` on its posted hours ("we're going to just
+  assume its open"), so it lists on its dinner nights, Thu to Mon.
+- Desktop scales ("feels like a cheap non-scalable mobile version"): from
+  1080px the root type grows with the window (16px at 1440 to 21px at
+  2400 and up), the page fills up to 96rem or 94% of the window, the
+  sidebar is 29% of it, and from 1360px The Bite's waters, the label
+  rows, Around the Island, the Things To Do cards and the restaurants run
+  two to a row. Fixed font sizes moved to rem so they scale with it.
 - Shorter pages, built to scan (Nate: "very long walls of text ... lets
   try to be more concise" and "use styling to break up the continuous
   text-heavy look"). The Nov 4 sample's report ran 5,300 words, The Bite

@@ -480,7 +480,43 @@ def test_the_page_has_section_links_and_each_section_its_anchor(data):
     assert "<a href='#bite'>The Bite</a>" in html and "<section id=bite><h2>The Bite</h2>" in html
     assert "<div class=side id=numbers>" in html and "<a href='#week'>Week</a>" in html
     island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
-    assert "<a href='#todo'>To Do</a><a href='#eats'>Eat</a>" in island
+    assert ("<a href='#numbers'>Numbers</a><a href='#beach'>Beach</a><a href='#todo'>To Do</a>"
+            "<a href='#around'>Around</a><a href='#eats'>Eat</a><a href='#week'>Week</a>") in island
+
+
+def test_the_island_runs_beach_todo_around_eat_then_its_quote(data):
+    # Nate, 2026-11-04: Beach & Weather first, then Things To Do, Around the
+    # Island, Lunch & Dinner; a Quote of the Day instead of the fishing
+    # Parting Shot; the Outlook with the rest of the numbers.
+    report = render.parse_report(GOOD_REPORT + "\n## Parting Shot\nThe bait thieves win again.\n")
+    island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
+    order = [island.index(m) for m in ("<section id=beach>", "<section id=todo>",
+                                       "<section id=around>", "<section class=eats id=eats>",
+                                       "<section id=quote>")]
+    assert order == sorted(order)
+    assert "bait thieves" not in island and "<h2>Quote of the Day</h2>" in island
+    side = island[island.index("<aside class=col-side>"):]
+    assert "<section class=out id=week>" in side
+    fishing = render.page(data, report, ["2026-10-14"], "2026-10-14")
+    assert "bait thieves" in fishing and "Quote of the Day" not in fishing
+    assert "<section class=out id=week>" not in fishing[fishing.index("<aside class=col-side>"):]
+
+
+def test_the_quote_turns_daily_and_is_escaped():
+    quotes = [{"text": "One <b>\nTwo", "author": "A & B", "work": "W"}, {"text": "Three", "author": "C"}]
+    days = {render.quote_for(d, quotes)["text"] for d in ("2026-11-05", "2026-11-06")}
+    assert len(days) == 2
+    html = render.quote_section("2026-11-05", quotes) + render.quote_section("2026-11-06", quotes)
+    assert "One &lt;b&gt;<br>Two" in html and "A &amp; B, <cite>W</cite>" in html
+    assert "<p class=by>C</p>" in html
+    assert render.quote_section("2026-11-05", []) == ""
+
+
+def test_the_real_quote_list_is_well_formed_and_long_enough():
+    quotes = render.load_quotes()
+    assert len(quotes) >= 10          # the run's ten days never repeat one
+    for q in quotes:
+        assert q["text"].strip() and q["author"].strip() and "—" not in q["text"]
 
 
 def test_a_place_opens_from_a_click_for_details_pill(data):

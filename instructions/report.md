@@ -165,10 +165,12 @@ The page dialect, which `render.py` turns into cards:
 Exactly this shape. Section names must match; Regs Corner and Parting Shot
 are optional, the rest are required. The fishing page is fishing and the
 outdoors only: the Lead, The Bite, Beach & Weather, Regs Corner and the
-Parting Shot. The Island Edition's page shows the Island Lead, Things To Do,
-Lunch & Dinner (built from data, see above), Beach & Weather, Around the
-Island and the Parting Shot. So write Beach & Weather and the Parting Shot
-for both readers, and Around the Island for the Island Edition's.
+Parting Shot. The Island Edition's page shows the Island Lead, then Beach &
+Weather, Things To Do, Around the Island, Lunch & Dinner (built from data,
+see above) and a Quote of the Day (from `reference/quotes.json`, also built
+for you). So write Beach & Weather for both readers, Around the Island for
+the Island Edition's, and the Parting Shot for the fishing page only: it
+can be about fish.
 
 ```
 ---
@@ -219,7 +221,7 @@ island_headline: <one line, under 90 characters, the day on the island, no fishi
 - **Speckled trout:** <only the fish that matter today, and anything new from NCDMF>
 
 ## Parting Shot
-<optional: one light line, 30 words at most>
+<optional: one light line for the fishing page, 30 words at most>
 
 ## Island Text
 <the Island Edition's text message: 60 to 520 characters, plain sentences>

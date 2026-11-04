@@ -45,7 +45,26 @@ To Do 240, Around the Island 200, Regs 120, Beach & Weather 110, the leads
 60, Parting Shot 30), every paragraph or bullet at 45, the bullets in
 Things To Do (6) and Around the Island (7), and requires The Bite to open
 with its best bet. Restaurants open from a "Click for details" pill (Nate's
-words), which reads "Hide details" while open. Every page is one
+words), which reads "Hide details" while open.
+
+**The Island Edition's order (Nate, 2026-11-04):** the Island Lead, Beach
+& Weather, Things To Do, Around the Island, Lunch & Dinner, then a **Quote
+of the Day** instead of the Parting Shot (which stays on the fishing page:
+the island's "shouldnt be about fishing"). The quote comes from
+`reference/quotes.json` (19 hand-checked beach, sea and sailing lines with
+their authors), one a day in turn by date; the routine never writes or
+edits it. The island's Outlook rides with the rest of the numbers in the
+sidebar. Breezeway is `open` on its posted hours since 2026-11-04 (Nate:
+"we're going to just assume its open"), so it shows in the main list on
+the nights it opens (Thu to Mon dinner).
+
+**Desktop (since 2026-11-04**, Nate: "feels like a cheap non-scalable
+mobile version"): from 1080px the root type scales with the window
+(16px at 1440, about 18.6px at 1920, 21px from 2400), the page is up to
+96rem or 94% of the window wide, and the sidebar is 29% of it. From 1360px
+the write-up uses the width: The Bite's waters, the label rows, Around the
+Island and the Things To Do cards run two to a row, and so do the
+restaurants. Every page is one
 self-contained file: inline CSS, inline SVG, and a small inline script for
 the chart's hover and tap readout (the page reads fine without it).
 Restyle by editing `CSS` in `render.py`; every number on the page still
