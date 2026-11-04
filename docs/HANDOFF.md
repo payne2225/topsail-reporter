@@ -101,6 +101,18 @@ in its tap-open details and under Call first, and the "Closed today" list
 names the days each one does open. Refresh hours and ratings by editing the
 JSON and its `read` date.
 
+**Sort row (since 2026-11-04**, Nate: "ordering the restaurants either by
+distance or alphabetical ... or have a sort option for either one"): under
+the Lunch | Dinner switch, Sort: Top rated (the order the page is built in)
+· A–Z · Closest to me. Picks stay first in every order. Closest asks the
+phone for its location and shows straight-line miles on each place, worked
+out from each place's `lat` / `lon` in `restaurants.json` (ArcGIS address
+points, cross-checked against the Census geocoder; a new place needs both or
+it sorts last). No starting point is ever published (public repo), so the
+distance is from wherever the reader is. The choice is remembered on that
+phone; Closest re-sorts itself on the next visit only if location is already
+allowed. The row stays hidden without the script.
+
 ## 2. Hard rules
 
 - The repo and site are PUBLIC: no reader names, no phone numbers, no

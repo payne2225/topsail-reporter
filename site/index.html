@@ -92,6 +92,13 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 #meal-l:checked~.tabs [for=meal-l],#meal-d:checked~.tabs [for=meal-d]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
 #meal-l:focus-visible~.tabs [for=meal-l],#meal-d:focus-visible~.tabs [for=meal-d]{outline:2px solid var(--sea);outline-offset:2px}
 #meal-l:checked~.places li:not(.l),#meal-d:checked~.places li:not(.d){display:none}
+.sort{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:10px 0 2px;font:600 .85rem/1 var(--sans)}
+.sort[hidden],.sortmsg[hidden]{display:none}
+.sort .k{color:var(--muted);margin-right:2px}
+.sort button{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--chip);color:var(--ink);font:inherit;cursor:pointer}
+.sort button[aria-pressed=true]{background:var(--sea);color:var(--card)}
+.sort button:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.sortmsg{margin:6px 0 0;font:.85rem/1.45 var(--sans);color:var(--muted)}
 .places{list-style:none;margin:0;padding:0!important;font-family:var(--sans)}
 .places>li{margin:0!important;border-top:1px solid var(--line)}
 .places summary{display:flex;flex-direction:column;gap:1px;padding:11px 0;cursor:pointer;list-style:none}

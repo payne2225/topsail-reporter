@@ -908,6 +908,13 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 #meal-l:checked~.tabs [for=meal-l],#meal-d:checked~.tabs [for=meal-d]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
 #meal-l:focus-visible~.tabs [for=meal-l],#meal-d:focus-visible~.tabs [for=meal-d]{outline:2px solid var(--sea);outline-offset:2px}
 #meal-l:checked~.places li:not(.l),#meal-d:checked~.places li:not(.d){display:none}
+.sort{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:10px 0 2px;font:600 .85rem/1 var(--sans)}
+.sort[hidden],.sortmsg[hidden]{display:none}
+.sort .k{color:var(--muted);margin-right:2px}
+.sort button{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--chip);color:var(--ink);font:inherit;cursor:pointer}
+.sort button[aria-pressed=true]{background:var(--sea);color:var(--card)}
+.sort button:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.sortmsg{margin:6px 0 0;font:.85rem/1.45 var(--sans);color:var(--muted)}
 .places{list-style:none;margin:0;padding:0!important;font-family:var(--sans)}
 .places>li{margin:0!important;border-top:1px solid var(--line)}
 .places summary{display:flex;flex-direction:column;gap:1px;padding:11px 0;cursor:pointer;list-style:none}
@@ -1147,8 +1154,12 @@ def _rating(place: dict) -> str:
 def _place_item(place: dict, weekday: str, meals: set[str], special: str | None,
                 day: str = "") -> str:
     cls = " ".join(["place"] + [m[0] for m in sorted(meals)] + (["pick"] if place.get("pick") else []))
+    # Where it is, for "Closest to me" (the distance fills in on the reader's phone).
+    where = (f" data-lat={place['lat']} data-lon={place['lon']}"
+             if place.get("lat") is not None and place.get("lon") is not None else "")
     head = (f"<span class=pn>{'★ ' if place.get('pick') else ''}{esc(place['name'])}</span>"
-            f"<span class=pm>{esc(place['town'])} &middot; {esc(hours_today(place, weekday))}</span>")
+            f"<span class=pm>{esc(place['town'])} &middot; {esc(hours_today(place, weekday))}"
+            f"<span class=mi hidden></span></span>")
     rating = _rating(place)
     if rating:
         head += f"<span class=pr>{rating}</span>"
@@ -1177,7 +1188,7 @@ def _place_item(place: dict, weekday: str, meals: set[str], special: str | None,
     detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
     if place.get("hours_note"):
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
-    return (f"<li class='{cls}'><details><summary>{head}{DETAILS_PILL}</summary>"
+    return (f"<li class='{cls}'{where}><details><summary>{head}{DETAILS_PILL}</summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
 
 
@@ -1309,7 +1320,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     parts.append("<div class=meals><input type=radio name=meal id=meal-l checked>"
                  "<input type=radio name=meal id=meal-d>"
                  "<div class=tabs role=group aria-label='Meal'><label for=meal-l>Lunch</label>"
-                 "<label for=meal-d>Dinner</label></div>")
+                 "<label for=meal-d>Dinner</label></div>" + SORT_ROW)
     if picks:
         parts.append(group("Our picks", picks, "None of our picks is open for {meal} " + label.lower() + "."))
         parts.append(group("Also worth trying", others, "Nothing else open for {meal}."))
@@ -1374,9 +1385,64 @@ def quote_section(date_iso: str, quotes: list[dict] | None = None) -> str:
             f"<p class=by>{who}</p></blockquote></section>")
 
 
+# Sort the places (Nate, 2026-11-04: "ordering the restaurants either by
+# distance or alphabetical ... or have a sort option for either one"). Top
+# rated is the order the page is built in; A-Z and Closest to me re-order each
+# list on the phone, picks still first. Closest uses the phone's own location
+# and each place's lat / lon from reference/restaurants.json, so no starting
+# point is ever published. The row stays hidden until the script shows it.
+SORT_ROW = ("<div class=sort role=group aria-label='Sort the places' hidden><span class=k>Sort</span>"
+            "<button type=button data-sort=rated aria-pressed=true>Top rated</button>"
+            "<button type=button data-sort=az aria-pressed=false>A–Z</button>"
+            "<button type=button data-sort=near aria-pressed=false>Closest to me</button></div>"
+            "<p class=sortmsg role=status hidden></p>")
+
 # Dinner is the likelier question after 3 PM; the page opens on that tab.
 EATS_JS = ("(function(){var d=document.getElementById('meal-d');"
-           "if(d&&new Date().getHours()>=15){d.checked=true;}})();")
+           "if(d&&new Date().getHours()>=15){d.checked=true;}})();") + r"""
+(function(){
+var box=document.querySelector('.eats .sort');if(!box)return;
+var msg=document.querySelector('.eats .sortmsg'),KEY='tr-eats-sort';
+var lists=[].slice.call(document.querySelectorAll('.eats ol.places'));
+lists.forEach(function(ol){[].forEach.call(ol.children,function(li,i){li.setAttribute('data-i',i);});});
+box.hidden=false;
+function say(t){msg.textContent=t;msg.hidden=!t;}
+function nm(li){var n=li.querySelector('.pn');return n?n.textContent.replace(/^\u2605\s*/,''):'';}
+function order(key){lists.forEach(function(ol){
+ var items=[].slice.call(ol.children);
+ items.sort(function(p,q){
+  var pn=p.classList.contains('none'),qn=q.classList.contains('none');
+  if(pn!==qn)return pn?1:-1;
+  if(key==='az'){var c=nm(p).localeCompare(nm(q));if(c)return c;}
+  if(key==='near'){var a=parseFloat(p.getAttribute('data-mi')),b=parseFloat(q.getAttribute('data-mi'));
+   if(isNaN(a))a=1e9;if(isNaN(b))b=1e9;if(a!==b)return a-b;}
+  return p.getAttribute('data-i')-q.getAttribute('data-i');});
+ items.forEach(function(li){ol.appendChild(li);});});}
+function press(key){[].forEach.call(box.querySelectorAll('button'),function(b){
+ b.setAttribute('aria-pressed',b.getAttribute('data-sort')===key?'true':'false');});
+ try{localStorage.setItem(KEY,key);}catch(e){}}
+function miles(a,b,c,d){var r=Math.PI/180,x=Math.sin((c-a)*r/2),y=Math.sin((d-b)*r/2);
+ return 7917.6*Math.asin(Math.sqrt(x*x+Math.cos(a*r)*Math.cos(c*r)*y*y));}
+function near(){
+ if(!navigator.geolocation){say("This phone can't share its location, so the list stays as it was.");return;}
+ say('Finding where you are…');
+ navigator.geolocation.getCurrentPosition(function(pos){
+  var la=pos.coords.latitude,lo=pos.coords.longitude;
+  [].forEach.call(document.querySelectorAll('.eats li.place[data-lat]'),function(li){
+   var m=miles(la,lo,+li.getAttribute('data-lat'),+li.getAttribute('data-lon')),s=li.querySelector('.mi');
+   li.setAttribute('data-mi',m);
+   if(s){s.textContent=' \u00b7 '+(m<10?Math.max(m,0.1).toFixed(1):Math.round(m))+' mi';s.hidden=false;}});
+  order('near');press('near');say('Straight-line miles from where you are now.');},
+ function(){say("Couldn't get your location. To sort by distance, let this page use it: on an iPhone, Settings > Privacy & Security > Location Services > Safari Websites > While Using.");},
+ {enableHighAccuracy:false,timeout:15000,maximumAge:300000});}
+box.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ var k=b.getAttribute('data-sort');say('');if(k==='near'){near();return;}order(k);press(k);});
+var saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
+if(saved==='az'){order('az');press('az');}
+else if(saved==='near'&&navigator.permissions&&navigator.permissions.query){
+ navigator.permissions.query({name:'geolocation'}).then(function(p){if(p.state==='granted')near();}).catch(function(){});}
+})();
+"""
 
 
 def edition_switch(date_iso: str, edition: str, root: str) -> str:

@@ -451,6 +451,26 @@ def test_the_real_restaurant_list_loads_and_every_place_is_well_formed():
     assert len({p["id"] for p in places}) == len(places)
 
 
+def test_the_places_can_be_sorted_top_rated_a_to_z_or_closest(data):
+    # Nate, 2026-11-04: sort by distance or alphabetical. The page is built
+    # top rated; the row (hidden until the script runs) re-orders on the phone,
+    # and only places with a lat / lon carry one (no starting point is published).
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}, lat=34.42589, lon=-77.5442),
+        _place("z", "Zulu Cafe", {"Wed": ["11:00-21:00"]}, google=[4.9, 50])))
+    assert "<div class=sort role=group aria-label='Sort the places' hidden>" in eats
+    assert eats.index("Top rated") < eats.index("A–Z") < eats.index("Closest to me")
+    assert "<li class='place d l' data-lat=34.42589 data-lon=-77.5442>" in eats
+    assert "<li class='place d l'><details>" in eats                  # Zulu: no lat / lon
+    assert eats.index("Zulu Cafe") < eats.index("Alpha Grill")       # built top rated
+    assert eats.count("<span class=mi hidden></span>") == 2
+    assert "tr-eats-sort" in render.EATS_JS and "getCurrentPosition" in render.EATS_JS
+
+
+def test_every_real_place_sits_around_topsail():
+    for p in render.load_restaurants()["places"]:
+        assert 34.30 < p["lat"] < 34.62 and -77.80 < p["lon"] < -77.30, p["id"]
+
 def test_a_special_read_off_a_photo_says_so(data):
     places = _places(_place("s", "SurfDog", {"Wed": ["11:00-21:00"]}))
     specials = {"date": "2026-10-14", "checked_et": ["11:15 AM"],
