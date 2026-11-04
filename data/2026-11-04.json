@@ -1,8 +1,8 @@
 {
  "date": "2026-11-04",
  "kind": "sample",
- "generated_utc": "2026-11-04T15:20:06Z",
- "generated_et": "10:20 AM ET",
+ "generated_utc": "2026-11-04T17:38:07Z",
+ "generated_et": "12:38 PM ET",
  "tides": {
   "sound": {
    "station": "Hampstead",
@@ -261,51 +261,51 @@
    },
    {
     "time": "9:00 AM",
-    "speed_mph": 7,
-    "gust_mph": 15,
+    "speed_mph": 6,
+    "gust_mph": 13,
     "from": "ENE",
     "temp_f": 70
    },
    {
     "time": "12:00 PM",
-    "speed_mph": 8,
-    "gust_mph": 16,
+    "speed_mph": 9,
+    "gust_mph": 17,
     "from": "E",
     "temp_f": 74
    },
    {
     "time": "3:00 PM",
     "speed_mph": 8,
-    "gust_mph": 13,
+    "gust_mph": 12,
     "from": "E",
-    "temp_f": 75
+    "temp_f": 74
    },
    {
     "time": "6:00 PM",
-    "speed_mph": 8,
-    "gust_mph": 14,
-    "from": "ESE",
+    "speed_mph": 7,
+    "gust_mph": 13,
+    "from": "E",
     "temp_f": 68
    },
    {
     "time": "9:00 PM",
-    "speed_mph": 7,
-    "gust_mph": 14,
+    "speed_mph": 8,
+    "gust_mph": 15,
     "from": "ESE",
-    "temp_f": 67
+    "temp_f": 68
    }
   ]
  },
  "forecast": [
   {
-   "name": "Today",
+   "name": "This Afternoon",
    "start": "2026-11-04",
    "is_day": true,
    "temp_f": 76,
    "pop_pct": 11,
-   "wind": "E 9 mph",
+   "wind": "E 8 mph",
    "short": "Sunny",
-   "detailed": "Sunny, with a high near 76. East wind around 9 mph."
+   "detailed": "Sunny, with a high near 76. East wind around 8 mph."
   },
   {
    "name": "Tonight",
@@ -477,10 +477,10 @@
  },
  "surf_zone": null,
  "buoy": {
-  "observed_utc": "2026-11-04T15:00Z",
-  "observed_et": "10:00 AM",
-  "wave_ft": 3.3,
-  "period_s": 8.0,
+  "observed_utc": "2026-11-04T17:00Z",
+  "observed_et": "12:00 PM",
+  "wave_ft": 3.6,
+  "period_s": 7.0,
   "wave_from": "SE",
   "water_temp_f": 69,
   "station": "Masonboro Inlet buoy",
@@ -489,16 +489,40 @@
   "bearing": "down the coast"
  },
  "sound_temp": {
-  "water_temp_f": 66.0,
-  "observed": "2026-11-04 10:12",
+  "water_temp_f": 66.6,
+  "observed": "2026-11-04 12:30",
   "station": "Beaufort",
   "miles": 60,
   "bearing": "up the coast"
  },
- "waves": null,
+ "waves": [
+  {
+   "date": "2026-11-04",
+   "max_ft": 3.4,
+   "period_s": 7,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-05",
+   "max_ft": 3.5,
+   "period_s": 8,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-06",
+   "max_ft": 3.5,
+   "period_s": 8,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-07",
+   "max_ft": 3.3,
+   "period_s": 9,
+   "from": "ESE"
+  }
+ ],
  "alerts": [],
  "errors": [
-  "nws:surf-zone: RuntimeError: newest surf zone forecast is 87 h old (out of season?)",
-  "open-meteo-marine: URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  "nws:surf-zone: RuntimeError: newest surf zone forecast is 90 h old (out of season?)"
  ]
 }
