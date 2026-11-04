@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- Max's Pizza joins Our favorites (Nate: "so we have an even number"):
+  six now, Riverview, Low Tide, Daddy Mac's, Sears Landing, Max's and
+  Breezeway.
 - Lunch & Dinner, on Nate's next pass: "Closed today" is a list; the
   favorites stay in Our favorites even when closed, with a red Closed
   pill; and every place gets a live pill worked out on the device at

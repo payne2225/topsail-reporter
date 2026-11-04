@@ -90,7 +90,7 @@
       "lat": 34.42963, "lon": -77.54786,
       "website": "http://www.maxspizzatopsail.com/", "facebook": "https://www.facebook.com/profile.php?id=100063795361702",
       "style": "Family pizza, pasta, subs and burgers",
-      "status": "open", "pick": false,
+      "status": "open", "pick": true,
       "hours": {"Wed": ["11:00-20:00"], "Thu": ["11:00-20:00"], "Fri": ["11:00-21:00"],
                 "Sat": ["11:00-21:00"], "Sun": ["11:00-20:00"]},
       "hours_note": "Closed Monday and Tuesday.",
