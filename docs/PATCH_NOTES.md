@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- The section links fit a phone ("can you make these fit better?"): the
+  chips share the row and shrink to fit (all six on the island page from
+  a 360px screen up, no sideways scroll), with less space above the row
+  and before the numbers. Desktop keeps its fixed chips.
 - "Also worth trying" is now "Around the Topsail area" (Nate).
 - Lunch & Dinner opens on Lunch until 3 PM and on Dinner from 3 PM
   (Nate), now by island time instead of the phone's own clock, so a phone
