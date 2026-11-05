@@ -1,7 +1,16 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Nov 2, 7:30 PM ET",
+ "checked": "Nov 4, 7:30 PM ET",
  "news": [
+  {
+   "key": "jolly-roger-grill@2026-11-04T18:41",
+   "id": "jolly-roger-grill",
+   "date": "2026-11-04",
+   "kind": "hours",
+   "line": "The grill is open Friday through Sunday, serving breakfast 7 AM to 2 PM and lunch 11 AM to 2 PM.",
+   "until": null,
+   "url": "https://www.facebook.com/JollyRogerInnandPier/posts/pfbid02mMyrsAF1kbZNgc1zocE9mNm6tfQ9brjUuTPL22HhKMP5YwbmKoPREGAawwqnAk8ol"
+  },
   {
    "key": "smoky-tonys@2026-11-02T16:47",
    "id": "smoky-tonys",
