@@ -16,9 +16,9 @@ Rewritten at the end of every session. As of Thu 2026-11-05, 4:15 PM ET:
   attachments; the fresh-string fix in `docs/SHORTCUT.md` (Text, Set
   Variable `Message`, If "begins with" re-picked) worked on the fishing
   shortcut, and the Island shortcut was rebuilt as a duplicate of it,
-  tested, and given its whole group (Nate, 4:15 PM). The Fri Nov 6 texts
-  are the first real check of both. Chris was taken off the fishing one
-  for the test: make sure he is back on it.
+  tested, and given its whole group (Nate, 4:15 PM); the old Island
+  shortcut is deleted and the fishing one has its full group back. The
+  Fri Nov 6 texts are the first real check of both.
 - **Latest work:** the 2026-11-05 entries in `docs/PATCH_NOTES.md` (the
   texts now close "Click the link below for the Full Daily Topsail
   Report:" with the link under it; the Shortcut fix; the Mac pickup
