@@ -1,7 +1,28 @@
 # Topsail Reporter: handoff
 
 Living state. Read this first; update it in the same commit as anything
-that changes how the Reporter works.
+that changes how the Reporter works. `CLAUDE.md` at the root says the same
+to any session on any machine; §6 is the setup on a new one.
+
+## 0. Resume point
+
+Rewritten at the end of every session. As of Thu 2026-11-05, 3:15 PM ET:
+
+- **The run is live.** The Thu Nov 5 preview published both editions
+  (numbers 564ddaf, full 3d17327). Next: arrival day Fri Nov 6, then daily
+  to the last morning Sat Nov 14. The routine fires at 3:30 and 4:30 AM ET;
+  the Shortcuts text at 6:30.
+- **Latest work:** the 2026-11-04 entries in `docs/PATCH_NOTES.md` (the
+  restyle, the island order and Quote of the Day, the Day row, Our
+  favorites, the live Open / Opening soon / Closed pills, the phone fixes).
+- **Next:** after the Nov 14 edition, disable the routine (RemoteTrigger
+  update `{"enabled": false}` on the trigger in §3).
+- **Open, no action yet:** NY Corner Deli and Margherita have no Facebook
+  page found; Topsail Steamer and Seaview Pier hours could not be
+  verified; Ocean's Edge has no reliable hours. The restaurant news
+  commits read "7:30 PM ET check" since the clocks changed; not looked at.
+- **Decided, don't reopen:** the fishing page keeps its Outlook where it
+  is (2026-11-04). Breezeway is treated as open on its posted hours.
 
 ## 1. What it is
 
@@ -278,3 +299,21 @@ news" via `install_task.ps1` (`-NewsTime`, `-NewsFirst`).
   `python local/fb_login.py` on the home PC. A page that moved: fix its
   `facebook` URL in `reference/restaurants.json`. Try one place with
   `python local/fb_specials.py --dry-run --debug --ids <id>`.
+
+## 6. Picking up on another machine
+
+The Reporter runs without any of our machines: the routine writes and
+pushes, Actions tests and deploys, the Shortcuts read Pages. A laptop (the
+Mac) is only for changing it.
+
+1. `git clone https://github.com/payne2225/topsail-reporter.git`, or
+   `git pull --rebase origin main` in an existing clone.
+2. Read §0, then the top of `docs/PATCH_NOTES.md`.
+3. Python 3.11 (what CI uses) and `pip install pytest`. The paper itself is
+   the standard library only. Tests: `python3 -m pytest -q`.
+4. A page change: edit `render.py`, run `python3 render.py` (it rebuilds
+   every edition into `site/`), open `site/<date>/island/index.html` in a
+   browser, then commit `site/` with the change and push to `main`.
+5. Stays on the home PC: the `local/` Facebook jobs (Task Scheduler, the
+   signed-in profile and the alert webhook under
+   `%LOCALAPPDATA%\topsail-reporter`, never copied) and Playwright with them.

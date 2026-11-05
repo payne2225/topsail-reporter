@@ -1,5 +1,14 @@
 # Patch notes
 
+## 2026-11-05
+
+- Ready to pick up from any machine (Nate: "so that I can pick up at any
+  point from my Mac"): `CLAUDE.md` at the root sends every session to the
+  handoff first and asks for the patch notes and handoff in the same
+  commit as a change; `docs/HANDOFF.md` gains §0, a resume point
+  rewritten at the end of each session, and §6, the setup on another
+  machine.
+
 ## 2026-11-04
 
 - The section links fit a phone ("can you make these fit better?"): the

@@ -32,6 +32,8 @@ https://payne2225.github.io/topsail-reporter/island/ (Island Edition)
 | `reference/` | Checked background: sources, spots, regulations, the fall bite, the calendar, off the water |
 | `data/`, `reports/` | Each morning's numbers and words |
 | `site/` | What Pages serves (rendered, committed) |
-| `docs/HANDOFF.md` | How it all fits, and what to do when it breaks |
+| `CLAUDE.md` | Start here, on any machine: read the handoff, keep it and the patch notes current |
+| `docs/HANDOFF.md` | Where it stands (§0), how it all fits, what to do when it breaks, another machine (§6) |
+| `docs/PATCH_NOTES.md` | The running changelog, newest first |
 
 Tests: `python -m pytest -q` (offline; fixtures in `tests/fixtures/`).
