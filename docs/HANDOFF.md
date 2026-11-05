@@ -6,17 +6,27 @@ to any session on any machine; §6 is the setup on a new one.
 
 ## 0. Resume point
 
-Rewritten at the end of every session. As of Thu 2026-11-05, 3:15 PM ET:
+Rewritten at the end of every session. As of Thu 2026-11-05, 4:15 PM ET:
 
 - **The run is live.** The Thu Nov 5 preview published both editions
   (numbers 564ddaf, full 3d17327). Next: arrival day Fri Nov 6, then daily
   to the last morning Sat Nov 14. The routine fires at 3:30 and 4:30 AM ET;
   the Shortcuts text at 6:30.
-- **Latest work:** the 2026-11-04 entries in `docs/PATCH_NOTES.md` (the
-  restyle, the island order and Quote of the Day, the Day row, Our
-  favorites, the live Open / Opening soon / Closed pills, the phone fixes).
+- **The Shortcuts are fixed.** The Nov 5 texts arrived as `.txt`
+  attachments; the fresh-string fix in `docs/SHORTCUT.md` (Text, Set
+  Variable `Message`, If "begins with" re-picked) worked on the fishing
+  shortcut, and the Island shortcut was rebuilt as a duplicate of it,
+  tested, and given its whole group (Nate, 4:15 PM). The Fri Nov 6 texts
+  are the first real check of both. Chris was taken off the fishing one
+  for the test: make sure he is back on it.
+- **Latest work:** the 2026-11-05 entries in `docs/PATCH_NOTES.md` (the
+  texts now close "Click the link below for the Full Daily Topsail
+  Report:" with the link under it; the Shortcut fix; the Mac pickup
+  setup), then the 2026-11-04 ones (the restyle, the Day row, Our
+  favorites, the live pills, the phone fixes).
 - **Next:** after the Nov 14 edition, disable the routine (RemoteTrigger
-  update `{"enabled": false}` on the trigger in §3).
+  update `{"enabled": false}` on the trigger in §3) and turn off both
+  Shortcut automations.
 - **Open, no action yet:** NY Corner Deli and Margherita have no Facebook
   page found; Topsail Steamer and Seaview Pier hours could not be
   verified; Ocean's Edge has no reliable hours. The restaurant news
