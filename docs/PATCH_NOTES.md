@@ -2,10 +2,11 @@
 
 ## 2026-11-05
 
-- The texts close with "Click the link below for the full report" and the
-  link on its own line under it (Nate; it was "Full report: <link>").
-  Every `site/text/*.txt` re-rendered; the routine's runs from Nov 6 on
-  write it the new way.
+- The texts close with "Click the link below for the Full Daily Topsail
+  Report:" and the link on its own line under it (Nate, exactly that
+  wording, after a first pass read "Click the link below for the full
+  report"; it was "Full report: <link>"). Every `site/text/*.txt`
+  re-rendered; the routine's runs from Nov 6 on write it the new way.
 - The file-instead-of-words fix works: Nate's test on the fishing
   shortcut (Text holding Get Text from Input's token, Set Variable
   `Message`, If and Send Message both on `Message`) sent the words. Swapping
