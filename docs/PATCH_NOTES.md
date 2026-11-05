@@ -2,6 +2,12 @@
 
 ## 2026-11-05
 
+- `docs/SHORTCUT.md` rewritten for iOS 27 (Nate: "Apple updated their
+  Shortcuts app"): the Time of Day trigger is now an action at the top of
+  the shortcut, the Automation list holds every shortcut with one, running
+  without asking is Info, Privacy, Allow Running When Locked, variables go
+  in by Select Variable and the blue token, Send Message can send to a
+  group conversation. The file-instead-of-words fix has its own section.
 - The Nov 5 texts went out as two `.txt` attachments (801 and 750 bytes,
   the right files, served as text/plain) instead of the words: a Shortcut
   wiring slip, not the site. The fix is in `docs/SHORTCUT.md` and HANDOFF
