@@ -2,6 +2,10 @@
 
 ## 2026-11-05
 
+- The Nov 5 texts went out as two `.txt` attachments (801 and 750 bytes,
+  the right files, served as text/plain) instead of the words: a Shortcut
+  wiring slip, not the site. The fix is in `docs/SHORTCUT.md` and HANDOFF
+  §5.
 - Ready to pick up from any machine (Nate: "so that I can pick up at any
   point from my Mac"): `CLAUDE.md` at the root sends every session to the
   handoff first and asks for the patch notes and handoff in the same

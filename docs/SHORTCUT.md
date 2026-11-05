@@ -30,6 +30,12 @@ Nothing else holds anyone's number.
 The "begins with" check is the safety: if the site has no text for today,
 GitHub answers with an error page, the check fails, and nothing is sent.
 
+**The group gets a file ("2026-11-05.txt, Text Document") instead of the
+words** (found 2026-11-05): Send Message is sending **Contents of URL**, the
+downloaded file, not the **Text** from step 5. Tap the message field in
+Send Message, delete "Contents of URL", and insert the **Text** variable
+(the output of Get Text from Input). Check step 5 is still there.
+
 ## Test it before the group sees anything
 
 Put only your own number in Send Message and tap the play button. On a day

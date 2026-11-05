@@ -283,6 +283,9 @@ news" via `install_task.ps1` (`-NewsTime`, `-NewsFirst`).
 
 - No text at 6:30: the Shortcut shows "No Topsail Reporter today" and sends
   nothing. Check the routine's session log and the Actions tab.
+- The texts arrive as `.txt` file attachments (Nov 5): the site is fine;
+  the Shortcut's Send Message is sending Contents of URL instead of the
+  Text from Get Text from Input (`docs/SHORTCUT.md`).
 - A feed is down: its line drops out of the text and the page says
   "no reading". Nothing to fix unless it lasts. Every fetch retries twice
   on 429 / 5xx (15 s, then 45 s, or the server's Retry-After up to 60 s).
