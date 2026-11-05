@@ -61,17 +61,28 @@ automation, with a filter for Turned On and Turned Off. Open it and tap
 ## The group gets a file instead of the words
 
 Found 2026-11-05: the 6:30 texts arrived as "2026-11-05.txt, Text
-Document" and "2026-11-05-island.txt". The site was fine. Send Message
-was sending **Contents of URL**, the downloaded file, instead of the
-**Text** from step 6. To fix it:
+Document" and "2026-11-05-island.txt". The site was fine, and so was the
+shortcut's wiring (Get Text from Input after Get Contents of URL, Send
+Message sending its Text). The likely cause is iOS 27: a `.txt` download
+already counts as text, so Get Text from Input can hand the same file on,
+and Send Message attaches it. The fix being tried: make a fresh string.
 
-1. **Automation**, open the shortcut, **Edit**.
-2. Check **Get Text from Input** sits right after Get Contents of URL. If
-   it is missing, add it there.
-3. In Send Message, tap the **Contents of URL** token in the message
-   field, tap **Clear**, then **Select Variable** and tap the blue **Text**
-   token under Get Text from Input.
-4. Check the If reads Text **begins with** `Topsail Reporter`.
+1. Right after **Get Text from Input**, add a **Text** action. In it, tap
+   **Select Variable** and tap the blue **Text** token under Get Text from
+   Input, so the Text action holds only that token.
+2. Right after it, add **Set Variable**: name it `Message` (its input is
+   the Text action above).
+3. In the **If**, replace the input with **Message** (tap the token, then
+   Clear, then Select Variable).
+4. In **Send Message**, replace the message with **Message** the same way.
+
+If it was ever built without Get Text from Input, or Send Message shows
+**Contents of URL**, fix that first: tap the token, **Clear**, then
+**Select Variable** and pick the right one.
+
+Test on a copy, never on the group's shortcut: duplicate it (touch and
+hold it in the library, **Duplicate**), remove the copy's Time of Day
+trigger, TYPE only your own number as its recipient, and tap play.
 
 ## Test it before the group sees anything
 

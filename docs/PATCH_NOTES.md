@@ -2,6 +2,11 @@
 
 ## 2026-11-05
 
+- The Nov 5 file-instead-of-words texts: Nate's screenshots show the
+  shortcut wired right (Get Text from Input, Send Message sends Text), so
+  the guide now blames iOS 27 handing the `.txt` file through, and the fix
+  being tried is a fresh Text action and a `Message` variable before the
+  If and Send Message, tested on a duplicate with only one's own number.
 - `docs/SHORTCUT.md` rewritten for iOS 27 (Nate: "Apple updated their
   Shortcuts app"): the Time of Day trigger is now an action at the top of
   the shortcut, the Automation list holds every shortcut with one, running
