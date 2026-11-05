@@ -10,4 +10,5 @@ Sunny and 76 with a light east breeze off the water: the beach day of the week. 
 🐚 Beach low tide 9:16a, 9:42p
 🌅 Sun up 6:33a, down 5:14p
 
-Full report: https://payne2225.github.io/topsail-reporter/2026-11-04/island/
+Click the link below for the full report
+https://payne2225.github.io/topsail-reporter/2026-11-04/island/

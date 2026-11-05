@@ -24,7 +24,8 @@ def test_the_numbers_text_is_header_numbers_and_link(data):
         "⛵ SW winds 10 kt. Seas 2 ft.\n"
         "🌅 Sun up 7:15a, down 6:37p\n"
         "🌒 Waxing crescent moon\n\n"
-        "Full report: https://payne2225.github.io/topsail-reporter/2026-10-14/\n")
+        "Click the link below for the full report\n"
+        "https://payne2225.github.io/topsail-reporter/2026-10-14/\n")
 
 
 def test_the_full_text_puts_the_prose_between_header_and_numbers(data):
@@ -34,7 +35,7 @@ def test_the_full_text_puts_the_prose_between_header_and_numbers(data):
     assert head == "Topsail Reporter, Wed Oct 14"
     assert prose.startswith("Sound is the play this morning")
     assert numbers.startswith("🌊 Sound tides")
-    assert link.startswith("Full report: ")
+    assert link.startswith("Click the link below for the full report\nhttps://")
 
 
 def test_the_shortcut_marker_opens_every_text(data):
@@ -157,7 +158,8 @@ def test_the_island_text_is_header_numbers_and_its_own_link(data):
         "\U0001f321\ufe0f Water 77\u00b0\n"
         "\U0001f41a Beach low tide 3:45a, 4:51p\n"
         "\U0001f305 Sun up 7:15a, down 6:37p\n\n"
-        "Full report: https://payne2225.github.io/topsail-reporter/2026-10-14/island/\n")
+        "Click the link below for the full report\n"
+        "https://payne2225.github.io/topsail-reporter/2026-10-14/island/\n")
 
 
 def test_the_island_text_carries_its_own_prose_and_the_marker(data):

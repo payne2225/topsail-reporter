@@ -63,9 +63,10 @@ automation, with a filter for Turned On and Turned Off. Open it and tap
 Found 2026-11-05: the 6:30 texts arrived as "2026-11-05.txt, Text
 Document" and "2026-11-05-island.txt". The site was fine, and so was the
 shortcut's wiring (Get Text from Input after Get Contents of URL, Send
-Message sending its Text). The likely cause is iOS 27: a `.txt` download
+Message sending its Text). The cause is iOS 27: a `.txt` download
 already counts as text, so Get Text from Input can hand the same file on,
-and Send Message attaches it. The fix being tried: make a fresh string.
+and Send Message attaches it. The fix, confirmed on the fishing shortcut
+2026-11-05: make a fresh string.
 
 1. Right after **Get Text from Input**, add a **Text** action. In it, tap
    **Select Variable** and tap the blue **Text** token under Get Text from
@@ -73,7 +74,10 @@ and Send Message attaches it. The fix being tried: make a fresh string.
 2. Right after it, add **Set Variable**: name it `Message` (its input is
    the Text action above).
 3. In the **If**, replace the input with **Message** (tap the token, then
-   Clear, then Select Variable).
+   Clear, then Select Variable). **Changing the If's input resets its
+   condition to "is"**: tap it and pick **begins with** again, with the
+   value `Topsail Reporter`. Left on "is", every run says "No Topsail
+   Reporter today".
 4. In **Send Message**, replace the message with **Message** the same way.
 
 If it was ever built without Get Text from Input, or Send Message shows
@@ -101,15 +105,23 @@ the recipients, so test with yourself alone, or warn whoever is on it.
 ## The Island Edition: a second shortcut
 
 The non-fishing edition has its own text, so it gets its own shortcut and
-its own group. Build a second one exactly like the first, with three
-changes:
+its own group. The quickest way is to duplicate the working fishing one
+(touch and hold it in the library, **Duplicate**) and change four things
+in the copy:
 
-- Step 2: pick the time you want the island group to get it. The text is
-  ready by 6:30 AM, so any time after that works (8:00 AM lets people sleep).
-- Step 4: the link ends in `-island.txt` instead of `.txt`:
+- The **Time of Day** trigger at the top (a duplicate keeps it): the time
+  you want the island group to get it. The text is ready by 6:30 AM, so
+  any time after that works (8:00 AM lets people sleep).
+- The **Text** with the link: change the end from `.txt` to
+  `-island.txt`, so it reads
   `https://payne2225.github.io/topsail-reporter/text/`, then **Formatted
   Date**, then `-island.txt` (no spaces).
-- Step 8: recipients = the island group.
+- **Send Message** recipients: the island group.
+- The name: `Topsail Reporter Island`.
+
+Then delete the old island shortcut (or turn its automation off), or the
+group gets it twice. Building it from scratch instead is the steps above
+plus the fresh-string fix, with the same three changes.
 
 The If check stays "begins with `Topsail Reporter`": the Island Edition's
 text opens "Topsail Reporter, Island Edition, ...". Test it the same way,

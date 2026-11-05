@@ -324,7 +324,9 @@ def _text(head: str, prose: str, numbers: list[str], url: str) -> str:
         parts.append(prose)
     if numbers:
         parts.append("\n".join(numbers))
-    parts.append(f"Full report: {url}")
+    # The link on its own line under its cue (Nate, 2026-11-05; it was
+    # "Full report: <link>").
+    parts.append(f"Click the link below for the full report\n{url}")
     return "\n\n".join(parts) + "\n"
 
 

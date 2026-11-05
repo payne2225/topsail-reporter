@@ -2,6 +2,17 @@
 
 ## 2026-11-05
 
+- The texts close with "Click the link below for the full report" and the
+  link on its own line under it (Nate; it was "Full report: <link>").
+  Every `site/text/*.txt` re-rendered; the routine's runs from Nov 6 on
+  write it the new way.
+- The file-instead-of-words fix works: Nate's test on the fishing
+  shortcut (Text holding Get Text from Input's token, Set Variable
+  `Message`, If and Send Message both on `Message`) sent the words. Swapping
+  the If's input resets its condition to "is", which fails every day ("No
+  Topsail Reporter today"), so "begins with" has to be picked again.
+  `docs/SHORTCUT.md` now says so, and builds the Island shortcut by
+  duplicating the fixed fishing one.
 - The Nov 5 file-instead-of-words texts: Nate's screenshots show the
   shortcut wired right (Get Text from Input, Send Message sends Text), so
   the guide now blames iOS 27 handing the `.txt` file through, and the fix
