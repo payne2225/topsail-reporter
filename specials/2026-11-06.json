@@ -1,7 +1,8 @@
 {
  "date": "2026-11-06",
  "checked_et": [
-  "11:15 AM"
+  "11:15 AM",
+  "4:15 PM"
  ],
  "posts": [
   {
@@ -29,6 +30,42 @@
    "key": "shuckin-shack@2026-11-06T09:37",
    "text": "We hope you are hungry. More fresh Salmon means blackened Salmon Alfredo! Plus: New England clam chowder and lobster bisque. Grouper basket or appetizer, Clam strip basket or appetizer, Flounder basket or sandwich, Conch fritters, Scallop basket or appetizer,",
    "url": "https://www.facebook.com/shuckinshacksurfcitync/posts/pfbid02TfjZXAH3YMLWS4uokGQqrZAGA4AGX11bkDbwoZaDc9Gbxa1XkHzfhN5RH5HpCdXcl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "12:02 PM",
+   "sort": "12:02",
+   "key": "coastal-wing@2026-11-06T12:02",
+   "text": "Have some Friday family fun! Kids eat free with purchase of adult entree *One kids meal per adult entree. Dine-in only* On Fridays kids eat free: free kids meal with purchase of adult entree, one kids meal per adult entree, dine-in only",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid02A6uxmhzecxR529LgUNhkpQK86WoLirUzqx5o3HMkYSfGJLAntXXDTuBrisxxERPUl",
+   "from_photo": true
+  },
+  {
+   "id": "shuckin-shack",
+   "posted_et": "12:09 PM",
+   "sort": "12:09",
+   "key": "shuckin-shack@2026-11-06T12:09",
+   "text": "Friday Feature! Blackened Salmon Alfredo with garlic toast points. Soup: New England Clam Chowder or Lobster Bisque.",
+   "url": "https://www.facebook.com/shuckinshacksurfcitync/posts/pfbid02HkxjpX7BXiZE7XZUjzX6yjYZqshMsfyfVihCt1UR9sj6EgFbdkwAauUBWKrYSZ13l",
+   "from_photo": false
+  },
+  {
+   "id": "riverview",
+   "posted_et": "3:22 PM",
+   "sort": "15:22",
+   "key": "riverview@2026-11-06T15:22",
+   "text": "Friday Dinner Specials We are open until 9pm If you need to place an order, please give us a call. 910-327-2011 910-327-7551. 119 Hall Pt. Rd. Sneads Ferry, NC 28460 7oz Sirloin $19.95; 7oz Sirloin with fried shrimp $24.95; 7oz Sirloin with grilled fantail shrimp $26.95; 8oz Ribeye $23.95; 8oz Ribeye with grilled fantail shrimp $30.95; 12oz Choice Ribeye $26.95; Softshell Crabs $29.95; Fresh Local Whole Flounder $25.95; Fresh Local Whole Flounder with fried shrimp $29.95; Grilled Salmon or Mahi $24.95; Grilled Salmon or Mahi with grilled fantail shrimp $32.95; Grilled Salmon or Mahi with broiled Sea Scallops $36.95; Fried Oysters $24.95; 1/2 Rack BBQ Pork Ribs $15.95; 1/2 Rack BBQ Pork Ribs with Fried Shrimp $18.95; Shrimp & Flounder $22.95; Shrimp & Clamstrips $19.95; Shrimp & Deviled Crab $19.95; Shrimp & Catfish $19.95; Fantail Shrimp $21.95, grilled $22.95; Sea Scallops $30.95, broiled $32.95; Homemade Clam Chowder cup $6.00, bowl $7.95; She Crab soup bowl $9.95; Homemade Pie, Chocolate, Coconut or Lemon $6.95 each; Key Lime Pie $7.95; Butterfinger Cheesecake $7.95; Sides: Fries, Applesauce, Coleslaw, Green Beans, Okra, Squash, Green Limas, Rutabagas; (2) Crabcakes; (6) Coconut Shrimp $11.95; Spicy Teriyaki or Buffalo Bites $9.95; Calamari $11.95; Stump Sound Steamed Oysters sm pot $14.95, lg pot $27.95; Dungeness Crab Legs 1lb $31.95, 2lb $54.95; Peel & Eat Shrimp 1/2lb $12.95, 1lb $22.95; Flying Machine Dreamy Eyes Tangerine Ale $7; Flying Machine Tide Bound Coastal Wheat $7; Flying Machine Rosewell 1954 Vanilla Porter $7; Wilmington Brew Tropical Lightning IPA $8; Foothills Hoppyum IPA $5; Redds Hard Apple $5; White Claw Black Cherry $5; Kona Big Wave Golden Ale $5",
+   "url": "https://www.facebook.com/RiverviewCafe1946/posts/pfbid0FFvzvbie66zdkboW84BNjuWpfUbz97pmRo7VTgumdjJticEGBeDt4T3WxX267NHel",
+   "from_photo": true
+  },
+  {
+   "id": "beach-shop-grill",
+   "posted_et": "4:02 PM",
+   "sort": "16:02",
+   "key": "beach-shop-grill@2026-11-06T16:02",
+   "text": "On special - Shrimp Toast with sorghum chili sauce.",
+   "url": "https://www.facebook.com/beachshopandgrill/posts/pfbid0QLDSfFnZuDbsxK8o2k5VE8jrnNX9r5rLmsNZfAJz1FbH3KZBYxZV6QA2cqGRsAuyl",
    "from_photo": false
   }
  ],
