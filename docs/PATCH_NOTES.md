@@ -2,6 +2,17 @@
 
 ## 2026-11-07
 
+- A Menu pill beside Click for details on every place with its own menu
+  online (Nate: "provide a direct link to each restaurant's menus ... as
+  a 'Menu' pill"): 28 of the 33 open or call-first places, each link
+  loaded and checked today. It opens the menu in a new tab without
+  opening the card. Links are the place's own menu page, PDF or image,
+  or its own ordering page for that location where that is the only
+  priced menu (Fancy Sushi, NY Corner Deli, Topsail Steamer, Seaview Pier,
+  Italian Bistro, Burrito Shak); never an aggregator. None online for
+  Margaritas, Riverview (a whiteboard menu), Ocean's Edge, the Surf City
+  pier grill; Island Delights is closed for the season. New York Corner
+  Deli's own site (newyorkcornerdeli.com) is now its Website link.
 - Cape Fear Seafood Company (Surf City, 14120 NC-50 Unit A) joins Lunch &
   Dinner (Nate asked for "Cape Fear Seafood Market"; no place by that name
   exists, and this is the Surf City restaurant). Hours from its own Surf

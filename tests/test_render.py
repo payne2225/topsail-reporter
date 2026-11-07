@@ -627,3 +627,15 @@ def test_a_place_opens_from_a_click_for_details_pill(data):
     island = render.page(data, report, ["2026-10-14"], "2026-10-14", edition="island")
     assert "<span class=po>Click for details</span><span class=pc>Hide details</span>" in island
     assert '.pn::after' not in island
+
+
+def test_a_place_with_a_menu_link_gets_a_menu_pill(data):
+    # Nate, 2026-11-07: "provide a direct link to each restaurant's menus ...
+    # as a 'Menu' pill". Beside the details pill, in a new tab; none without a link.
+    eats = render.eats_section(data, _places(
+        _place("a", "Alpha Grill", {"Wed": ["11:00-21:00"]}, menu="https://alpha.example/menu?x=1&y=2"),
+        _place("b", "Beta Cafe", {"Wed": ["11:00-21:00"]})))
+    assert eats.count("class='pill mn'") == 1
+    assert ("<span class=pc>Hide details</span></span><a class='pill mn' "
+            "href='https://alpha.example/menu?x=1&amp;y=2' target=_blank rel=noopener>Menu</a></span>") in eats
+    assert eats.count("<span class=pls>") == 2

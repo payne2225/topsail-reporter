@@ -117,10 +117,11 @@ comes from `data/<date>.json`.
 The fishing page is fishing and the outdoors only (since 2026-10-21):
 Around the Island moved to the Island Edition. The Island Edition also
 carries a Lunch & Dinner section that the writer never writes: `render.py`
-builds it from `reference/restaurants.json` (33 places: hours per weekday,
+builds it from `reference/restaurants.json` (34 places: hours per weekday,
 status open/call/closed, Google and Tripadvisor ratings, a review summary,
-weekly specials from a place's own site, and a `pick` flag for the
-group's favorites) and from `specials/<date>.json` when one exists (the
+weekly specials from a place's own site, a `pick` flag for the group's
+favorites, and a `menu` link to the place's own menu, shown as a Menu
+pill beside Click for details) and from `specials/<date>.json` when one exists (the
 day's Facebook specials, written through the day by a local job on the
 home PC; the page names when it last checked). A place counts for lunch
 when it is open across 12:30-1:30 and for dinner when it is open at 6:30

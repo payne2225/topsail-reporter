@@ -934,7 +934,8 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .cl ul{margin:4px 0 0;padding-left:1.2em}.cl li{margin:2px 0}
 .pill{display:inline-flex;align-items:center;align-self:flex-start;min-height:30px;padding:0 13px;border-radius:999px;background:var(--chip);color:var(--sea);font:700 .8rem/1 var(--sans);white-space:nowrap}
 .pill .pc,details[open]>summary .pill .po{display:none}details[open]>summary .pill .pc{display:inline}
-.places .pill{margin-top:7px}.places .sx{display:none}
+.places .pls{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px}.places .sx{display:none}
+a.pill{text-decoration:none}a.pill:hover{background:color-mix(in srgb,var(--sea) 16%,var(--chip))}
 .places .pm,.places .pr{font-size:.85rem;color:var(--muted)}
 .places .sp{align-self:flex-start;margin-top:5px;padding:4px 9px;border-radius:6px;font-size:.88rem;background:color-mix(in srgb,var(--tide) 14%,transparent)}
 .places .pd{padding:0 0 12px;font-size:.92rem;line-height:1.5}.places .pd p{margin:0 0 6px}
@@ -1001,7 +1002,7 @@ html{font-size:clamp(16px,calc(8px + .55vw),21px)}
 .places>li.place{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:0 14px}
 .places>li.place>details{flex:1;display:flex;flex-direction:column}
 .places>li.place summary{flex:1;padding:12px 0}
-.places>li.place .sx{display:block;flex:1;min-height:9px}.places>li.place .pill{margin-top:0}
+.places>li.place .sx{display:block;flex:1;min-height:9px}.places>li.place .pls{margin-top:0}
 .places>li.none{grid-column:1/-1;border:0;padding:4px 0}
 }
 @media print{.switch,.tip{display:none}.src details>*{display:block}}
@@ -1237,7 +1238,15 @@ def _place_item(place: dict, week: list[tuple[int, dt.date]], meals: dict[int, s
     detail.append(f"<p class=muted>{' &middot; '.join(links)}</p>")
     if place.get("hours_note"):
         detail.append(f"<p class=muted>{esc(place['hours_note'])}</p>")
-    return (f"<li class='{cls}'{where} data-hours='{esc(week_spans)}'><details><summary>{head}<span class=sx></span>{DETAILS_PILL}</summary>"
+    # A "Menu" pill beside the details one, straight to the place's own menu
+    # (Nate, 2026-11-07). A link inside the summary opens the menu without
+    # opening the card; a new tab keeps the paper where the reader left it.
+    pills = DETAILS_PILL
+    if place.get("menu"):
+        pills += (f"<a class='pill mn' href='{esc(place['menu'])}' target=_blank rel=noopener>"
+                  "Menu</a>")
+    return (f"<li class='{cls}'{where} data-hours='{esc(week_spans)}'><details><summary>{head}<span class=sx></span>"
+            f"<span class=pls>{pills}</span></summary>"
             f"<div class=pd>{''.join(detail)}</div></details></li>")
 
 
@@ -1412,8 +1421,11 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                     if p.get("phone") else "")
         def posted(p: dict) -> str:
             return f"<br>Posted hours: {_week_html(p)}" if week_hours(p) else ""
+        def menu(p: dict) -> str:
+            return (f" <a class='pill mn' href='{esc(p['menu'])}' target=_blank rel=noopener>Menu</a>"
+                    if p.get("menu") else "")
         parts.append("<div class=call><b>Call first</b><ul>" + "".join(
-            f"<li><b>{'★ ' if p.get('pick') else ''}{esc(p['name'])}</b>{tel(p)}<br>"
+            f"<li><b>{'★ ' if p.get('pick') else ''}{esc(p['name'])}</b>{tel(p)}{menu(p)}<br>"
             f"{esc(p.get('hours_note') or 'Hours not published.')}{posted(p)}"
             f"{_news_html(p, day, tag='span')}</li>"
             for p in sorted(call, key=lambda p: p["name"])) + "</ul></div>")
