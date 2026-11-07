@@ -1,5 +1,17 @@
 # Patch notes
 
+## 2026-11-07
+
+- The specials check keeps a post only when it talks about food (Nate:
+  "we don't get a specials update from restaurants unless it talks about
+  food"). Claude's keep rule now asks for a dish, a meal or a food
+  special or deal, and drops drinks-only posts, hours-only posts ("Open
+  until 8pm!"), events and the rest; the stand-in keyword filter is food
+  words only (no more "open", "today", "special", "cocktail"). Today's
+  11:15 AM alert would have lost Daddy Mac's drinks post, Max's hours
+  post and Beach Bums' music night. Hours news still comes through the
+  hours check and the restaurant news job.
+
 ## 2026-11-05
 
 - The texts close with "Click the link below for the Full Daily Topsail

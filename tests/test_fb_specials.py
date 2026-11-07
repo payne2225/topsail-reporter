@@ -29,10 +29,17 @@ def test_facebook_timestamps_read_as_eastern_times():
     assert fb.posted_at("", NOW) is None
 
 
-def test_only_food_and_hours_news_is_kept():
+def test_only_a_post_that_talks_about_food_is_kept():
     assert fb.is_food_news("Tonight's special: blackened grouper with rice, $18")
-    assert fb.is_food_news("Closed today for a private event, back tomorrow at 11!")
-    assert not fb.is_food_news("We're hiring line cooks! Apply in person.")
+    assert fb.is_food_news("Kids eat free with purchase of adult entree")
+    assert fb.is_food_news("Fresh local oysters are on the menu, steamed to perfection")
+    assert fb.is_food_news("Have you tried our mac n cheese side?")
+    # Hours alone, drinks alone, a music night: not food (Nate, 2026-11-07).
+    assert not fb.is_food_news("Closed today for a private event, back tomorrow at 11!")
+    assert not fb.is_food_news("Open until 8pm! 910-328-2158 602A Roland Ave")
+    assert not fb.is_food_news("Mac Daddy Punch in one hand, Pomegranate Martini in the other")
+    assert not fb.is_food_news("Mike Rooney in the house tonight at 6 pm with Lemon Drop shots on Special")
+    assert not fb.is_food_news("We're hiring line cooks for the pizza line! Apply in person.")
     assert not fb.is_food_news("Happy birthday to our favorite regular")
 
 
@@ -112,17 +119,18 @@ def _post(i, text):
 
 def test_claude_keeps_or_drops_and_the_keywords_stand_in_when_it_cannot():
     posts = [_post(0, "Tacos and taps tonight, $4 tacos"), _post(1, "Plan your next party with us!"),
-             _post(2, "Closed today for a private event")]
+             _post(2, "Closed today for a private event"), _post(3, "Pomegranate martinis on the deck")]
     seen = []
 
     def ask(prompt):
         seen.append(prompt)
-        return "[0, 2]"
-    assert fb.keep_posts(posts, {}, ask) == [posts[0], posts[2]]
+        return "[0]"
+    assert fb.keep_posts(posts, {}, ask) == [posts[0]]
     assert '"text": "Plan your next party with us!"' in seen[0]
-    # No answer, or a garbled one: the keyword filter decides.
-    assert fb.keep_posts(posts, {}, lambda _: None) == [posts[0], posts[2]]
-    assert fb.keep_posts(posts, {}, lambda _: "Sure! Here you go") == [posts[0], posts[2]]
+    assert "talks about food" in seen[0] and "drinks-only" in seen[0]
+    # No answer, or a garbled one: the keyword filter (food words only) decides.
+    assert fb.keep_posts(posts, {}, lambda _: None) == [posts[0]]
+    assert fb.keep_posts(posts, {}, lambda _: "Sure! Here you go") == [posts[0]]
     assert fb.keep_posts([], {}, ask) == []
 
 

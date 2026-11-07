@@ -10,7 +10,7 @@ in a browser profile outside the repo (see fb_session.py; sign in once with
 
 reads each restaurant's own Facebook page (`facebook` in
 reference/restaurants.json), keeps that page's posts from today (Eastern)
-that read like food or hours news, and merges them into
+that talk about food, and merges them into
 specials/<date>.json, which render.py shows on the day's Island Edition.
 Only a restaurant's own post text is kept: never a comment, never a name
 from one, never a cookie. The alert goes to the one person set up in
@@ -89,19 +89,27 @@ def posted_at(label: str, now: dt.datetime) -> dt.datetime | None:
     return None
 
 
+# Food words only: a post has to talk about food to count (Nate, 2026-11-07:
+# "we don't get a specials update from restaurants unless it talks about
+# food"), so a drinks-only post, an "Open until 8pm!" or a music night with a
+# shot special does not.
 FOOD = re.compile(
-    r"special|today|tonight|lunch|dinner|brunch|breakfast|menu|soup|chowder|catch|fresh|"
-    r"feature|happy hour|\$\s?\d|plate|platter|basket|steam|oyster|shrimp|fish|flounder|"
-    r"grouper|tuna|crab|lobster|scallop|taco|burger|pizza|wing|bbq|barbecue|brisket|"
-    r"prime rib|ribs|steak|pasta|sandwich|dessert|cake|pie|beer|on tap|cocktail|margarita|"
-    r"open|closed|closing|hours|kitchen",
+    r"\b(?:breakfast|brunch|lunch|dinner|supper|food|dish|entr[eé]e|appetizer|plate|platter|"
+    r"basket|soup|chowder|bisque|gumbo|stew|salad|sandwich|sub|wrap|burger|hot ?dog|taco|"
+    r"burrito|quesadilla|nacho|pizza|calzone|wing|bbq|barbecue|brisket|pulled pork|pork|rib|"
+    r"steak|sirloin|ribeye|chicken|pasta|spaghetti|lasagna|alfredo|seafood|oyster|shrimp|fish|"
+    r"flounder|grouper|mahi|tuna|salmon|crab|lobster|lobstah|scallop|clam|mussel|conch|sushi|"
+    r"fries|fried|hush ?pupp(?:y|ies)|mac (?:n|and|&) cheese|meat ?loaf|biscuit|grits|egg|"
+    r"waffle|pancake|bacon|potato|dessert|cake|pie|cobbler|ice cream|eat|hungry|kids meal)"
+    r"(?:e?s)?\b",
     re.I)
 NOT_FOOD = re.compile(r"\b(?:now hiring|we(?:'| a)re hiring|hiring|apply (?:now|today|in person)|job)\b", re.I)
 
 
 def is_food_news(text: str) -> bool:
-    """A post worth putting under Specials today: food, a deal or an hours
-    change, and not a hiring notice."""
+    """A post worth putting under Specials today: it talks about food (a dish,
+    a meal, a food deal) and is not a hiring notice. Hours alone and drinks
+    alone are not food (Nate, 2026-11-07)."""
     return bool(FOOD.search(text)) and not NOT_FOOD.search(text)
 
 
@@ -195,13 +203,13 @@ def _claude(content: list[dict], timeout: int = 240) -> str | None:
 
 KEEP_PROMPT = (
     "Below, as JSON, are posts restaurants near Topsail Island, NC made on Facebook today. "
-    "Keep a post only if it tells someone deciding where to eat something about eating or "
-    "drinking there today or tonight: a special, a deal, a dish or drink on offer, a feature, "
-    "or a change to today's hours (closed, opening late, closing early). Drop event or "
-    "entertainment promotions with no food or drink offer, catering or party-booking ads, gift "
-    "cards, merchandise, hiring, giveaways, history, staff photos and posts about another "
-    "location or another day. Reply with ONLY a JSON list of the i values to keep, like "
-    "[0, 2], or [] if none.\n\n")
+    "Keep a post only if it talks about food on offer there today or tonight: a dish, a meal, "
+    "or a food special, deal or feature. Drop every post with no food in it: drinks-only posts "
+    "(cocktails, shots, beer, wine), posts that only give hours or say the place is open or "
+    "closed, event or entertainment promotions, catering or party-booking ads, gift cards, "
+    "merchandise, hiring, giveaways, history, staff photos, weather or fishing reports, and "
+    "posts about another location or another day. Reply with ONLY a JSON list of the i values "
+    "to keep, like [0, 2], or [] if none.\n\n")
 
 
 def keep_posts(posts: list[dict], names: dict[str, str], ask=None) -> list[dict]:

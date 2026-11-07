@@ -228,10 +228,12 @@ own clone (`%LOCALAPPDATA%\topsail-reporter\repo`), signed in to a
 personal Facebook account in a browser profile beside it (`fb-profile`;
 sign in once with `python local/fb_login.py`; the session never leaves that
 folder). Each check reads every place's `facebook` page, keeps that
-page's own posts from today, has Opus 5.5 keep only the ones about eating or
-drinking there that day (specials, deals, hours changes; not events, party
-booking, history or hiring; the keyword filter stands in if Claude cannot
-be reached), merges them into `specials/<date>.json`, re-renders, runs the tests, pushes, and sends the
+page's own posts from today, has Opus 5.5 keep only the ones that talk
+about food on offer there that day (a dish, a meal, a food special or deal;
+never a drinks-only post, an hours-only "Open until 8pm!", an event, party
+booking, history or hiring: Nate, 2026-11-07, "unless it talks about
+food"; a food-words keyword filter stands in if Claude cannot be reached),
+merges them into `specials/<date>.json`, re-renders, runs the tests, pushes, and sends the
 new posts to one person through `alert.json` in the same folder (ntfy or a
 Discord webhook; never committed). Some places (SurfDog) post the day's
 specials only as a photo of their board: a photo Facebook says shows text,
