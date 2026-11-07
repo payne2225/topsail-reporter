@@ -435,7 +435,8 @@ def test_weekly_and_posted_specials_show_and_posts_are_escaped(data):
                 "posts": [{"id": "r", "posted_et": "10:05 AM", "text": "Fried <b>flounder</b> plate",
                            "url": "https://www.facebook.com/x"}]}
     eats = render.eats_section(data, places, specials)
-    assert "<b>SurfDog</b> Tacos with a side <small>every Wednesday" in eats
+    assert ("<li class=spc><div class=sh><b>SurfDog</b><small>every Wednesday, from its own site"
+            "</small></div><p>Tacos with a side</p></li>") in eats
     assert ">Today</span>: Tacos with a side" in eats          # on the place's own line too
     assert "Fried &lt;b&gt;flounder&lt;/b&gt; plate" in eats and "<b>flounder" not in eats
     assert "checked at 10:31 AM" in eats
@@ -531,7 +532,31 @@ def test_a_special_read_off_a_photo_says_so(data):
                 "posts": [{"id": "s", "posted_et": "10:12 AM", "text": "Ribeye plate $21",
                            "url": "https://www.facebook.com/x", "from_photo": True}]}
     eats = render.eats_section(data, places, specials)
-    assert "Ribeye plate $21 <small>read from the photo posted 10:12 AM on <a" in eats
+    assert ("<b>SurfDog</b><small>read from the photo posted 10:12 AM on <a "
+            "href='https://www.facebook.com/x'>Facebook</a></small></div><p>Ribeye plate $21</p>") in eats
+
+
+def test_a_board_read_off_a_photo_lists_its_items_one_a_line(data):
+    # Nate, 2026-11-07: "the wall of text is hard to read". The words stay a
+    # paragraph; the board's items go one a line, price on the right, and a
+    # long board shows six with the rest behind "All N items".
+    places = _places(_place("r", "Riverview", {"Wed": ["11:00-21:00"]}))
+    board = "; ".join([f"Plate {n} with fried shrimp ${n}.95" for n in range(1, 11)] + ["Hush puppies"])
+    specials = {"date": "2026-10-14", "checked_et": ["11:15 AM"],
+                "posts": [{"id": "r", "posted_et": "10:20 AM", "text": f"Lunch specials until 3pm {board}",
+                           "board": board, "url": "https://www.facebook.com/x", "from_photo": True}]}
+    eats = render.eats_section(data, places, specials)
+    assert "</div><p>Lunch specials until 3pm</p><ul class=board>" in eats
+    assert "<li><span>Plate 1 with fried shrimp</span><span class=pr>$1.95</span></li>" in eats
+    assert "<li><span>Hush puppies</span></li>" in eats                  # no price, no price cell
+    assert eats.index("Plate 6 with") < eats.index("<summary>All 11 items</summary>") < eats.index("Plate 7 with")
+    assert ";" not in eats[eats.index("<ul class=board>"):eats.index("</details>")]
+    # A short board shows whole; a one-item board stays in the words.
+    short = dict(specials["posts"][0], text="Specials A $1; B $2", board="A $1; B $2")
+    eats = render.eats_section(data, places, dict(specials, posts=[short]))
+    assert "All " not in eats and "<span class=pr>$2</span>" in eats
+    one = dict(specials["posts"][0], text="Kids eat free today", board="Kids eat free today")
+    assert "<p>Kids eat free today</p>" in render.eats_section(data, places, dict(specials, posts=[one]))
 
 
 # ---- the page's dialect and its tap targets (2026-11-04) --------------------

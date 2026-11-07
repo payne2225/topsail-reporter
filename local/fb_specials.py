@@ -531,7 +531,7 @@ def main(argv: list[str] | None = None) -> int:
                 if key in known:                    # kept at an earlier check
                     found.append(known[key])
                     continue
-                text, from_photo = post["text"], False
+                text, from_photo, board = post["text"], False, None
                 alts = [alt for _, alt in post["images"]]
                 if post["images"] and wants_reading(text, alts):
                     try:
@@ -544,7 +544,10 @@ def main(argv: list[str] | None = None) -> int:
                 if text:
                     fresh.append({"id": p["id"], "posted_et": post["when"].strftime("%I:%M %p").lstrip("0"),
                                   "sort": post["when"].strftime("%H:%M"), "key": key,
-                                  "text": text, "url": post["url"], "from_photo": from_photo})
+                                  "text": text, "url": post["url"], "from_photo": from_photo,
+                                  # The board read off the photo, kept apart too, so
+                                  # the page can list its items one per line.
+                                  **({"board": board} if from_photo else {})})
             print(f"  {len(posts)} posts read, "
                   f"{sum(1 for x in fresh + found if x['id'] == p['id'])} from today")
             time.sleep(random.uniform(4, 9))

@@ -2,6 +2,14 @@
 
 ## 2026-11-07
 
+- Specials today reads in blocks (Nate: "the wall of text is hard to
+  read"): each special has the place and where it came from on top, its
+  words below, and a board read off a photo as one item a line with the
+  price on the right (six shown, the rest behind "All N items"). The
+  specials job now keeps the board in its own `board` field; the Nov 6
+  and Nov 7 files got theirs from the job's log, and Nov 7 lost the three
+  non-food posts the 11:15 AM check kept before the food-only rule
+  (Daddy Mac's drinks, Max's hours, Beach Bums' music night).
 - A Menu pill beside Click for details on every place with its own menu
   online (Nate: "provide a direct link to each restaurant's menus ... as
   a 'Menu' pill"): 28 of the 33 open or call-first places, each link

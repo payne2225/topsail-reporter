@@ -243,7 +243,10 @@ specials only as a photo of their board: a photo Facebook says shows text,
 on a post from today, is read by Opus 5.5 through the home PC's Claude CLI
 (image passed inline, no tools, told to copy only what is written and
 answer NONE for a photo with no menu); the page then says "read from the
-photo posted ...". A check resets its clone to GitHub's
+photo posted ...". The board is kept in the post's `board` field too
+(`text` ends with it), so the page lists its items one a line with the
+price on the right, six shown and the rest behind "All N items" (since
+2026-11-07). A check resets its clone to GitHub's
 main first, so it never conflicts with the routine, and it refuses to push
 from any other checkout. A lapsed sign-in or a failed push sends an alert
 instead. A post kept at an earlier check is reused, not re-read. The

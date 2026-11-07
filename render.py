@@ -904,7 +904,17 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font:.8
 .eats h3{font:700 1rem/1.3 var(--sans);margin:20px 0 6px}
 .specials{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--tide);border-radius:12px;padding:12px 16px;font:.9375rem/1.5 var(--sans)}
 .specials h3{margin:0 0 4px}.specials p{margin:4px 0 0}
-.specials ul{margin:0;padding-left:18px}.specials li{margin:6px 0}.specials small{color:var(--muted)}
+.specials small{color:var(--muted)}
+.specials .sps{list-style:none;margin:2px 0 0;padding:0}
+.specials .spc{margin:0;padding:11px 0;border-top:1px solid var(--line)}.specials .spc:first-child{border-top:0;padding-top:6px}
+.specials .sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px}.specials .sh small{font-size:.8rem}
+.specials .spc>p{margin:3px 0 0}
+.specials .board{list-style:none;margin:6px 0 0;padding:0;max-width:34rem}
+.specials .board li{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin:0;padding:4px 0;border-bottom:1px dotted var(--line)}
+.specials .board li:last-child{border-bottom:0}
+.specials .board .pr{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
+.specials .more{margin:0}.specials .more summary{display:inline-flex;align-items:center;min-height:36px;margin-top:2px;color:var(--sea);font-weight:700;font-size:.85rem;cursor:pointer}
+.specials .more[open] summary{display:none}
 .meals>input{position:absolute;opacity:0;pointer-events:none}
 .tabs{display:flex;gap:4px;max-width:280px;margin:18px 0 2px;padding:4px;background:var(--chip);border-radius:999px;font:600 .95rem/1 var(--sans)}
 .tabs label{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:999px;cursor:pointer;color:var(--muted)}
@@ -1301,6 +1311,49 @@ def _short_day(iso: str) -> str:
     return f"{d.strftime('%b')} {d.day}"
 
 
+BOARD_SHOWN = 6          # a board's first items; the rest behind "All N items"
+
+
+def _post_parts(post: dict) -> tuple[str, list[str]]:
+    """A posted special's own words, and the items of a board read off its
+    photo when it has two or more (the job keeps the board in `board`, and
+    `text` ends with it)."""
+    text = " ".join(post.get("text", "").split())
+    board = " ".join((post.get("board") or "").split())
+    if board and text.endswith(board):
+        items = [x.strip() for x in board.split(";") if x.strip()]
+        if len(items) >= 2:
+            return text[: len(text) - len(board)].strip(), items
+    if len(text) > 700:
+        text = text[:697].rsplit(" ", 1)[0] + "…"
+    return text, []
+
+
+def _board_item(item: str) -> str:
+    """One board line, its price (the last '$12.95' or '$9 / $14') pushed right."""
+    m = re.fullmatch(r"(.+?)\s+(\$\s?\d[\d.,]*(?:\s*(?:/|or|-)\s*\$?\d[\d.,]*)*)", item)
+    if m:
+        return f"<li><span>{esc(m.group(1))}</span><span class=pr>{esc(m.group(2))}</span></li>"
+    return f"<li><span>{esc(item)}</span></li>"
+
+
+def _special_html(name: str, meta: str, words: str, items: list[str] | None = None,
+                  meta_is_html: bool = False) -> str:
+    """One special: the place and where it came from, its words, its board."""
+    out = (f"<li class=spc><div class=sh><b>{esc(name)}</b>"
+           f"<small>{meta if meta_is_html else esc(meta)}</small></div>")
+    if words:
+        out += f"<p>{esc(words)}</p>"
+    items = items or []
+    if items:
+        shown = items if len(items) <= BOARD_SHOWN + 2 else items[:BOARD_SHOWN]
+        out += f"<ul class=board>{''.join(_board_item(x) for x in shown)}</ul>"
+        if len(shown) < len(items):
+            out += (f"<details class=more><summary>All {len(items)} items</summary><ul class=board>"
+                    + "".join(_board_item(x) for x in items[len(shown):]) + "</ul></details>")
+    return out + "</li>"
+
+
 def eats_section(data: dict, restaurants: dict, specials: dict | None = None) -> str:
     """Lunch & Dinner: the day's specials, then the places (the paper's
     favorites first) with a Lunch | Dinner switch and a Day row for the week
@@ -1335,24 +1388,25 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
                  for p in listed}
 
     # Specials: the weekly ones for this weekday, then what was posted today.
+    # Each is its own block, the place and where it came from on top, then
+    # its words, then a board read off a photo one item a line (Nate,
+    # 2026-11-07: "the wall of text is hard to read").
     weekly = {pid: w[0] for pid, w in weekly_of.items() if 0 in w}
-    lines = [f"<li><b>{esc(by_id[i]['name'])}</b> {esc(text)} "
-             f"<small>every {dt.date.fromisoformat(day).strftime('%A')}, from its "
-             f"{'Facebook page' if 'facebook.com' in by_id[i].get('weekly_source', '') else 'own site'}"
-             f"</small></li>"
+    lines = [_special_html(by_id[i]["name"],
+                           f"every {dt.date.fromisoformat(day).strftime('%A')}, from its "
+                           + ("Facebook page" if "facebook.com" in by_id[i].get("weekly_source", "")
+                              else "own site"), text)
              for i, text in weekly.items()]
     posted = (specials or {}).get("posts", []) if specials and not ahead and specials.get("date") == day else []
     for post in posted:
         place = by_id.get(post.get("id"))
         if not place:
             continue
-        text = " ".join(post.get("text", "").split())
-        if len(text) > 700:
-            text = text[:697].rsplit(" ", 1)[0] + "…"
+        words, items = _post_parts(post)
         link = f" on <a href='{esc(post['url'])}'>Facebook</a>" if post.get("url") else ""
         how = "read from the photo posted" if post.get("from_photo") else "posted"
-        lines.append(f"<li><b>{esc(place['name'])}</b> {esc(text)} "
-                     f"<small>{how} {esc(post.get('posted_et', 'today'))}{link}</small></li>")
+        lines.append(_special_html(place["name"], f"{how} {esc(post.get('posted_et', 'today'))}{link}",
+                                   words, items, meta_is_html=True))
     checked = (specials.get("checked_et") if specials and not ahead
                and specials.get("date") == day else None)
     in_run = config.FIRST_EDITION <= day <= config.LAST_EDITION and not ahead
@@ -1366,7 +1420,7 @@ def eats_section(data: dict, restaurants: dict, specials: dict | None = None) ->
     parts = ["<section class=eats id=eats><h2>Lunch &amp; Dinner</h2>"]
     if lines or status:
         parts.append("<div class=specials><h3>Specials today</h3>"
-                     + (f"<ul>{''.join(lines)}</ul>" if lines else
+                     + (f"<ul class=sps>{''.join(lines)}</ul>" if lines else
                         "<p>None posted yet.</p>" if checked else "")
                      + (f"<p class=muted>{esc(status)}</p>" if status else "") + "</div>")
 
