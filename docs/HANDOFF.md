@@ -33,6 +33,8 @@ Rewritten at the end of every session. As of Thu 2026-11-05, 4:15 PM ET:
   commits read "7:30 PM ET check" since the clocks changed; not looked at.
 - **Decided, don't reopen:** the fishing page keeps its Outlook where it
   is (2026-11-04). Breezeway is treated as open on its posted hours.
+  Specials are food only; drink specials stay out (Nate, 2026-11-07: "we
+  don't care about drink specials").
 
 ## 1. What it is
 
