@@ -1,7 +1,8 @@
 {
  "date": "2026-11-07",
  "checked_et": [
-  "11:15 AM"
+  "11:15 AM",
+  "4:15 PM"
  ],
  "posts": [
   {
@@ -68,12 +69,30 @@
    "from_photo": false
   },
   {
+   "id": "maine-lobstah",
+   "posted_et": "10:55 AM",
+   "sort": "10:55",
+   "key": "maine-lobstah@2026-11-07T10:55",
+   "text": "Checks all the boxes… Life is short ~ Eat Lobstah!",
+   "url": "https://www.facebook.com/MaineLobstahShackSurfCityNC/posts/pfbid0p6muEmSnYwKf1Nuby1dSU4ohmJxziPjxSBQejWrseRSzqaDFMTHminbpUdN9f2QAl",
+   "from_photo": false
+  },
+  {
    "id": "shuckin-shack",
    "posted_et": "11:00 AM",
    "sort": "11:00",
    "key": "shuckin-shack@2026-11-07T11:00",
    "text": "Seafood? Yes. But we are pretty darn good at fall comfort-food too! Have you tried our mac n cheese side?",
    "url": "https://www.facebook.com/shuckinshacksurfcitync/posts/pfbid02n7mwg8owYfb9We49mwDjTdyrK2Va34vJxEhM1r8YWSDbMQFKn4UJ9G6jihWX5RbYl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "11:55 AM",
+   "sort": "11:55",
+   "key": "coastal-wing@2026-11-07T11:55",
+   "text": "Our boneless wings are calling your name! Order to-go or dine in with us",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid032mKaWgtmLCGcDsQvVa4YdETPfy83nH811eXHWMhwU1peB6zBvAPJceuhfCq6wf5El",
    "from_photo": false
   }
  ],
