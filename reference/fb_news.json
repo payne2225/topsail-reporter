@@ -1,7 +1,16 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Nov 5, 7:30 PM ET",
+ "checked": "Nov 6, 7:30 PM ET",
  "news": [
+  {
+   "key": "patio-at-the-surf@2026-11-05T21:44",
+   "id": "patio-at-the-surf",
+   "date": "2026-11-05",
+   "kind": "hours",
+   "line": "Closed another day to finish a kitchen update; reopens Saturday morning, Nov 7.",
+   "until": "2026-11-07",
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0vfGCvrwazJTyzFLyZN1n5fdRtmJED5C51dyqQW6wHzbPs2RMbZSPD1Hs38HyR2cdl&id=61588375706177"
+  },
   {
    "key": "maine-lobstah@2026-11-05T10:55",
    "id": "maine-lobstah",
