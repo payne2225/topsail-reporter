@@ -1,0 +1,12 @@
+Topsail Reporter, Island Edition, Sat Nov 7
+
+☀️ Sunny, high 70°
+🌙 Tonight partly cloudy, low 56°
+💨 Wind N 8 to 13 mph
+🏖️ Waves to 3.4 ft (model)
+🌡️ Water 69°
+🐚 Beach low tide 11:58a, 11:47p
+🌅 Sun up 6:36a, down 5:12p
+
+Click the link below for the Full Daily Topsail Report:
+https://payne2225.github.io/topsail-reporter/2026-11-07/island/
