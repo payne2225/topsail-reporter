@@ -7,7 +7,7 @@
     "pick: true for the paper's own picks, listed first as \"Our favorites\". weekly: a special that runs every week on that weekday, with weekly_source.",
     "facebook: the page local/fb_specials.py reads for the day's posts.",
     "Public repo: business details only. No reader names.",
-    "lat / lon: ArcGIS World Geocoder address points, read 2026-11-04, cross-checked against the US Census geocoder (within 0.15 mi everywhere but Burrito Shak, where the Census match was 12 mi off). The Patio at the Surf has no street number, so it sits mid Charlie Medlin Dr. Used only to sort the Island page by distance from the reader's own phone."
+    "lat / lon: ArcGIS World Geocoder address points, read 2026-11-04 (Cape Fear Seafood Company 2026-11-07), cross-checked against the US Census geocoder (within 0.15 mi everywhere but Burrito Shak, where the Census match was 12 mi off). The Patio at the Surf has no street number, so it sits mid Charlie Medlin Dr. Used only to sort the Island page by distance from the reader's own phone."
   ],
   "read": "2026-10-23",
   "places": [
@@ -213,6 +213,23 @@
       "ratings_source": "https://wanderlog.com/place/details/1559019/shuckin-shack-surf-city",
       "reviews": "Fresh seafood, attentive service and cold beer, with a fairly priced lobster roll; the summary names no complaints.",
       "order": "local oysters, grilled fish tacos, lobster roll, clam chowder"
+    },
+    {
+      "id": "cape-fear-seafood", "name": "Cape Fear Seafood Company", "town": "Surf City",
+      "address": "14120 NC-50 Unit A, Surf City", "phone": "910-505-4665",
+      "lat": 34.44137, "lon": -77.55737,
+      "website": "https://capefearseafoodcompany.com/locations/surf-city/", "facebook": null,
+      "style": "Sit-down seafood and steaks from a Wilmington-born NC chain; weekend brunch",
+      "status": "open", "pick": false,
+      "hours": {"Mon": ["11:00-21:00"], "Tue": ["11:00-21:00"], "Wed": ["11:00-21:00"],
+                "Thu": ["11:00-21:00"], "Fri": ["11:00-22:00"], "Sat": ["10:00-22:00"],
+                "Sun": ["10:00-21:00"]},
+      "hours_note": "Brunch Sat and Sun 10 AM-2 PM; lunch specials (under $15) daily until 4 PM. No off-season hours posted. No Surf City Facebook page found (only the chain's), so no daily specials.",
+      "hours_source": "own Surf City page and its menu (version CFSC.12.1.25), read 2026-11-07; Topsail Guide lists the same hours",
+      "google": [4.6, 361], "tripadvisor": null,
+      "ratings_source": "Topsail Guide (Google figure), https://topsailguide.com/directory/businesses/cape-fear-seafood-company/",
+      "reviews": null,
+      "order": null
     },
     {
       "id": "margaritas", "name": "Margaritas Mexican Grill & Cantina", "town": "Surf City",

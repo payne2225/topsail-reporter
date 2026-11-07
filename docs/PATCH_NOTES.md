@@ -2,6 +2,14 @@
 
 ## 2026-11-07
 
+- Cape Fear Seafood Company (Surf City, 14120 NC-50 Unit A) joins Lunch &
+  Dinner (Nate asked for "Cape Fear Seafood Market"; no place by that name
+  exists, and this is the Surf City restaurant). Hours from its own Surf
+  City page and menu (Mon-Thu 11 AM-9 PM, Fri 11 AM-10 PM, Sat 10 AM-10 PM,
+  Sun 10 AM-9 PM; brunch weekends 10 AM-2 PM; lunch specials until 4 PM),
+  Google 4.6 (361) by way of Topsail Guide. No Surf City Facebook page
+  (only the chain's, which covers 11 places), so the specials check does
+  not read it; its weekly drink specials are left out as drinks, not food.
 - The specials check keeps a post only when it talks about food (Nate:
   "we don't get a specials update from restaurants unless it talks about
   food"). Claude's keep rule now asks for a dish, a meal or a food
