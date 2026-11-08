@@ -150,20 +150,66 @@ def pick_tide_cycle(events: list[dict], day: dt.date) -> list[dict]:
     return out
 
 
-def parse_tides(payload: dict, first: dt.date, days: int) -> list[dict]:
+def tide_events(payload: dict, places: int | None = 1) -> list[dict]:
+    """NOAA's highs and lows in order, heights rounded to `places` (None
+    keeps NOAA's three decimals)."""
     if "error" in payload:
         # CO-OPS answers 200 with an error body: this key is the only guard.
         raise RuntimeError(f"NOAA: {payload['error'].get('message', '').strip()}")
     events = []
     for p in payload.get("predictions", []):
         when = dt.datetime.strptime(p["t"], "%Y-%m-%d %H:%M")
+        v = float(p["v"])
         events.append({"type": "high" if p["type"] == "H" else "low",
-                       "when": when, "height_ft": round(float(p["v"]), 1)})
+                       "when": when, "height_ft": v if places is None else round(v, places)})
     if not events:
         raise RuntimeError("NOAA: no predictions returned")
+    return events
+
+
+def parse_tides(payload: dict, first: dt.date, days: int) -> list[dict]:
+    events = tide_events(payload)
     return [{"date": (first + dt.timedelta(days=i)).isoformat(),
              "events": pick_tide_cycle(events, first + dt.timedelta(days=i))}
             for i in range(days)]
+
+
+def grass_windows(payload: dict, first: dt.date, days: int,
+                  under: float = config.GRASS["under_ft"]) -> dict:
+    """When the tide is under `under` ft: one window per low, listed on the
+    day of its low, from the falling tide's pass through `under` to the
+    rising tide's. Between a high and a low the height follows the cosine
+    curve the page draws, so each pass is solved on it, from NOAA's
+    unrounded heights. A pass on another day carries its weekday."""
+    events = tide_events(payload, places=None)
+    passes = []  # (when, falling)
+    for a, b in zip(events, events[1:]):
+        ha, hb = a["height_ft"], b["height_ft"]
+        if (ha - under) * (hb - under) < 0:
+            frac = math.acos(1 - 2 * (under - ha) / (hb - ha)) / math.pi
+            when = a["when"] + (b["when"] - a["when"]) * frac
+            passes.append((when.replace(second=0, microsecond=0)
+                           + dt.timedelta(minutes=when.second >= 30), hb < ha))
+    out = []
+    for i in range(days):
+        day = first + dt.timedelta(days=i)
+        windows = []
+        for low in (e for e in events if e["type"] == "low" and e["when"].date() == day):
+            if low["height_ft"] >= under:
+                continue
+            down = [w for w, falling in passes if falling and w <= low["when"]]
+            up = [w for w, falling in passes if not falling and w >= low["when"]]
+            if not down or not up:
+                continue  # the data ends before the tide climbs back (or began under)
+            win = {}
+            for key, when in (("from", down[-1]), ("to", up[0])):
+                win[key] = config.clock(when)
+                if when.date() != day:
+                    win[f"{key}_day"] = when.strftime("%a")
+            if not windows or windows[-1] != win:
+                windows.append(win)
+        out.append({"date": day.isoformat(), "windows": windows})
+    return {"under_ft": under, "days": out}
 
 
 def fetch_tides(f: Fetcher, date: dt.date) -> dict:
@@ -181,9 +227,12 @@ def fetch_tides(f: Fetcher, date: dt.date) -> dict:
                  "begin_date": begin, "end_date": end, "datum": "MLLW",
                  "station": st["id"], "time_zone": "lst_ldt", "units": "english",
                  "interval": "hilo", "format": "json"})
-            return {"station": st["name"], "id": st["id"], "label": st["label"],
-                    "note": st["note"],
-                    "days": parse_tides(payload, date, config.TIDE_DAYS)}
+            station = {"station": st["name"], "id": st["id"], "label": st["label"],
+                       "note": st["note"],
+                       "days": parse_tides(payload, date, config.TIDE_DAYS)}
+            if st["key"] == config.GRASS["station"]:
+                station["grass"] = grass_windows(payload, date, config.TIDE_DAYS)
+            return station
         res = f.safe(f"tides:{st['id']}", one)
         if res:
             out[st["key"]] = res

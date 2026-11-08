@@ -17,6 +17,8 @@ def test_the_numbers_text_is_header_numbers_and_link(data):
         "🌊 Sound tides\n"
         "Low 5:11a · High 11:28a\n"
         "Low 5:58p · High 11:44p\n"
+        "🌾 Out of the grass (under 2 ft)\n"
+        "1:14a–6:10a · 2:38p–7:22p\n"
         "☀️ Sunny, high 83°\n"
         "💨 Wind SW 9 mph\n"
         "🏖️ Surf 1-2 ft, rip risk low\n"
@@ -313,6 +315,30 @@ def test_the_page_leads_with_tiles_charts_and_the_edition_switch(data):
     assert island.count("<figure class=tidechart") == 1   # the beach side only
     assert "<span aria-current=page>🏝️ Island</span>" in island
     assert ">Low tide</span>" in island and ">Moon</span>" not in island
+
+
+def test_out_of_the_grass_rides_under_the_ocean_tides_on_the_fishing_page(data):
+    html = render.page(data, None, ["2026-10-14"], "2026-10-14")
+    assert ("<p class=grass>🌾 Out of the grass, under 2 ft: <b>1:14 AM–6:10 AM</b>, "
+            "<b>2:38 PM–7:22 PM</b></p>") in html
+    assert html.count('<line class="gl"') == 1         # the ocean chart only
+    assert "clears the grass near 1.5 ft" in html
+    island = render.page(data, None, ["2026-10-14"], "2026-10-14", edition="island")
+    assert "class=grass" not in island and 'class="gl"' not in island
+
+
+def test_a_window_across_midnight_names_the_other_day_in_the_text(data):
+    data["tides"]["ocean"]["grass"]["days"][0]["windows"] = [
+        {"from": "9:40 PM", "from_day": "Tue", "to": "2:59 AM"}]
+    lines = render.numbers_block(data)
+    assert lines[lines.index("🌾 Out of the grass (under 2 ft)") + 1] == "9:40p Tue–2:59a"
+
+
+def test_data_from_before_out_of_the_grass_shows_none_of_it(data):
+    del data["tides"]["ocean"]["grass"]
+    assert not any("grass" in line for line in render.numbers_block(data))
+    html = render.page(data, None, ["2026-10-14"], "2026-10-14")
+    assert "class=grass" not in html and 'class="gl"' not in html
 
 
 def test_a_page_with_no_tides_draws_no_chart(data):

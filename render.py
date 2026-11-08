@@ -181,6 +181,27 @@ def sky_emoji(short: str) -> str:
     return "🌤️"
 
 
+def grass_for(data: dict, day: str) -> tuple[float, list[dict]] | None:
+    """(the height, the windows listed on `day`) for Out of the grass: when
+    the tide is under that height and the water is off the marsh grass
+    (config.GRASS). None when the data has no such reading."""
+    grass = ((data.get("tides") or {}).get(config.GRASS["station"]) or {}).get("grass")
+    if not grass:
+        return None
+    for d in grass["days"]:
+        if d["date"] == day:
+            return grass["under_ft"], d["windows"]
+    return None
+
+
+def grass_span(w: dict, short: bool = False) -> str:
+    """'10:56 AM–4:11 PM', or '9:40p Sun–2:59a' for the text."""
+    def end(key):
+        t = config.short_clock(w[key]) if short else w[key]
+        return f"{t} {w[key + '_day']}" if w.get(key + "_day") else t
+    return f"{end('from')}–{end('to')}"
+
+
 def tide_rows(events: list[dict]) -> list[str]:
     """Two tides a row, in order, so each row fits a phone screen."""
     cells = []
@@ -280,6 +301,11 @@ def numbers_block(data: dict) -> list[str]:
     if sound:
         lines.append("🌊 Sound tides")
         lines.extend(tide_rows(sound))
+    grass = grass_for(data, day)
+    if grass and grass[1]:
+        spans = [grass_span(w, short=True) for w in grass[1]]
+        lines.append(f"🌾 Out of the grass (under {grass[0]:g} ft)")
+        lines.extend(" · ".join(spans[i:i + 2]) for i in range(0, len(spans), 2))
     lines += _sky_line(data, day) + _wind_line(data, day) + _beach_lines(data, day)
     marine = data.get("marine") or {}
     if not ahead and marine.get("periods"):
@@ -502,7 +528,9 @@ def tide_domain(data: dict, day: str, keys: tuple[str, ...]) -> tuple | None:
     return min(starts), min(0.0, min(heights)), max(heights)
 
 
-def tide_chart(data: dict, key: str, day: str, dom: tuple, label: str) -> str:
+def tide_chart(data: dict, key: str, day: str, dom: tuple, label: str,
+               mark_ft: float | None = None) -> str:
+    """`mark_ft` draws a dashed line at that height (Out of the grass)."""
     start, lo, hi = dom
     tl = tide_timeline(data, key, day)
     if not tl:
@@ -543,6 +571,11 @@ def tide_chart(data: dict, key: str, day: str, dom: tuple, label: str) -> str:
             if all(abs(x(m) - lx) > 34 for lx in low_labels):
                 out.append(f'<text class="ax" x="{x(m):.1f}" y="{TC_YB + 16}" '
                            f'text-anchor="middle">{tick}</text>')
+    if mark_ft is not None and lo < mark_ft < hi:
+        gy = y(mark_ft)
+        out.append(f'<line class="gl" x1="{TC_X0}" y1="{gy:.1f}" x2="{TC_X1}" y2="{gy:.1f}"/>'
+                   f'<text class="gt" x="{TC_X1}" y="{gy - 4:.1f}" text-anchor="end">'
+                   f'{mark_ft:g} ft</text>')
     out.append(f'<path class="curve" d="{curve}"/>')
     for m, h, kind, clk in tl:
         if not start <= m < 1440:
@@ -580,8 +613,22 @@ def tide_list(data: dict, key: str, day: str) -> str:
         f"<small>{e['height_ft']:g} ft</small></li>" for e in tides_for(data, key, day)) + "</ul>"
 
 
-def tides_card(data: dict, day: str, keys: tuple[str, ...], title: str, note: str) -> str:
-    """`note` is HTML, escaped by the caller."""
+def grass_line(data: dict, day: str) -> str:
+    """Out of the grass under its station's tides: each window, or that the
+    tide stays in the grass."""
+    grass = grass_for(data, day)
+    if not grass:
+        return ""
+    under, windows = grass
+    said = (", ".join(f"<b>{esc(grass_span(w))}</b>" for w in windows) if windows
+            else "the tide stays above it today")
+    return f"<p class=grass>🌾 Out of the grass, under {under:g} ft: {said}</p>"
+
+
+def tides_card(data: dict, day: str, keys: tuple[str, ...], title: str, note: str,
+               grass: bool = False) -> str:
+    """`note` is HTML, escaped by the caller. `grass` adds Out of the grass
+    (the fishing edition) to its station."""
     dom = tide_domain(data, day, keys)
     stations = []
     for st in (s for s in config.TIDE_STATIONS if s["key"] in keys):
@@ -589,9 +636,12 @@ def tides_card(data: dict, day: str, keys: tuple[str, ...], title: str, note: st
             stations.append(f"<div class=station><h4>{esc(st['label'])}</h4>"
                             "<p class=muted>no reading</p></div>")
             continue
-        chart = tide_chart(data, st["key"], day, dom, st["label"]) if dom else ""
+        here = grass and st["key"] == config.GRASS["station"] and grass_for(data, day)
+        chart = (tide_chart(data, st["key"], day, dom, st["label"],
+                            here[0] if here else None) if dom else "")
         stations.append(f"<div class=station><h4>{esc(st['label'])}</h4>{chart}"
-                        f"{tide_list(data, st['key'], day)}</div>")
+                        f"{tide_list(data, st['key'], day)}"
+                        f"{grass_line(data, day) if here else ''}</div>")
     return (f"<div class='card wide'><h3>{esc(title)}</h3><div class=stations>"
             f"{''.join(stations)}</div><p class=muted>{note}</p></div>")
 
@@ -704,9 +754,14 @@ def numbers_panel(data: dict) -> tuple[str, str]:
     moon = data.get("moon") or {}
     moon_note = (f"Moon: {esc(moon['phase'])}, {esc(moon.get('tides', ''))}. "
                  if moon.get("phase") and not ahead else "")
+    grass = grass_for(data, day)
+    grass_note = (f"Out of the grass: the ocean tide under {grass[0]:g} ft, when the water "
+                  f"is off the marsh grass (it clears the grass near "
+                  f"{config.GRASS['grass_ft']:g} ft). "
+                  if grass else "")
     tides = tides_card(data, day, ("sound", "ocean"), "Tides",
                        f"The sound station leads: {esc(config.TIDE_STATIONS[0]['note'])}. "
-                       f"{moon_note}{TIDE_CURVE_NOTE}")
+                       f"{grass_note}{moon_note}{TIDE_CURVE_NOTE}", grass=True)
 
     wind_bits = []
     hourly = (data.get("weather_model") or {}).get("wind") or []
@@ -871,6 +926,9 @@ section,.side,.more{margin-top:34px}
 .tidechart text{font:11px var(--sans);fill:var(--muted)}
 .tidechart text.tm{font-size:12px;font-weight:700;fill:var(--ink)}
 .tidechart text.ax{font-size:10.5px}
+.tidechart .gl{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 3}
+.tidechart text.gt{font-size:10.5px}
+.grass{margin:6px 0 0!important;font:.9rem/1.4 var(--sans)}.grass b{white-space:nowrap}
 .tip{position:absolute;top:-4px;transform:translate(-50%,-100%);background:var(--ink);color:var(--bg);font:600 .8rem/1.3 var(--sans);padding:5px 9px;border-radius:6px;white-space:nowrap;pointer-events:none}
 .windrow{list-style:none;padding:0!important;margin:2px 0 12px!important;display:grid;grid-template-columns:repeat(auto-fit,minmax(44px,1fr));text-align:center;border:1px solid var(--line);border-radius:10px}
 .windrow li{display:flex;flex-direction:column;align-items:center;gap:1px;margin:0;padding:6px 2px;border-left:1px solid var(--line)}

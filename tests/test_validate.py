@@ -22,6 +22,13 @@ def test_a_bare_time_must_still_be_a_real_one(data):
     assert problems(data, GOOD_REPORT.replace("at 6:37.", "at 6:40.")) != []
 
 
+def test_an_out_of_the_grass_time_counts(data):
+    good = GOOD_REPORT.replace("after the 11:28 AM high", "after the 11:28 AM high, out of the grass at 2:38 PM")
+    assert good != GOOD_REPORT and problems(data, good) == []
+    bad = good.replace("2:38 PM", "2:45 PM")
+    assert any("'2:45 PM" in p for p in problems(data, bad))
+
+
 def test_the_inlet_tide_from_the_surf_forecast_counts(data):
     assert problems(data, GOOD_REPORT.replace("Low rip risk.", "Low rip risk. Inlet high 10:22 AM.")) == []
 

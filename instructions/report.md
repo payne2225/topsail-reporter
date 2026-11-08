@@ -111,6 +111,12 @@ WebFetch; keep notes of every URL you actually read.
   through the day (`weather_model.wind`, `marine`), water temperature and
   its trend, surf height. Turn these into a plan: where to be, when, with
   what.
+- **Out of the grass** (`tides.ocean.grass`): the windows when the tide is
+  under 2 ft and the water is off the marsh grass, one per low, from the
+  falling tide's pass to the rising tide's. That is when this group wants
+  to be fishing the marsh, so the sound's When row and the best bet, when
+  the play is the marsh, hang on the day's daylight window, quoting its
+  times exactly. The page and text print every window on their own.
 
 **Beach and weather.** The NWS forecast and surf zone forecast are in the
 data. Note rip current risk plainly, and any alert in `alerts`.

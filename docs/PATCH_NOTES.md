@@ -1,5 +1,23 @@
 # Patch notes
 
+## 2026-11-08
+
+- Out of the grass, in the fishing edition. Nate: the water leaves and
+  enters the marsh grass at about 1.5 ft on the Jolly Roger pier tides,
+  the group likes to fish while it is out, "but use 2.0 for the report".
+  The pier has no NOAA station, so the ocean station (Ocean City Beach
+  pier, the nearest prediction) stands in. `fetch.py` solves when the
+  tide passes 2 ft on the same cosine curve the chart draws, from NOAA's
+  unrounded heights, one window per low, listed on the day of its low
+  (a pass on another day carries its weekday): `tides.ocean.grass` in the
+  data (`config.GRASS`). The text gets a 🌾 line under the sound tides,
+  the page a dashed 2 ft line on the ocean chart and the windows under
+  its tides, and the writer is told to hang the marsh When row on the
+  daylight window; `validate.py` accepts those times. Data fetched
+  before today has no `grass`, so earlier pages are unchanged; the first
+  edition with it is Mon Nov 9 (falling past 2 ft 10:56 AM, rising past
+  it 4:11 PM).
+
 ## 2026-11-07
 
 - Specials today reads in blocks (Nate: "the wall of text is hard to

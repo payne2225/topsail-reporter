@@ -102,6 +102,11 @@ def data_times(data: dict) -> set[tuple[str, str]]:
         for day in st.get("days", []):
             for e in day["events"]:
                 add(e["time"])
+        # Out of the grass: when the tide passes the mark either way.
+        for day in (st.get("grass") or {}).get("days", []):
+            for w in day["windows"]:
+                add(w["from"])
+                add(w["to"])
     for s in ((data.get("weather_model") or {}).get("sun") or []):
         add(s["sunrise"])
         add(s["sunset"])

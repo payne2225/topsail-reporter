@@ -58,6 +58,13 @@ TIDE_STATIONS = [
 ]
 TIDE_DAYS = 4  # the edition day and the three after it
 
+# Out of the grass: the stretch around each low when the water is off the
+# marsh grass, the time to fish the marsh (Nate, 2026-11-08: the water leaves
+# and enters the grass at about 1.5 ft on the Jolly Roger pier tides, "but
+# use 2.0 for the report"). The pier has no NOAA station; the ocean station
+# is the nearest prediction to it, so the window is read off that one.
+GRASS = {"station": "ocean", "under_ft": 2.0, "grass_ft": 1.5}
+
 # Measured ocean water temperature and waves: NDBC 41110, the Masonboro
 # Inlet buoy, about 16 miles down the coast. Its file is in metres and C.
 BUOY = {"id": "41110", "name": "Masonboro Inlet buoy", "miles": 16,

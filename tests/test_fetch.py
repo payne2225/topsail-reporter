@@ -35,6 +35,42 @@ def test_a_spillover_tide_carries_its_weekday(data):
     assert all("day" not in e for e in day["events"][1:])
 
 
+def test_out_of_the_grass_is_one_window_per_low_off_the_ocean_tides(data):
+    grass = data["tides"]["ocean"]["grass"]
+    assert grass["under_ft"] == config.GRASS["under_ft"] == 2.0
+    assert "grass" not in data["tides"]["sound"]
+    day = grass["days"][0]
+    # Lows 3:45 AM and 4:51 PM; the falling tide passes 2 ft after the
+    # 9:59 PM Tue and 10:22 AM highs, the rising one before the next highs.
+    assert day == {"date": "2026-10-14", "windows": [
+        {"from": "1:14 AM", "to": "6:10 AM"}, {"from": "2:38 PM", "to": "7:22 PM"}]}
+    assert [d["date"] for d in grass["days"]] == [
+        (dt.date(2026, 10, 14) + dt.timedelta(days=i)).isoformat() for i in range(config.TIDE_DAYS)]
+
+
+def test_out_of_the_grass_solves_the_cosine_curve_and_tags_another_day():
+    payload = {"predictions": [
+        {"t": "2026-11-08 18:36", "v": "4.1", "type": "H"},
+        {"t": "2026-11-09 00:24", "v": "0.234", "type": "L"},
+        {"t": "2026-11-09 06:59", "v": "5.511", "type": "H"},
+        {"t": "2026-11-09 13:24", "v": "0.328", "type": "L"},
+        {"t": "2026-11-09 19:16", "v": "3.971", "type": "H"},
+        {"t": "2026-11-10 01:00", "v": "2.4", "type": "L"},   # a low that stays in the grass
+        {"t": "2026-11-10 07:37", "v": "5.4", "type": "H"}]}
+    out = fetch.grass_windows(payload, dt.date(2026, 11, 9), 2)
+    assert out["days"][0]["windows"] == [
+        {"from": "9:40 PM", "from_day": "Sun", "to": "2:59 AM"},
+        {"from": "10:56 AM", "to": "4:11 PM"}]
+    assert out["days"][1]["windows"] == []
+
+
+def test_out_of_the_grass_skips_a_low_the_data_cannot_close():
+    payload = {"predictions": [
+        {"t": "2026-11-09 06:59", "v": "5.5", "type": "H"},
+        {"t": "2026-11-09 13:24", "v": "0.3", "type": "L"}]}
+    assert fetch.grass_windows(payload, dt.date(2026, 11, 9), 1)["days"][0]["windows"] == []
+
+
 def test_the_ocean_station_runs_ahead_of_the_sound(data):
     ocean = data["tides"]["ocean"]["days"][0]["events"]
     assert ("high", "10:22 AM") in [(e["type"], e["time"]) for e in ocean]
