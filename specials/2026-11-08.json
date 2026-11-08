@@ -1,7 +1,8 @@
 {
  "date": "2026-11-08",
  "checked_et": [
-  "11:15 AM"
+  "11:15 AM",
+  "4:15 PM"
  ],
  "posts": [
   {
@@ -49,6 +50,15 @@
    "key": "maine-lobstah@2026-11-08T10:55",
    "text": "The stuff dreams are made of… Life is short ~ Eat Lobstah!",
    "url": "https://www.facebook.com/MaineLobstahShackSurfCityNC/posts/pfbid02VXrUoWPE9SToC2qzfqWgqbQuFxGUC8HkcD2KjKpvphXyt8Ey3oWGXEUpAw39R5AAl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "11:30 AM",
+   "sort": "11:30",
+   "key": "coastal-wing@2026-11-08T11:30",
+   "text": "SUNDAY FUNDAY!! We have $1 Bone-in wings (limit of 15 per customer), 1/2 priced appetizers and 1/2 priced domestic draft beer ALL DAY! *DINE-IN ONLY*",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid02kaLGbPKd3q4cafqKxgtACgs8AKZHWFwuiGzQtMWBN9XKVVjBUe4LSoNHDmJne269l",
    "from_photo": false
   }
  ],
