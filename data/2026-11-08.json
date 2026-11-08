@@ -1,0 +1,528 @@
+{
+ "date": "2026-11-08",
+ "kind": "daily",
+ "generated_utc": "2026-11-08T08:32:03Z",
+ "generated_et": "3:32 AM ET",
+ "tides": {
+  "sound": {
+   "station": "Hampstead",
+   "id": "8657813",
+   "label": "Sound (Hampstead)",
+   "note": "inside Topsail Sound and the ICWW; runs over an hour behind the beach",
+   "days": [
+    {
+     "date": "2026-11-08",
+     "events": [
+      {
+       "type": "low",
+       "time": "12:57 AM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "7:05 AM",
+       "height_ft": 4.3
+      },
+      {
+       "type": "low",
+       "time": "1:44 PM",
+       "height_ft": 0.6
+      },
+      {
+       "type": "high",
+       "time": "7:19 PM",
+       "height_ft": 3.5
+      }
+     ]
+    },
+    {
+     "date": "2026-11-09",
+     "events": [
+      {
+       "type": "low",
+       "time": "1:41 AM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "7:48 AM",
+       "height_ft": 4.3
+      },
+      {
+       "type": "low",
+       "time": "2:29 PM",
+       "height_ft": 0.6
+      },
+      {
+       "type": "high",
+       "time": "8:02 PM",
+       "height_ft": 3.4
+      }
+     ]
+    },
+    {
+     "date": "2026-11-10",
+     "events": [
+      {
+       "type": "low",
+       "time": "2:22 AM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "8:31 AM",
+       "height_ft": 4.2
+      },
+      {
+       "type": "low",
+       "time": "3:11 PM",
+       "height_ft": 0.7
+      },
+      {
+       "type": "high",
+       "time": "8:45 PM",
+       "height_ft": 3.3
+      }
+     ]
+    },
+    {
+     "date": "2026-11-11",
+     "events": [
+      {
+       "type": "low",
+       "time": "3:02 AM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "9:13 AM",
+       "height_ft": 4.1
+      },
+      {
+       "type": "low",
+       "time": "3:50 PM",
+       "height_ft": 0.7
+      },
+      {
+       "type": "high",
+       "time": "9:27 PM",
+       "height_ft": 3.1
+      }
+     ]
+    }
+   ]
+  },
+  "ocean": {
+   "station": "Ocean City Beach pier",
+   "id": "8657419",
+   "label": "Ocean (Ocean City pier)",
+   "note": "oceanfront, the surf and inlet-mouth read",
+   "days": [
+    {
+     "date": "2026-11-08",
+     "events": [
+      {
+       "type": "low",
+       "time": "11:47 PM",
+       "height_ft": 0.2,
+       "day": "Sat"
+      },
+      {
+       "type": "high",
+       "time": "6:20 AM",
+       "height_ft": 5.5
+      },
+      {
+       "type": "low",
+       "time": "12:43 PM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "6:36 PM",
+       "height_ft": 4.1
+      }
+     ]
+    },
+    {
+     "date": "2026-11-09",
+     "events": [
+      {
+       "type": "low",
+       "time": "12:24 AM",
+       "height_ft": 0.2
+      },
+      {
+       "type": "high",
+       "time": "6:59 AM",
+       "height_ft": 5.5
+      },
+      {
+       "type": "low",
+       "time": "1:24 PM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "7:16 PM",
+       "height_ft": 4.0
+      }
+     ]
+    },
+    {
+     "date": "2026-11-10",
+     "events": [
+      {
+       "type": "low",
+       "time": "1:00 AM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "7:37 AM",
+       "height_ft": 5.4
+      },
+      {
+       "type": "low",
+       "time": "2:05 PM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "7:54 PM",
+       "height_ft": 3.8
+      }
+     ]
+    },
+    {
+     "date": "2026-11-11",
+     "events": [
+      {
+       "type": "low",
+       "time": "1:37 AM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "8:15 AM",
+       "height_ft": 5.3
+      },
+      {
+       "type": "low",
+       "time": "2:45 PM",
+       "height_ft": 0.6
+      },
+      {
+       "type": "high",
+       "time": "8:32 PM",
+       "height_ft": 3.7
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "moon": {
+  "phase": "waning crescent",
+  "illumination_pct": 2,
+  "age_days": 28.3,
+  "tides": "spring tides (bigger swings, stronger inlet current)"
+ },
+ "weather_model": {
+  "sun": [
+   {
+    "date": "2026-11-08",
+    "sunrise": "6:37 AM",
+    "sunset": "5:11 PM"
+   },
+   {
+    "date": "2026-11-09",
+    "sunrise": "6:38 AM",
+    "sunset": "5:10 PM"
+   },
+   {
+    "date": "2026-11-10",
+    "sunrise": "6:39 AM",
+    "sunset": "5:09 PM"
+   },
+   {
+    "date": "2026-11-11",
+    "sunrise": "6:40 AM",
+    "sunset": "5:08 PM"
+   }
+  ],
+  "wind": [
+   {
+    "time": "6:00 AM",
+    "speed_mph": 7,
+    "gust_mph": 17,
+    "from": "N",
+    "temp_f": 45
+   },
+   {
+    "time": "9:00 AM",
+    "speed_mph": 6,
+    "gust_mph": 11,
+    "from": "NE",
+    "temp_f": 54
+   },
+   {
+    "time": "12:00 PM",
+    "speed_mph": 2,
+    "gust_mph": 4,
+    "from": "NNE",
+    "temp_f": 63
+   },
+   {
+    "time": "3:00 PM",
+    "speed_mph": 4,
+    "gust_mph": 5,
+    "from": "WNW",
+    "temp_f": 66
+   },
+   {
+    "time": "6:00 PM",
+    "speed_mph": 4,
+    "gust_mph": 6,
+    "from": "W",
+    "temp_f": 57
+   },
+   {
+    "time": "9:00 PM",
+    "speed_mph": 6,
+    "gust_mph": 9,
+    "from": "WSW",
+    "temp_f": 54
+   }
+  ]
+ },
+ "forecast": [
+  {
+   "name": "Overnight",
+   "start": "2026-11-08",
+   "is_day": false,
+   "temp_f": 44,
+   "pop_pct": 0,
+   "wind": "N 8 mph",
+   "short": "Clear",
+   "detailed": "Clear, with a low around 44. North wind around 8 mph."
+  },
+  {
+   "name": "Sunday",
+   "start": "2026-11-08",
+   "is_day": true,
+   "temp_f": 66,
+   "pop_pct": 0,
+   "wind": "NW 2 to 7 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 66. Northwest wind 2 to 7 mph."
+  },
+  {
+   "name": "Sunday Night",
+   "start": "2026-11-08",
+   "is_day": false,
+   "temp_f": 48,
+   "pop_pct": 0,
+   "wind": "W 3 to 7 mph",
+   "short": "Mostly Clear",
+   "detailed": "Mostly clear, with a low around 48. West wind 3 to 7 mph."
+  },
+  {
+   "name": "Monday",
+   "start": "2026-11-09",
+   "is_day": true,
+   "temp_f": 70,
+   "pop_pct": 0,
+   "wind": "NW 6 to 9 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 70. Northwest wind 6 to 9 mph."
+  },
+  {
+   "name": "Monday Night",
+   "start": "2026-11-09",
+   "is_day": false,
+   "temp_f": 45,
+   "pop_pct": 0,
+   "wind": "N 5 mph",
+   "short": "Clear",
+   "detailed": "Clear, with a low around 45. North wind around 5 mph."
+  },
+  {
+   "name": "Tuesday",
+   "start": "2026-11-10",
+   "is_day": true,
+   "temp_f": 71,
+   "pop_pct": 0,
+   "wind": "W 2 to 9 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 71."
+  },
+  {
+   "name": "Tuesday Night",
+   "start": "2026-11-10",
+   "is_day": false,
+   "temp_f": 50,
+   "pop_pct": 0,
+   "wind": "W 3 to 8 mph",
+   "short": "Partly Cloudy",
+   "detailed": "Partly cloudy, with a low around 50."
+  },
+  {
+   "name": "Veterans Day",
+   "start": "2026-11-11",
+   "is_day": true,
+   "temp_f": 72,
+   "pop_pct": 0,
+   "wind": "SW 6 mph",
+   "short": "Mostly Sunny",
+   "detailed": "Mostly sunny, with a high near 72."
+  },
+  {
+   "name": "Wednesday Night",
+   "start": "2026-11-11",
+   "is_day": false,
+   "temp_f": 52,
+   "pop_pct": 1,
+   "wind": "SW 1 to 5 mph",
+   "short": "Mostly Clear",
+   "detailed": "Mostly clear, with a low around 52."
+  },
+  {
+   "name": "Thursday",
+   "start": "2026-11-12",
+   "is_day": true,
+   "temp_f": 71,
+   "pop_pct": 8,
+   "wind": "SW 3 to 15 mph",
+   "short": "Mostly Sunny",
+   "detailed": "Mostly sunny, with a high near 71."
+  },
+  {
+   "name": "Thursday Night",
+   "start": "2026-11-12",
+   "is_day": false,
+   "temp_f": 47,
+   "pop_pct": 13,
+   "wind": "W 9 to 13 mph",
+   "short": "Mostly Cloudy",
+   "detailed": "Mostly cloudy, with a low around 47."
+  },
+  {
+   "name": "Friday",
+   "start": "2026-11-13",
+   "is_day": true,
+   "temp_f": 60,
+   "pop_pct": 17,
+   "wind": "W 13 to 17 mph",
+   "short": "Slight Chance Rain Showers",
+   "detailed": "A slight chance of rain showers between 7am and 1pm. Mostly sunny, with a high near 60."
+  },
+  {
+   "name": "Friday Night",
+   "start": "2026-11-13",
+   "is_day": false,
+   "temp_f": 39,
+   "pop_pct": 13,
+   "wind": "NW 14 mph",
+   "short": "Partly Cloudy",
+   "detailed": "Partly cloudy, with a low around 39."
+  },
+  {
+   "name": "Saturday",
+   "start": "2026-11-14",
+   "is_day": true,
+   "temp_f": 56,
+   "pop_pct": 6,
+   "wind": "NW 12 to 16 mph",
+   "short": "Sunny",
+   "detailed": "Sunny, with a high near 56."
+  }
+ ],
+ "marine": {
+  "zone": "AMZ250",
+  "zone_name": "Surf City to Cape Fear, out 20 nm",
+  "updated": "2026-11-08T01:30:00-05:00",
+  "periods": [
+   {
+    "name": "Rest Of Tonight",
+    "text": "N winds 10 to 15 kt. Seas 3 to 4 ft. Wave Detail: E 3 ft at 10 seconds and N 2 ft at 3 seconds.",
+    "headline": "N winds 10 to 15 kt. Seas 3 to 4 ft."
+   },
+   {
+    "name": "Sun",
+    "text": "N winds 5 to 10 kt, becoming NW in the afternoon. Seas 3 to 4 ft. Wave Detail: E 3 ft at 10 seconds and NE 2 ft at 4 seconds.",
+    "headline": "N winds 5 to 10 kt, becoming NW in the afternoon. Seas 3 to 4 ft."
+   },
+   {
+    "name": "Sun Night",
+    "text": "W winds 5 to 10 kt, increasing to 10 to 15 kt after midnight. Seas 3 ft. Wave Detail: E 3 ft at 10 seconds and W 2 ft at 3 seconds.",
+    "headline": "W winds 5 to 10 kt, increasing to 10 to 15 kt after midnight. Seas 3 ft."
+   },
+   {
+    "name": "Mon",
+    "text": "W winds 10 to 15 kt, becoming NW 5 to 10 kt in the afternoon. Seas 2 to 3 ft. Wave Detail: E 3 ft at 11 seconds and SW 2 ft at 3 seconds.",
+    "headline": "W winds 10 to 15 kt, becoming NW 5 to 10 kt in the afternoon. Seas 2 to 3 ft."
+   },
+   {
+    "name": "Mon Night",
+    "text": "N winds 5 to 10 kt. Seas 2 to 3 ft. Wave Detail: E 3 ft at 11 seconds and SW 2 ft at 4 seconds.",
+    "headline": "N winds 5 to 10 kt. Seas 2 to 3 ft."
+   },
+   {
+    "name": "Tue",
+    "text": "NW winds 5 kt, becoming SW in the afternoon. Seas 2 ft. Wave Detail: E 2 ft at 11 seconds and N 1 ft at 3 seconds.",
+    "headline": "NW winds 5 kt, becoming SW in the afternoon. Seas 2 ft."
+   }
+  ]
+ },
+ "surf_zone": null,
+ "buoy": {
+  "observed_utc": "2026-11-08T08:00Z",
+  "observed_et": "3:00 AM",
+  "wave_ft": 3.3,
+  "period_s": 11.0,
+  "wave_from": "ESE",
+  "water_temp_f": 69,
+  "station": "Masonboro Inlet buoy",
+  "id": "41110",
+  "miles": 16,
+  "bearing": "down the coast"
+ },
+ "sound_temp": {
+  "water_temp_f": 67.5,
+  "observed": "2026-11-08 03:24",
+  "station": "Beaufort",
+  "miles": 60,
+  "bearing": "up the coast"
+ },
+ "waves": [
+  {
+   "date": "2026-11-08",
+   "max_ft": 3.0,
+   "period_s": 10,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-09",
+   "max_ft": 2.8,
+   "period_s": 10,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-10",
+   "max_ft": 2.1,
+   "period_s": 10,
+   "from": "ESE"
+  },
+  {
+   "date": "2026-11-11",
+   "max_ft": 1.6,
+   "period_s": 8,
+   "from": "ESE"
+  }
+ ],
+ "alerts": [],
+ "errors": [
+  "nws:surf-zone: RuntimeError: no surf zone forecasts listed (out of season?)"
+ ]
+}
