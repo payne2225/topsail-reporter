@@ -35,15 +35,44 @@ def test_a_spillover_tide_carries_its_weekday(data):
     assert all("day" not in e for e in day["events"][1:])
 
 
-def test_out_of_the_grass_is_one_window_per_low_off_the_ocean_tides(data):
-    grass = data["tides"]["ocean"]["grass"]
+def test_new_topsail_inlet_is_the_reference_station_shifted(data):
+    # Cape Hatteras pier on Oct 14: low 3:46 AM 0.485 ft, high 10:19 AM 3.773 ft.
+    inlet = data["tides"]["inlet"]
+    assert inlet["station"] == "New Topsail Inlet" and inlet["id"] == "8654400"
+    assert inlet["days"][0]["events"][:2] == [
+        {"type": "low", "time": "4:47 AM", "height_ft": 0.4},
+        {"type": "high", "time": "10:39 AM", "height_ft": 3.7}]
+
+
+def test_the_rebuilt_inlet_matches_the_tide_app():
+    # Nov 9, 2026 from NOAA's Cape Hatteras pier; the app read New Topsail
+    # Inlet as low 0.2 ft 1:26 AM, high 3.9 ft 7:16 AM, low 0.2 ft 2:26 PM,
+    # high 2.8 ft 7:34 PM.
+    ref = {"predictions": [
+        {"t": "2026-11-09 00:25", "v": "0.176", "type": "L"},
+        {"t": "2026-11-09 06:56", "v": "3.936", "type": "H"},
+        {"t": "2026-11-09 13:25", "v": "0.247", "type": "L"},
+        {"t": "2026-11-09 19:13", "v": "2.836", "type": "H"}]}
+    inlet = next(s for s in config.TIDE_STATIONS if s["key"] == "inlet")
+    events = fetch.tide_events(fetch.shift_tides(ref, inlet["offsets"]), places=None)
+    app = [("low", "2026-11-09 01:26", 0.2), ("high", "2026-11-09 07:16", 3.9),
+           ("low", "2026-11-09 14:26", 0.2), ("high", "2026-11-09 19:34", 2.8)]
+    for e, (kind, when, ft) in zip(events, app, strict=True):
+        # The app shows tenths; the lows sit within a few hundredths of its
+        # rounding, which moves a 2 ft pass by seconds.
+        assert e["type"] == kind and abs(e["height_ft"] - ft) <= 0.06
+        assert abs((e["when"] - dt.datetime.fromisoformat(when)).total_seconds()) <= 60
+
+
+def test_out_of_the_grass_is_one_window_per_low_off_the_inlet_tides(data):
+    grass = data["tides"]["inlet"]["grass"]
     assert grass["under_ft"] == config.GRASS["under_ft"] == 2.0
-    assert "grass" not in data["tides"]["sound"]
+    assert "grass" not in data["tides"]["sound"] and "grass" not in data["tides"]["ocean"]
     day = grass["days"][0]
-    # Lows 3:45 AM and 4:51 PM; the falling tide passes 2 ft after the
-    # 9:59 PM Tue and 10:22 AM highs, the rising one before the next highs.
+    # Inlet lows 4:47 AM and 5:53 PM; the falling tide passes 2 ft after the
+    # Tue night and 10:39 AM highs, the rising one before the next highs.
     assert day == {"date": "2026-10-14", "windows": [
-        {"from": "1:14 AM", "to": "6:10 AM"}, {"from": "2:38 PM", "to": "7:22 PM"}]}
+        {"from": "12:50 AM", "to": "7:41 AM"}, {"from": "2:24 PM", "to": "9:04 PM"}]}
     assert [d["date"] for d in grass["days"]] == [
         (dt.date(2026, 10, 14) + dt.timedelta(days=i)).isoformat() for i in range(config.TIDE_DAYS)]
 

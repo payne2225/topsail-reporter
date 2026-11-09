@@ -218,6 +218,114 @@
       }
      ]
     }
+   ]
+  },
+  "inlet": {
+   "station": "New Topsail Inlet",
+   "id": "8654400",
+   "label": "Inlet (New Topsail Inlet)",
+   "note": "the inlet tide the tide apps show, rebuilt from NOAA's Cape Hatteras pier predictions (highs 20 minutes later, lows 61)",
+   "days": [
+    {
+     "date": "2026-11-09",
+     "events": [
+      {
+       "type": "low",
+       "time": "1:26 AM",
+       "height_ft": 0.1
+      },
+      {
+       "type": "high",
+       "time": "7:16 AM",
+       "height_ft": 3.9
+      },
+      {
+       "type": "low",
+       "time": "2:26 PM",
+       "height_ft": 0.2
+      },
+      {
+       "type": "high",
+       "time": "7:33 PM",
+       "height_ft": 2.8
+      }
+     ]
+    },
+    {
+     "date": "2026-11-10",
+     "events": [
+      {
+       "type": "low",
+       "time": "2:02 AM",
+       "height_ft": 0.2
+      },
+      {
+       "type": "high",
+       "time": "7:54 AM",
+       "height_ft": 3.8
+      },
+      {
+       "type": "low",
+       "time": "3:07 PM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "8:11 PM",
+       "height_ft": 2.7
+      }
+     ]
+    },
+    {
+     "date": "2026-11-11",
+     "events": [
+      {
+       "type": "low",
+       "time": "2:39 AM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "8:32 AM",
+       "height_ft": 3.7
+      },
+      {
+       "type": "low",
+       "time": "3:47 PM",
+       "height_ft": 0.3
+      },
+      {
+       "type": "high",
+       "time": "8:49 PM",
+       "height_ft": 2.6
+      }
+     ]
+    },
+    {
+     "date": "2026-11-12",
+     "events": [
+      {
+       "type": "low",
+       "time": "3:16 AM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "9:11 AM",
+       "height_ft": 3.6
+      },
+      {
+       "type": "low",
+       "time": "4:28 PM",
+       "height_ft": 0.4
+      },
+      {
+       "type": "high",
+       "time": "9:29 PM",
+       "height_ft": 2.5
+      }
+     ]
+    }
    ],
    "grass": {
     "under_ft": 2.0,
@@ -226,13 +334,13 @@
       "date": "2026-11-09",
       "windows": [
        {
-        "from": "9:40 PM",
+        "from": "9:24 PM",
         "from_day": "Sun",
-        "to": "2:59 AM"
+        "to": "4:21 AM"
        },
        {
-        "from": "10:56 AM",
-        "to": "4:11 PM"
+        "from": "10:53 AM",
+        "to": "5:39 PM"
        }
       ]
      },
@@ -240,13 +348,13 @@
       "date": "2026-11-10",
       "windows": [
        {
-        "from": "10:17 PM",
+        "from": "9:57 PM",
         "from_day": "Mon",
-        "to": "3:34 AM"
+        "to": "4:58 AM"
        },
        {
-        "from": "11:38 AM",
-        "to": "4:52 PM"
+        "from": "11:33 AM",
+        "to": "6:23 PM"
        }
       ]
      },
@@ -254,13 +362,13 @@
       "date": "2026-11-11",
       "windows": [
        {
-        "from": "10:54 PM",
+        "from": "10:29 PM",
         "from_day": "Tue",
-        "to": "4:10 AM"
+        "to": "5:36 AM"
        },
        {
-        "from": "12:20 PM",
-        "to": "5:31 PM"
+        "from": "12:12 PM",
+        "to": "7:08 PM"
        }
       ]
      },
@@ -268,13 +376,13 @@
       "date": "2026-11-12",
       "windows": [
        {
-        "from": "11:31 PM",
+        "from": "10:59 PM",
         "from_day": "Wed",
-        "to": "4:46 AM"
+        "to": "6:16 AM"
        },
        {
-        "from": "1:03 PM",
-        "to": "6:10 PM"
+        "from": "12:50 PM",
+        "to": "7:54 PM"
        }
       ]
      }

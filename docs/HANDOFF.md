@@ -34,10 +34,12 @@ Rewritten at the end of every session. As of Thu 2026-11-05, 4:15 PM ET:
 - **Decided, don't reopen:** the fishing page keeps its Outlook where it
   is (2026-11-04). Breezeway is treated as open on its posted hours.
   Specials are food only; drink specials stay out (Nate, 2026-11-07: "we
-  don't care about drink specials"). Out of the grass reads the ocean
-  station (for the Jolly Roger pier) at 2.0 ft, not the 1.5 ft where the
-  water actually clears the grass (Nate, 2026-11-08: "use 2.0 for the
-  report").
+  don't care about drink specials"). Out of the grass uses 2.0 ft, not the
+  1.5 ft where the water actually clears the grass (Nate, 2026-11-08: "use
+  2.0 for the report"), on New Topsail Inlet (Nate, 2026-11-09: "go with
+  NTI readings right now"; it read the ocean station for the Nov 9 text).
+  Nate is checking the water against it on Nov 9 and will send the
+  heights to correct the next edition.
 
 ## 1. What it is
 
@@ -291,8 +293,8 @@ news" via `install_task.ps1` (`-NewsTime`, `-NewsFirst`).
 
 | Feed | Where | Note |
 |---|---|---|
-| Tides | NOAA CO-OPS 8657813 Hampstead (sound, leads), 8657419 Ocean City Beach pier (ocean) | full 4-event cycle per day, spillover tagged with weekday |
-| Out of the grass | computed from the ocean station (stands in for the Jolly Roger pier, which has none) | `tides.ocean.grass`: per day, one window per low while the tide is under 2 ft (`config.GRASS`; the water is off the marsh grass near 1.5 ft), cosine-solved; fishing text, ocean chart and The Bite |
+| Tides | NOAA CO-OPS 8657813 Hampstead (sound, leads), 8657419 Ocean City Beach pier (ocean; the Island Edition's beach tides), New Topsail Inlet (inlet; rebuilt from 8654400 Cape Hatteras pier: highs +20 min ×0.98, lows +61 min ×0.83, the tide apps' inlet station) | full 4-event cycle per day, spillover tagged with weekday; the fishing page charts sound and inlet |
+| Out of the grass | computed from the inlet station (`config.GRASS`; the ocean station on Nov 9's 6:30 text only) | `tides.inlet.grass`: per day, one window per low while the tide is under 2 ft (the water is off the marsh grass near 1.5 ft), cosine-solved; fishing text, inlet chart and The Bite |
 | Surf, rip risk, water temp | NWS ILM surf zone forecast, NCZ106 Coastal Pender | refused if older than 36 h (seasonal product) |
 | Marine | NWS AMZ250, Surf City to Cape Fear | |
 | Forecast | NWS gridpoint ILM 100,83 | |

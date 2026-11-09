@@ -19,13 +19,13 @@ def test_an_invented_tide_time_is_caught(data):
 
 
 def test_a_bare_time_must_still_be_a_real_one(data):
-    assert problems(data, GOOD_REPORT.replace("at 6:37.", "at 6:40.")) != []
+    assert problems(data, GOOD_REPORT.replace("at 6:37.", "at 6:44.")) != []
 
 
 def test_an_out_of_the_grass_time_counts(data):
-    good = GOOD_REPORT.replace("after the 11:28 AM high", "after the 11:28 AM high, out of the grass at 2:38 PM")
+    good = GOOD_REPORT.replace("after the 11:28 AM high", "after the 11:28 AM high, out of the grass at 2:24 PM")
     assert good != GOOD_REPORT and problems(data, good) == []
-    bad = good.replace("2:38 PM", "2:45 PM")
+    bad = good.replace("2:24 PM", "2:45 PM")
     assert any("'2:45 PM" in p for p in problems(data, bad))
 
 

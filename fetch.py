@@ -167,6 +167,21 @@ def tide_events(payload: dict, places: int | None = 1) -> list[dict]:
     return events
 
 
+def shift_tides(payload: dict, offsets: dict) -> dict:
+    """A reference station's highs and lows moved to a station NOAA no longer
+    serves: each high `offsets['high'] = (minutes later, height ratio)`, each
+    low by `offsets['low']` (config.TIDE_STATIONS, New Topsail Inlet)."""
+    if "error" in payload:
+        return payload
+    out = []
+    for p in payload.get("predictions", []):
+        minutes, ratio = offsets["high" if p["type"] == "H" else "low"]
+        when = dt.datetime.strptime(p["t"], "%Y-%m-%d %H:%M") + dt.timedelta(minutes=minutes)
+        out.append({"t": when.strftime("%Y-%m-%d %H:%M"),
+                    "v": f"{float(p['v']) * ratio:.3f}", "type": p["type"]})
+    return {"predictions": out}
+
+
 def parse_tides(payload: dict, first: dt.date, days: int) -> list[dict]:
     events = tide_events(payload)
     return [{"date": (first + dt.timedelta(days=i)).isoformat(),
@@ -227,6 +242,8 @@ def fetch_tides(f: Fetcher, date: dt.date) -> dict:
                  "begin_date": begin, "end_date": end, "datum": "MLLW",
                  "station": st["id"], "time_zone": "lst_ldt", "units": "english",
                  "interval": "hilo", "format": "json"})
+            if st.get("offsets"):
+                payload = shift_tides(payload, st["offsets"])
             station = {"station": st["name"], "id": st["id"], "label": st["label"],
                        "note": st["note"],
                        "days": parse_tides(payload, date, config.TIDE_DAYS)}

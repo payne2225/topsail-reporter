@@ -111,7 +111,8 @@ WebFetch; keep notes of every URL you actually read.
   through the day (`weather_model.wind`, `marine`), water temperature and
   its trend, surf height. Turn these into a plan: where to be, when, with
   what.
-- **Out of the grass** (`tides.ocean.grass`): the windows when the tide is
+- **Out of the grass** (`tides.inlet.grass`): the windows when the New
+  Topsail Inlet tide (`tides.inlet`, the inlet tide the tide apps show) is
   under 2 ft and the water is off the marsh grass, one per low, from the
   falling tide's pass to the rising tide's. That is when this group wants
   to be fishing the marsh, so the sound's When row and the best bet, when

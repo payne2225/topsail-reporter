@@ -754,14 +754,20 @@ def numbers_panel(data: dict) -> tuple[str, str]:
     moon = data.get("moon") or {}
     moon_note = (f"Moon: {esc(moon['phase'])}, {esc(moon.get('tides', ''))}. "
                  if moon.get("phase") and not ahead else "")
+    # The second chart is New Topsail Inlet from 2026-11-09 on; a morning
+    # fetched before then has only the oceanfront station.
+    inlet = (data.get("tides") or {}).get("inlet")
+    second = "inlet" if inlet else "ocean"
+    st = next(s for s in config.TIDE_STATIONS if s["key"] == second)
     grass = grass_for(data, day)
-    grass_note = (f"Out of the grass: the ocean tide under {grass[0]:g} ft, when the water "
-                  f"is off the marsh grass (it clears the grass near "
+    grass_note = (f"Out of the grass: the {esc(st['name'])} tide under {grass[0]:g} ft, when "
+                  f"the water is off the marsh grass (it clears the grass near "
                   f"{config.GRASS['grass_ft']:g} ft). "
                   if grass else "")
-    tides = tides_card(data, day, ("sound", "ocean"), "Tides",
+    inlet_note = f"New Topsail Inlet: {esc(st['note'])}. " if inlet else ""
+    tides = tides_card(data, day, ("sound", second), "Tides",
                        f"The sound station leads: {esc(config.TIDE_STATIONS[0]['note'])}. "
-                       f"{grass_note}{moon_note}{TIDE_CURVE_NOTE}", grass=True)
+                       f"{inlet_note}{grass_note}{moon_note}{TIDE_CURVE_NOTE}", grass=True)
 
     wind_bits = []
     hourly = (data.get("weather_model") or {}).get("wind") or []

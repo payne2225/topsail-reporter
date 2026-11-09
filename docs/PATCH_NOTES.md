@@ -1,5 +1,25 @@
 # Patch notes
 
+## 2026-11-09
+
+- Out of the grass now reads New Topsail Inlet (Nate: "go with NTI
+  readings right now"; his 1.5 ft and 2.0 ft came from another app, and
+  he is checking the water today). NOAA's live feed no longer serves New
+  Topsail Inlet, but the tide apps' inlet station (his app, Windfinder) is
+  NOAA's Cape Hatteras pier reference (8654400) shifted: highs 20 minutes
+  later at 98%, lows 61 minutes later at 83%, fitted to Windfinder's 12
+  tides for Nov 9-14 and the app's four for Nov 9 (within a minute; within
+  0.02 ft on the highs). `fetch.py` rebuilds it every morning
+  (`shift_tides`, a third `TIDE_STATIONS` entry with `offsets`) as
+  `tides.inlet`, and Out of the grass moved to it (`tides.inlet.grass`).
+  The fishing page's second tide chart is the inlet now (a morning without
+  one keeps its ocean chart); the Island Edition keeps the oceanfront.
+  Today's numbers: out of the grass 10:53 AM to 5:39 PM (the ocean read
+  10:56 AM to 4:11 PM; the inlet's evening high is only 2.8 ft). Today's
+  data, write-up and page were brought over by hand (the inlet station
+  added with fetch.py's own functions, the window times swapped in the
+  report); the 6:30 AM text had already gone out with the ocean times.
+
 ## 2026-11-08
 
 - Out of the grass, in the fishing edition. Nate: the water leaves and

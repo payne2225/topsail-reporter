@@ -45,9 +45,16 @@ SURF_OFFICE = "ILM"
 MARINE_ZONE = "AMZ250"
 MARINE_ZONE_NAME = "Surf City to Cape Fear, out 20 nm"
 
-# Tides. NOAA has no station at New Topsail Inlet; these two bracket it.
-# The SOUND station leads: it is inside the same water as the sound fishing
-# north of the inlet and runs over an hour behind the oceanfront.
+# Tides. The SOUND station leads: it is inside the same water as the sound
+# fishing north of the inlet and runs over an hour behind the oceanfront.
+#
+# The INLET station, New Topsail Inlet, is the one tide apps show for the
+# inlet (Nate's app and Windfinder, 2026-11-09). NOAA's live feed no longer
+# serves it, but it is NOAA's Cape Hatteras pier reference (8654400) shifted
+# by fixed offsets, so `fetch.py` rebuilds it from that feed: highs 20
+# minutes later at 98% of the height, lows 61 minutes later at 83%. Fitted
+# on 2026-11-09 to all 12 of Windfinder's Nov 9-14 tides and the app's four
+# for Nov 9: within a minute and 0.02 ft.
 TIDE_STATIONS = [
     {"key": "sound", "id": "8657813", "name": "Hampstead",
      "label": "Sound (Hampstead)",
@@ -55,15 +62,21 @@ TIDE_STATIONS = [
     {"key": "ocean", "id": "8657419", "name": "Ocean City Beach pier",
      "label": "Ocean (Ocean City pier)",
      "note": "oceanfront, the surf and inlet-mouth read"},
+    {"key": "inlet", "id": "8654400", "name": "New Topsail Inlet",
+     "label": "Inlet (New Topsail Inlet)",
+     "note": "the inlet tide the tide apps show, rebuilt from NOAA's Cape Hatteras pier "
+             "predictions (highs 20 minutes later, lows 61)",
+     "offsets": {"high": (20, 0.98), "low": (61, 0.83)}},
 ]
 TIDE_DAYS = 4  # the edition day and the three after it
 
 # Out of the grass: the stretch around each low when the water is off the
 # marsh grass, the time to fish the marsh (Nate, 2026-11-08: the water leaves
-# and enters the grass at about 1.5 ft on the Jolly Roger pier tides, "but
-# use 2.0 for the report"). The pier has no NOAA station; the ocean station
-# is the nearest prediction to it, so the window is read off that one.
-GRASS = {"station": "ocean", "under_ft": 2.0, "grass_ft": 1.5}
+# and enters the grass at about 1.5 ft, "but use 2.0 for the report"). Read
+# off New Topsail Inlet (Nate, 2026-11-09: "go with NTI readings"); it was
+# the ocean station for the first day, Nov 9. Nate is checking both heights
+# against the water.
+GRASS = {"station": "inlet", "under_ft": 2.0, "grass_ft": 1.5}
 
 # Measured ocean water temperature and waves: NDBC 41110, the Masonboro
 # Inlet buoy, about 16 miles down the coast. Its file is in metres and C.
