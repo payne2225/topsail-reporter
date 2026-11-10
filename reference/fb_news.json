@@ -1,7 +1,16 @@
 {
  "_about": "Hours, season and menu news from each restaurant's own Facebook page, one plain sentence per post (written by local/fb_news.py on the home PC; Opus 5.5 picks and words them, naming no one). The Island Edition shows a place's items from the 21 days before the edition's date, never past an item's until date (a one-time closure). Items older than 30 days drop off.",
- "checked": "Nov 7, 7:30 PM ET",
+ "checked": "Nov 9, 7:30 PM ET",
  "news": [
+  {
+   "key": "smoky-tonys@2026-11-09T12:43",
+   "id": "smoky-tonys",
+   "date": "2026-11-09",
+   "kind": "hours",
+   "line": "Open Thanksgiving Day, Thursday, Nov 26, 4 to 8 PM for dine-in dinner; Thanksgiving pick-up orders are full, with a few pick-ups Nov 24-25.",
+   "until": "2026-11-26",
+   "url": "https://www.facebook.com/smokytonysbbq/posts/pfbid02Y9mMierqMCDqbAPLquKLuNpC16H4UsGmUjjDQzWeeMqseGEYM5Js69xMw5pjdej5l"
+  },
   {
    "key": "jolly-roger-grill@2026-11-07T14:12",
    "id": "jolly-roger-grill",
