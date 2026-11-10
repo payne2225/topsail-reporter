@@ -1,7 +1,8 @@
 {
  "date": "2026-11-10",
  "checked_et": [
-  "11:15 AM"
+  "11:15 AM",
+  "4:15 PM"
  ],
  "posts": [
   {
@@ -20,6 +21,15 @@
    "key": "beach-bums@2026-11-10T04:48",
    "text": "Happy Birthday Marines. JOIN US At Beach Bums Pizzeria, Bar & Grill for a discounted meal in Honor of your Birthday. Open from 11-9 today.",
    "url": "https://www.facebook.com/beachbumsntb/posts/pfbid02SbvY2dJ7HEp9SpLkhPctefaoK7SmALCKW7dWCh3aVjS3vkUrxWrHxPXUqd3v7Eaql",
+   "from_photo": false
+  },
+  {
+   "id": "scp-grill",
+   "posted_et": "6:44 AM",
+   "sort": "06:44",
+   "key": "scp-grill@2026-11-10T06:44",
+   "text": "currently 52° with a W/NW wind at 7mph... the tide will be high at 7:36am followed by the low at 1:00pm Seeing Mullet, Blues, and Trout *Things to know* tomorrow st one rod...please bring ID ..lunch will be provided... *The pier will be closing on Sunday, November 29th for the season. will still have access to the pier 24/7. If you sre interested in getting a 2027 Season Fishing Pass please see someone at the counter for more information...they do make great Christmas gifts..",
+   "url": "https://www.facebook.com/surfcitypier/posts/pfbid0qdthM5sHTUc579f3WtQMXKePfec8Yky5qD1zCoaFasAkcmyvpTEHcWTQyLGtNaY5l",
    "from_photo": false
   },
   {
@@ -47,6 +57,33 @@
    "key": "splash@2026-11-10T08:11",
    "text": "Go ahead, be fresh today. Anyone complains tell them it and you're just taking it . See you after work for a and a snack? $11 Tacos, $6 Seagaritas too! .",
    "url": "https://www.facebook.com/SplashByTheSea/posts/pfbid0gyrSbRMKkAmnPwYLi1aVKProvRGBH3grTpwfo1RypwPWUaXDJWuT9ZfXtrtbo4uWl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "11:33 AM",
+   "sort": "11:33",
+   "key": "coastal-wing@2026-11-10T11:33",
+   "text": "Lunch at Coastal Wing & Spirits Co. sounds reeaaaal good all of the sudden…",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid02ZnZTRocK1eBKtPnoL3Ee59kC7n8UMnz2QWauUDzz63SQbXhTdpzszHNd96yAoTDPl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "12:30 PM",
+   "sort": "12:30",
+   "key": "coastal-wing@2026-11-10T12:30",
+   "text": "Who doesn’t love Taco Tuesday?! Come get $3 off tacos, $4 house margaritas, $3 Modelo draft, and $2.50 Corona & Corona Light!",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid0HAzzQtUwSNzWsqQKcAouXpKmfXY8Koeqaxhtk9EP4Z936vKQyqr3Y6AUZ7Jj9knAl",
+   "from_photo": false
+  },
+  {
+   "id": "riverview",
+   "posted_et": "3:15 PM",
+   "sort": "15:15",
+   "key": "riverview@2026-11-10T15:15",
+   "text": "Tuesday Dinner Specials We are open until 8:30pm If you need to place an order, please give us a call. 910-327-2011 910-327-7551. 119 Hall Pt. Rd. Sneads Ferry, NC 28460",
+   "url": "https://www.facebook.com/RiverviewCafe1946/posts/pfbid0srm34ETLw6WzWWqHyzGgj5NaZN91gATPnM6cAG2eRHgB6Wnz5o3f8fwLXszPsqkpl",
    "from_photo": false
   }
  ],
