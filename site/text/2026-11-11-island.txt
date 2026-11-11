@@ -1,0 +1,12 @@
+Topsail Reporter, Island Edition, Wed Nov 11
+
+⛅ Partly Sunny, high 72°
+🌙 Tonight partly cloudy, low 52°
+💨 Wind SW 1 to 8 mph
+🏖️ Waves to 1.8 ft (model)
+🌡️ Water 68°
+🐚 Beach low tide 1:37a, 2:45p
+🌅 Sun up 6:40a, down 5:08p
+
+Click the link below for the Full Daily Topsail Report:
+https://payne2225.github.io/topsail-reporter/2026-11-11/island/
