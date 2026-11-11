@@ -1,7 +1,8 @@
 {
  "date": "2026-11-11",
  "checked_et": [
-  "11:15 AM"
+  "11:15 AM",
+  "4:15 PM"
  ],
  "posts": [
   {
@@ -56,6 +57,69 @@
    "key": "coastal-wing@2026-11-11T11:15",
    "text": "Today, we’re especially grateful for the brave men and women who have served our country and the sacrifices they’ve made to protect the freedoms we enjoy. From our Coastal Wing & Spirits Co. family to yours, thank you for your service. We’re proud to serve our community, and even prouder to honor those who have served us. Happy Veterans Day!",
    "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid0w64DSH72mUeF1bPJuqDx1ym6wVTexmhzvmhjPd3dbJJmT31RRh7qY7ausehHcDjTl",
+   "from_photo": false
+  },
+  {
+   "id": "coastal-wing",
+   "posted_et": "11:30 AM",
+   "sort": "11:30",
+   "key": "coastal-wing@2026-11-11T11:30",
+   "text": "WING WEDNESDAY ONLY AT Coastal Wing & Spirits Co.",
+   "url": "https://www.facebook.com/coastalwingandspirits/posts/pfbid0VtPSYY6KdWLrmXfzRdxmn4Nb1Ju8ASK79FA5zMwsjsqeuB7LxPsM6XMrE7R3RuYNl",
+   "from_photo": false
+  },
+  {
+   "id": "scp-grill",
+   "posted_et": "11:46 AM",
+   "sort": "11:46",
+   "key": "scp-grill@2026-11-11T11:46",
+   "text": "Walter is currently in the lead for biggest fish by a veteran... weighing in at 6.9 lbs today at",
+   "url": "https://www.facebook.com/surfcitypier/posts/pfbid0M8ZVwNDQYwhrbpSv9DhXbyLg6KfYfDVgkdboubyhpzevin5Fyagyi7njXmW67LZKl",
+   "from_photo": false
+  },
+  {
+   "id": "jolly-roger-grill",
+   "posted_et": "1:17 PM",
+   "sort": "13:17",
+   "key": "jolly-roger-grill@2026-11-11T13:17",
+   "text": "Sunrise this morning! Another beautiful day here. The ocean is flat, slick calm, with NO wind this morning. Last night on the Pier we caught VA mullet, puffers, spots, and trout, then more trout early this morning, along with good numbers of puffers. Late season room rates are in effect. The Jolly Roger Grill is open Friday, Saturday, and Sunday for breakfast 7 AM - 2 PM, and lunch 11 AM - 2 PM!",
+   "url": "https://www.facebook.com/JollyRogerInnandPier/posts/pfbid02SYLnT5MiUxU5g9mi3aKoPsVSuovn7xzbmYjipZMnJSXg12zdfKQy918jGiukgMfl",
+   "from_photo": false
+  },
+  {
+   "id": "santorini",
+   "posted_et": "1:38 PM",
+   "sort": "13:38",
+   "key": "santorini@2026-11-11T13:38",
+   "text": "10% off all food for Veterans with a Valid I.D. today! Stuffed Gnocchi Topped Cutlet is back Prime Rib Weekend starts Friday! $39 12-14oz Classic Prime Rib served with A side salad, mashed potatoes & broccoli. 205 S. Topsail Drive, Surf City, NC",
+   "url": "https://www.facebook.com/santorinisurfcity/posts/pfbid0A2DmxPe1L6Wy11sgegjLsSwFWUThe2amA2Hkg1MLzGPHVoc1pUVxv49VqCb894dfl",
+   "from_photo": false
+  },
+  {
+   "id": "scp-grill",
+   "posted_et": "2:47 PM",
+   "sort": "14:47",
+   "key": "scp-grill@2026-11-11T14:47",
+   "text": "Henry Hollow is on the chase for the top 4 fish of the day..... if you wait for the \"big\"one you're going to miss out on the prizes... little fish win prizes too... at",
+   "url": "https://www.facebook.com/surfcitypier/posts/pfbid02roAYZBAVadCXazhQJ9N44NcsAX21YdXvMLuFsMWjfufNUqE6cqHYvPVv3K67ENRgl",
+   "from_photo": false
+  },
+  {
+   "id": "riverview",
+   "posted_et": "3:06 PM",
+   "sort": "15:06",
+   "key": "riverview@2026-11-11T15:06",
+   "text": "Wednesday Dinner Specials We are open until 8:30pm If you need to place an order, please give us a call. 910-327-2011 910-327-7551. 119 Hall Pt. Rd. Sneads Ferry, NC 28460",
+   "url": "https://www.facebook.com/RiverviewCafe1946/posts/pfbid0CVitxhMsD3QJAH3HGdx5XSTejLSSsqxjuCzsbGZWtrsqqGFDzyjVtUu4YtRJ4BrAl",
+   "from_photo": false
+  },
+  {
+   "id": "topsail-steamer",
+   "posted_et": "3:30 PM",
+   "sort": "15:30",
+   "key": "topsail-steamer@2026-11-11T15:30",
+   "text": "Corporate gifting bucket list: Another coffee mug Another generic gift basket Another last-minute scramble A Topsail Steamer Bucker they'll always remember Let us take corporate gifting off your plate and put something a whole lot better on theirs. Fresh seafood, individual shipping, and delivery dates that work for your recipients. Now THAT'S a gift worth checking off the list.",
+   "url": "https://www.facebook.com/TopsailSteamer/posts/pfbid09epGvfiBNLhZ45At1zcFk1vtwuiE4DM4B9RrH61Kbb3wtt6qJBu88eGpzTVS4eQol",
    "from_photo": false
   }
  ],
